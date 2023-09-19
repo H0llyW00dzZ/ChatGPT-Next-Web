@@ -3,7 +3,7 @@ import EmojiPicker, {
   EmojiStyle,
   Theme as EmojiTheme,
 } from "emoji-picker-react";
-
+import React from "react";
 import { ModelType } from "../store";
 
 import BotIcon from "../icons/bot.svg";
@@ -13,16 +13,31 @@ export function getEmojiUrl(unified: string, style: EmojiStyle) {
   return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
 }
 
+export function debounce(func: Function, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return function (...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
+}
+
 export function AvatarPicker(props: {
   onEmojiClick: (emojiId: string) => void;
 }) {
+  const debouncedEmojiClick = React.useCallback(
+    debounce(props.onEmojiClick, 300), // Debounce with a delay of 300 milliseconds
+    [props.onEmojiClick],
+  );
+
   return (
     <EmojiPicker
       lazyLoadEmojis
       theme={EmojiTheme.AUTO}
       getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
-        props.onEmojiClick(e.unified);
+        debouncedEmojiClick(e.unified);
       }}
     />
   );
@@ -35,7 +50,7 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
         {props.model?.startsWith("gpt-4") ? (
           <BlackBotIcon className="user-avatar" />
         ) : (
-          <BotIcon className="user-avatar" />
+          <BlackBotIcon className="user-avatar" />
         )}
       </div>
     );

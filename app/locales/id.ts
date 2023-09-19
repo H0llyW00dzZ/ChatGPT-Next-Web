@@ -6,6 +6,24 @@ const id: PartialLocaleType = {
   Error: {
     Unauthorized:
       "Akses tidak diizinkan. Silakan [otorisasi](/#/auth) dengan memasukkan kode akses.",
+    Content_Policy: {
+      Title:
+        "Permintaan Anda ditandai karena Pelanggaran Kebijakan Konten.\nBaca di sini: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "alasan",
+        sexual: "seksual",
+        hate: "kebencian",
+        harassment: "pelecehan",
+        "self-harm": "melukai diri sendiri",
+        "sexual/minors": "seksual/anak-anak",
+        "hate/threatening": "kebencian/ancaman",
+        "violence/graphic": "kekerasan/grafis",
+        "self-harm/intent": "melukai diri sendiri/niat",
+        "self-harm/instructions": "melukai diri sendiri/instruksi",
+        "harassment/threatening": "pelecehan/ancaman",
+        violence: "kekerasan",
+      },
+    },
   },
   Auth: {
     Title: "Diperlukan Kode Akses",
@@ -185,10 +203,47 @@ const id: PartialLocaleType = {
           SubTitle: "Hanya berlaku untuk Proxy CORS bawaan untuk proyek ini",
         },
 
+        AccessControl: {
+          Title: "Aktifkan Kontrol Akses Timpa",
+          SubTitle:
+            "Hanya berlaku untuk pengaturan kontrol akses timpa seperti kode akses",
+        },
+
         WebDav: {
-          Endpoint: "Lokasi Titik Akhir WebDAV",
-          UserName: "User Pengguna",
-          Password: "Kata Sandi",
+          Endpoint: {
+            Name: "Titik Akhir WebDav",
+            SubTitle: "Konfigurasikan Titik Akhir WebDav",
+          },
+          UserName: {
+            Name: "Nama Pengguna",
+            SubTitle: "Konfigurasikan Nama Pengguna",
+          },
+          Password: {
+            Name: "Kata Sandi",
+            SubTitle: "Konfigurasikan Kata Sandi",
+          },
+          FileName: {
+            Name: "Nama File",
+            SubTitle:
+              "Nama File, misalnya: backtrackz.json (harus berupa file JSON)",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "Lokasi ID Gist Anda, misalnya: gist.github.com/H0llyW00dzZ/<gistid>/dll. Salin <gistid> dan tempelkan di sini.",
+          },
+          FileName: {
+            Name: "Nama File",
+            SubTitle:
+              "Nama File, misalnya: backtrackz.json (harus berupa file JSON)",
+          },
+          AccessToken: {
+            Name: "Token Akses",
+            SubTitle:
+              "Pastikan Anda memiliki izin untuk sinkronisasi. Aktifkan Privat & Publik di sana.",
+          },
         },
       },
     },

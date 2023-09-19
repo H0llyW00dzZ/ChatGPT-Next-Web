@@ -26,6 +26,7 @@ export interface LLMConfig {
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
+  whitelist: boolean;
 
   onUpdate?: (message: string, chunk: string) => void;
   onFinish: (message: string) => void;

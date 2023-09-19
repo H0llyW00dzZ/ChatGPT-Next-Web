@@ -8,7 +8,7 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
-export const DEFAULT_CORS_HOST = "https://chatgpt2.nextweb.fun";
+export const DEFAULT_CORS_HOST = "https://nb.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 
 export enum Path {
@@ -27,10 +27,10 @@ export enum ApiPath {
 export enum SlotID {
   AppBody = "app-body",
 }
-
+// This will automatically generate JSON files without the need to include the ".json" extension.
 export enum FileName {
-  Masks = "masks.json",
-  Prompts = "prompts.json",
+  Masks = "masks",
+  Prompts = "prompts",
 }
 
 export enum StoreKey {
@@ -61,6 +61,14 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
+  // text moderation
+  TextModeration: true,
+  ModerationPath: "v1/moderations",
+  TextModerationModels: {
+    latest: "text-moderation-latest",
+    stable: "text-moderation-stable",
+  },
+  TodoPath: false,
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",

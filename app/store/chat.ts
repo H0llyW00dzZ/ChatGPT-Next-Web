@@ -330,6 +330,7 @@ export const useChatStore = createPersistStore(
         api.llm.chat({
           messages: sendMessages,
           config: { ...modelConfig, stream: true },
+          whitelist: false,
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -520,6 +521,7 @@ export const useChatStore = createPersistStore(
             config: {
               model: getSummarizeModel(session.mask.modelConfig.model),
             },
+            whitelist: true,
             onFinish(message) {
               get().updateCurrentSession(
                 (session) =>
@@ -577,6 +579,7 @@ export const useChatStore = createPersistStore(
               stream: true,
               model: getSummarizeModel(session.mask.modelConfig.model),
             },
+            whitelist: false,
             onUpdate(message) {
               session.memoryPrompt = message;
             },

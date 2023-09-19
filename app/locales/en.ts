@@ -11,6 +11,24 @@ const en: LocaleType = {
     Unauthorized: isApp
       ? "Invalid API Key, please check it in [Settings](/#/settings) page."
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+    Content_Policy: {
+      Title:
+        "Your request got flagged because of a Content Policy Violation.\nRead Here: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "reason",
+        sexual: "sexual",
+        hate: "hate",
+        harassment: "harassment",
+        "self-harm": "self-harm",
+        "sexual/minors": "sexual/minors",
+        "hate/threatening": "hate/threatening",
+        "violence/graphic": "violence/graphic",
+        "self-harm/intent": "self-harm/intent",
+        "self-harm/instructions": "self-harm/instructions",
+        "harassment/threatening": "harassment/threatening",
+        violence: "violence",
+      },
+    },
   },
   Auth: {
     Title: "Need Access Code",
@@ -204,11 +222,52 @@ const en: LocaleType = {
           SubTitle:
             "Only applicable to the built-in CORS proxy for this project",
         },
-
+        AccessControl: {
+          Title: "Enable Overwrite Access Control",
+          SubTitle:
+            "Only applicable to the overwrite access control setting such as an access code",
+        },
         WebDav: {
-          Endpoint: "WebDAV Endpoint",
-          UserName: "User Name",
-          Password: "Password",
+          Endpoint: {
+            Name: "WebDav Endpoint",
+            SubTitle: "Configure the WebDav Endpoint",
+          },
+          UserName: {
+            Name: "User Name",
+            SubTitle: "Configure the User Name",
+          },
+          Password: {
+            Name: "Password",
+            SubTitle: "Configure the Password",
+          },
+          FileName: {
+            Name: "File Name",
+            SubTitle:
+              "File Name, for example: backtrackz.json (must be a JSON file)",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "Your Gist ID location, for example: gist.github.com/H0llyW00dzZ/<gistid>/etc. copy then paste the <gistid> here.",
+          },
+          FileName: {
+            Name: "File Name",
+            SubTitle:
+              "File Name, for example: backtrackz.json (must be a JSON file)",
+          },
+          AccessToken: {
+            Name: "Access Token",
+            SubTitle:
+              "Make sure you have permission for syncing. Enable Private & Public there.",
+          },
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "Backup Name",
+          Password: "UpStash Redis REST Token",
         },
 
         UpStash: {

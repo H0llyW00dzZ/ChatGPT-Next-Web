@@ -7,7 +7,7 @@ export type WebDavClient = ReturnType<typeof createWebDavClient>;
 
 export function createWebDavClient(store: SyncStore) {
   const folder = STORAGE_KEY;
-  const fileName = `${folder}/backup.json`;
+  const fileName = `${folder}/${store.webdav.filename}`;
   const config = store.webdav;
   const proxyUrl =
     store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
@@ -15,13 +15,13 @@ export function createWebDavClient(store: SyncStore) {
   return {
     async check() {
       try {
-        const res = await corsFetch(this.path(folder), {
-          method: "MKCOL",
+        const res = await corsFetch(this.path(fileName), {
+          method: "PROPFIND",
           headers: this.headers(),
           proxyUrl,
         });
         console.log("[WebDav] check", res.status, res.statusText);
-        return [201, 200, 404, 401].includes(res.status);
+        return [200, 207, 404].includes(res.status);
       } catch (e) {
         console.error("[WebDav] failed to check", e);
       }
@@ -36,12 +36,23 @@ export function createWebDavClient(store: SyncStore) {
         proxyUrl,
       });
 
-      console.log("[WebDav] get key = ", key, res.status, res.statusText);
+      console.log("[WebDav] get key =", key, res.status, res.statusText);
 
       return await res.text();
     },
 
     async set(key: string, value: string) {
+      const exists = await this.check();
+
+      if (!exists) {
+        await corsFetch(this.path(fileName), {
+          method: "PUT",
+          headers: this.headers(),
+          body: "",
+          proxyUrl,
+        });
+      }
+
       const res = await corsFetch(this.path(fileName), {
         method: "PUT",
         headers: this.headers(),
@@ -49,7 +60,7 @@ export function createWebDavClient(store: SyncStore) {
         proxyUrl,
       });
 
-      console.log("[WebDav] set key = ", key, res.status, res.statusText);
+      console.log("[WebDav] set key =", key, res.status, res.statusText);
     },
 
     headers() {

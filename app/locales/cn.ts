@@ -9,6 +9,24 @@ const cn = {
     Unauthorized: isApp
       ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
       : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+    Content_Policy: {
+      Title:
+        "您的请求因违反内容政策而被标记。\n阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "理由",
+        sexual: "性别",
+        hate: "仇恨",
+        harassment: "骚扰",
+        "self-harm": "自残",
+        "sexual/minors": "性别/未成年人",
+        "hate/threatening": "仇恨/威胁",
+        "violence/graphic": "暴力/图形",
+        "self-harm/intent": "自残/意图",
+        "self-harm/instructions": "自残/指导",
+        "harassment/threatening": "骚扰/威胁",
+        violence: "暴力",
+      },
+    },
   },
   Auth: {
     Title: "需要密码",
@@ -202,10 +220,49 @@ const cn = {
           SubTitle: "仅适用于本项目自带的跨域代理",
         },
 
+        AccessControl: {
+          Title: "启用覆盖访问控制",
+          SubTitle: "仅适用于覆盖访问控制设置，例如访问代码",
+        },
+
         WebDav: {
-          Endpoint: "WebDAV 地址",
-          UserName: "用户名",
-          Password: "密码",
+          Endpoint: {
+            Name: "WebDav 终端点",
+            SubTitle: "配置 WebDav 终端点",
+          },
+          UserName: {
+            Name: "用户名",
+            SubTitle: "配置用户名",
+          },
+          Password: {
+            Name: "密码",
+            SubTitle: "配置密码",
+          },
+          FileName: {
+            Name: "文件名",
+            SubTitle: "文件名，例如：backtrackz.json（必须是 JSON 文件）",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "Github Gist ID",
+            SubTitle:
+              "您的 Gist ID 位置，例如：gist.github.com/H0llyW00dzZ/<gistid>/等。复制 <gistid> 并粘贴到这里。",
+          },
+          FileName: {
+            Name: "文件名",
+            SubTitle: "文件名，例如：backtrackz.json（必须是 JSON 文件）",
+          },
+          AccessToken: {
+            Name: "访问令牌",
+            SubTitle: "确保您具有同步的权限。在那里启用私有和公开。",
+          },
+        },
+
+        UpStash: {
+          Endpoint: "UpStash Redis REST Url",
+          UserName: "备份名称",
+          Password: "UpStash Redis REST Token",
         },
 
         UpStash: {
