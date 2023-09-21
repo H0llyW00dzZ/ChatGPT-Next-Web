@@ -14,6 +14,7 @@ export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 export enum Path {
   Home = "/",
   Chat = "/chat",
+  PrivacyPage = "/privacy",
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
