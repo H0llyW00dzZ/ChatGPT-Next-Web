@@ -391,6 +391,10 @@ const cn = {
   FineTuned: {
     Sysmessage: "你是一个助手",
   },
+  PrivacyPage: {
+    Name: "隐私",
+    Confirm: "同意",
+  },
   Mask: {
     Name: "面具",
     Page: {

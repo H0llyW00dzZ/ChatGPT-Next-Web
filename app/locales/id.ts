@@ -374,6 +374,10 @@ const id: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Anda adalah asisten yang",
   },
+  PrivacyPage: {
+    Name: "Privasi",
+    Confirm: "Setuju",
+  },
   Mask: {
     Name: "Masks",
     Page: {

@@ -274,6 +274,10 @@ const bn: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "আপনি একটি সহকারী যা",
   },
+  PrivacyPage: {
+    Name: "গোপনীয়তা",
+    Confirm: "সম্মত",
+  },
   Mask: {
     Name: "মাস্ক",
     Page: {

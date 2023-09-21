@@ -191,6 +191,10 @@ const cs: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Jste asistent, který",
   },
+  PrivacyPage: {
+    Name: "Ochrana osobních údajů",
+    Confirm: "Souhlasím",
+  },
   Mask: {
     Name: "Maska",
     Page: {

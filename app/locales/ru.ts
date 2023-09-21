@@ -194,6 +194,10 @@ const ru: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Вы - ассистент, который",
   },
+  PrivacyPage: {
+    Name: "Конфиденциальность",
+    Confirm: "Принять",
+  },
   Mask: {
     Name: "Маска",
     Page: {

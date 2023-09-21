@@ -165,6 +165,10 @@ const no: PartialLocaleType = {
     Topic: "Emne",
     Time: "Tid",
   },
+  PrivacyPage: {
+    Name: "Personvern",
+    Confirm: "Godta",
+  },
 };
 
 export default no;

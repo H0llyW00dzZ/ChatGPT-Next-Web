@@ -189,6 +189,10 @@ const ko: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "당신은 어시스턴트입니다",
   },
+  PrivacyPage: {
+    Name: "プライバシー",
+    Confirm: "同意する",
+  },
   Mask: {
     Name: "마스크",
     Page: {

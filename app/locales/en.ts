@@ -399,6 +399,10 @@ const en: LocaleType = {
   FineTuned: {
     Sysmessage: "You are an assistant that",
   },
+  PrivacyPage: {
+    Name: "Privacy",
+    Confirm: "Agree",
+  },
   Mask: {
     Name: "Mask",
     Page: {

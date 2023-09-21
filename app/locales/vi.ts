@@ -189,6 +189,10 @@ const vi: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Bạn là một trợ lý",
   },
+  PrivacyPage: {
+    Name: "Quyền riêng tư",
+    Confirm: "Đồng ý",
+  },
   Mask: {
     Name: "Mẫu",
     Page: {

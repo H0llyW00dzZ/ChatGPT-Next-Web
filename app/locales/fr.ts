@@ -247,6 +247,10 @@ const fr: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Eres un asistente que",
   },
+  PrivacyPage: {
+    Name: "Confidentialité",
+    Confirm: "Accepter",
+  },
   Mask: {
     Name: "Masque",
     Page: {

@@ -236,6 +236,10 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
   FineTuned: {
     Sysmessage: "أنت مساعد ي",
   },
+  PrivacyPage: {
+    Name: "الخصوصية",
+    Confirm: "موافق",
+  },
   Mask: {
     Name: "الأقنعة",
     Page: {

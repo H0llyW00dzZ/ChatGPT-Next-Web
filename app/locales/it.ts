@@ -194,6 +194,10 @@ const it: PartialLocaleType = {
   FineTuned: {
     Sysmessage: "Sei un assistente che",
   },
+  PrivacyPage: {
+    Name: "Privacy",
+    Confirm: "Accetto",
+  },
   Mask: {
     Name: "Mask",
     Page: {

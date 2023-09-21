@@ -20,7 +20,8 @@ const jp: PartialLocaleType = {
       Stop: "停止",
       Retry: "リトライ",
       Pin: "ピン",
-      PinToastContent: "コンテキストプロンプトに1つのメッセージをピン留めしました",
+      PinToastContent:
+        "コンテキストプロンプトに1つのメッセージをピン留めしました",
       PinToastAction: "表示",
       Delete: "削除",
       Edit: "編集",
@@ -209,6 +210,10 @@ const jp: PartialLocaleType = {
   },
   Plugin: { Name: "プラグイン" },
   FineTuned: { Sysmessage: "あなたはアシスタントです" },
+  PrivacyPage: {
+    Name: "プライバシー",
+    Confirm: "同意する",
+  },
   Mask: {
     Name: "キャラクタープリセット",
     Page: {

@@ -181,6 +181,10 @@ const tw: PartialLocaleType = {
   },
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
+  PrivacyPage: {
+    Name: "隱私",
+    Confirm: "同意",
+  },
   Mask: {
     Name: "面具",
     Page: {
