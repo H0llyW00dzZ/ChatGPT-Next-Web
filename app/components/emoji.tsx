@@ -10,7 +10,16 @@ import BotIcon from "../icons/bot.svg";
 import BlackBotIcon from "../icons/black-bot.svg";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  return `https://cdn.staticfile.org/emoji-datasource-apple/14.0.0/img/${style}/64/${unified}.png`;
+  const isAppleDevice = /(iPhone|iPod|iPad)/i.test(navigator.userAgent);
+  const emojiDataSource =
+    (isAppleDevice && style === "apple") ||
+    (!isAppleDevice && style === "google")
+      ? "emoji-datasource-apple"
+      : "emoji-datasource-google";
+
+  const emojiStyle = style === "apple" && isAppleDevice ? "apple" : "google";
+
+  return `https://cdn.staticfile.org/${emojiDataSource}/14.0.0/img/${emojiStyle}/64/${unified}.png`;
 }
 
 export function debounce(func: Function, delay: number) {
