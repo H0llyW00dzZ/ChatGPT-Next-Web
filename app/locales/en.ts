@@ -469,7 +469,7 @@ const en: LocaleType = {
     Model: "Model",
     Messages: "Messages",
     Topic: "Topic",
-    Time: "Time",
+    Time: "Date & Time",
   },
 
   URLCommand: {
