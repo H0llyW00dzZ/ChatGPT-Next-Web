@@ -1154,6 +1154,8 @@ function _Chat() {
                       </div>
                       {isUser ? (
                         <Avatar avatar={config.avatar} />
+                      ) : isContext ? (
+                        <Avatar avatar="1f4ab" /> // Add this line for system messages
                       ) : (
                         <MaskAvatar mask={session.mask} />
                       )}
