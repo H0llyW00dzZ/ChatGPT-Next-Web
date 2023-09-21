@@ -16,6 +16,7 @@ export function AuthPage() {
 
   const goHome = () => navigate(Path.Home);
   const resetAccessCode = () => access.updateCode(""); // Reset access code to empty string
+  const goPrivacy = () => navigate(Path.PrivacyPage);
 
   useEffect(() => {
     if (getClientConfig()?.isApp) {
@@ -47,12 +48,15 @@ export function AuthPage() {
         <IconButton
           text={Locale.Auth.Confirm}
           type="primary"
-          onClick={goHome}
+          onClick={goPrivacy}
         />
-        <IconButton text={Locale.Auth.Later} onClick={() => {
-          resetAccessCode();
-          goHome();
-        }} />
+        <IconButton
+          text={Locale.Auth.Later}
+          onClick={() => {
+            resetAccessCode();
+            goHome();
+          }}
+        />
       </div>
     </div>
   );
