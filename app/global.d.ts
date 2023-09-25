@@ -12,6 +12,7 @@ declare module "*.svg";
 
 declare interface Window {
   __TAURI__?: {
+    [x: string]: any;
     writeText(text: string): Promise<void>;
   };
 }

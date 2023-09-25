@@ -31,15 +31,39 @@ export async function copyToClipboard(text: string) {
   }
 }
 //To ensure the expected functionality, the default file format must be JSON.
-export function downloadAs(text: object, filename: string) {
+export async function downloadAs(text: object, filename: string) {
   const json = JSON.stringify(text);
   const blob = new Blob([json], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${filename}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
+  const arrayBuffer = await blob.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+
+  try {
+    if (window.__TAURI__) {
+      const result = await window.__TAURI__.dialog.save({
+        defaultPath: `${filename}.json`,
+      });
+
+      if (result !== null) {
+        await window.__TAURI__.fs.writeBinaryFile(
+          result,
+          Array.from(uint8Array),
+        );
+        showToast(Locale.Download.Success);
+      } else {
+        showToast(Locale.Download.Failed);
+      }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${filename}.json`;
+      anchor.click();
+      URL.revokeObjectURL(url);
+      showToast(Locale.Download.Success);
+    }
+  } catch (error) {
+    showToast(Locale.Download.Failed);
+  }
 }
 
 export function readFromFile() {
