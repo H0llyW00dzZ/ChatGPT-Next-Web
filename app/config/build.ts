@@ -35,16 +35,16 @@ export const getBuildConfig = () => {
         .toString()
         .trim();
       const coAuthorMatch: RegExpMatchArray | null = coAuthorLine.match(
-        /Co-Authored-By:\s*(.*)/,
+        /Co-authored-by:\s*(.*)/,
       );
       const coAuthors: string[] = coAuthorMatch
         ? coAuthorMatch[1]
             .trim()
-            .split("<")
+            .split(">")
             .map((author) => author.trim())
         : [];
 
-      const coAuthored: boolean = coAuthors.length > 0; // if there are co-authors, set to true
+      const coAuthored: boolean = coAuthors.length > 0; // if coAuthorMatch is not null, set to true
 
       if (!commitMessage) {
         console.warn("[Build Config] No commit message available.");
@@ -53,7 +53,7 @@ export const getBuildConfig = () => {
       const [title, ...messages] = commitMessage.split("\n");
 
       const uniqueMessages = messages
-        .filter((message) => !message.startsWith("Co-Authored-By:"))
+        .filter((message) => !message.startsWith("Co-authored-by:"))
         .filter((message) => !message.startsWith("Signed-off-by:"))
         .map((message) => message.replace(/\r/g, ""))
         .filter((message) => message.trim() !== "");
@@ -67,10 +67,19 @@ export const getBuildConfig = () => {
             line.substring("Signed-off-by:".length).trim().split(" <")[0],
         );
 
+      const coAuthoredBy: string[] = commitMessage
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("Co-authored-by:"))
+        .map(
+          (line) =>
+            line.substring("Co-authored-by:".length).trim().split(" <")[0],
+        );
+
       const commitMessageObj = {
         summary: title || "No title",
         description: uniqueMessages.length > 0 ? uniqueMessages : undefined,
-        "Co-Authored-By": coAuthors.length > 0 ? coAuthors : undefined,
+        "Co-authored-by": coAuthoredBy.length > 0 ? coAuthoredBy : undefined,
         "Signed-off-by": signedOffBy.length > 0 ? signedOffBy : undefined,
       };
 
@@ -89,11 +98,11 @@ export const getBuildConfig = () => {
         commitMessage: {
           summary: "unknown",
           description: undefined,
-          "Co-Authored-By": undefined,
+          "Co-authored-by": undefined,
           "Signed-off-by": undefined,
         },
         Author: "unknown",
-        coAuthored: false,
+        coAuthored: undefined,
       };
     }
   })();
