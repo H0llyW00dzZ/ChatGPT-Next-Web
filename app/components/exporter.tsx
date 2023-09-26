@@ -516,15 +516,22 @@ export function ImagePreviewer(props: {
           </div>
         </div>
         {props.messages.map((m, i) => {
+          const isUserMessage = m.role === "user";
+          const isSystemMessage = m.role === "system";
+          const avatar =
+            isUserMessage && config.avatar
+              ? config.avatar
+              : isSystemMessage
+              ? "1f4ab"
+              : mask.avatar;
+          const messageClass = `${styles["message"]} ${
+            styles["message-" + m.role]
+          }`;
+
           return (
-            <div
-              className={styles["message"] + " " + styles["message-" + m.role]}
-              key={i}
-            >
+            <div className={messageClass} key={i}>
               <div className={styles["avatar"]}>
-                <ExportAvatar
-                  avatar={m.role === "user" ? config.avatar : mask.avatar}
-                />
+                <ExportAvatar avatar={avatar} />
               </div>
 
               <div className={styles["body"]}>
