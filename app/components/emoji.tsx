@@ -10,9 +10,10 @@ import BotIcon from "../icons/bot.svg";
 import BlackBotIcon from "../icons/black-bot.svg";
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  const isAppleDevice = /(iPhone|iPod|iPad|Macintosh)/i.test(
-    navigator.userAgent,
-  );
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isAppleDevice =
+    /(iphone|ipad|ipod|macintosh)/i.test(userAgent) ||
+    (userAgent.includes("mac") && "ontouchend" in document);
   const emojiDataSource =
     (isAppleDevice && style === "apple") ||
     (!isAppleDevice && style === "google")

@@ -88,7 +88,10 @@ export function readFromFile() {
 
 export function isIOS() {
   const userAgent = navigator.userAgent.toLowerCase();
-  return /iphone|ipad|ipod/.test(userAgent);
+  return (
+    /iphone|ipad|ipod|macintosh/.test(userAgent) ||
+    (userAgent.includes("mac") && "ontouchend" in document)
+  );
 }
 
 export function useWindowSize() {
