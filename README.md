@@ -191,6 +191,12 @@ If you do not want users to use GPT-4, set this value to 1.
 
 If you do not want users to query balance, set this value to 1.
 
+### MODEL_LIST (optional)
+If you want to reduce the number of options in the model list, you can set it to a custom list, such as "gpt3.5, gpt4". 
+This is particularly useful when deploying ChatGPT on Azure.
+
+> Default: Empty
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20

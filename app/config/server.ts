@@ -6,6 +6,7 @@ declare global {
       OPENAI_API_KEY?: string;
       CODE?: string;
       BASE_URL?: string;
+      MODEL_LIST?: string;
       PROXY_URL?: string;
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
