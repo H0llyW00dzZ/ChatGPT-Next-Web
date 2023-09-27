@@ -29,18 +29,31 @@ async function handle(
 
   if (req.method === "OPTIONS") {
     // Set CORS headers for preflight requests
-    return NextResponse.json(
-      { body: "OK" },
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": `${DEFAULT_CORS_HOST}`, // Replace * with the appropriate origin(s)
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Add other allowed methods if needed
-          "Access-Control-Allow-Headers": "*", // Replace * with the appropriate headers
-          "Access-Control-Max-Age": "86400", // Adjust the max age value if needed
+    const origin = req.headers.get("Origin");
+    if (origin && origin === DEFAULT_CORS_HOST) {
+      return NextResponse.json(
+        { body: "OK" },
+        {
+          status: 200,
+          headers: {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400",
+          },
         },
-      },
-    );
+      );
+    } else {
+      return NextResponse.json(
+        {
+          error: true,
+          msg: "Access Forbidden",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
   }
 
   const subpath = params.path.join("/");
@@ -57,6 +70,20 @@ async function handle(
       },
     );
   }
+
+  const origin = req.headers.get("Origin");
+  const referrer = req.headers.get("Referer");
+  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "Access Forbidden",
+      },
+      {
+        status: 403,
+      },
+    );
+  }  
 
   const authResult = auth(req);
   if (authResult.error) {
