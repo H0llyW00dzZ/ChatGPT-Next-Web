@@ -103,13 +103,11 @@ function _MarkDownContent(props: { content: string }) {
   const escapedContent = props.content.replace(
     /(`{3}[\s\S]*?`{3}|`[^`]*`)|(?<!\$)(\$(?!\$))/g,
     (match, codeBlock) => {
-      // Exclude code,math + formula blocks from replacement
+      // Exclude code blocks & math block from replacement
       if (codeBlock) {
         return match; // Return the code block as it is
       } else {
-        return match.replace(/\$(.*?)\$/g, (_, formula) => {
-          return `<span className="math-formula">\\(${formula}\\)</span>`; // Render the formula using MathJax
-        });
+        return "&#36;"; // Escape dollar signs outside of code blocks
       }
     },
   );
@@ -135,17 +133,6 @@ function _MarkDownContent(props: { content: string }) {
           const isInternal = /^\/#/i.test(href);
           const target = isInternal ? "_self" : aProps.target ?? "_blank";
           return <a {...aProps} target={target} />;
-        },
-        span: (spanProps) => {
-          if (spanProps.className === "math-formula") {
-            return (
-              <span
-                {...spanProps}
-                dangerouslySetInnerHTML={{ __html: spanProps.children }}
-              />
-            );
-          }
-          return <span {...spanProps} />;
         },
       }}
     >
