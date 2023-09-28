@@ -250,6 +250,11 @@ const id: PartialLocaleType = {
               "Pastikan Anda memiliki izin untuk sinkronisasi. Aktifkan Privat & Publik di sana.",
           },
         },
+        Redist: {
+          Endpoint: "URL REST Redis",
+          UserName: "Nama Cadangan",
+          Password: "Kata Sandi Redis",
+        },
       },
     },
     SendKey: "Kirim",
