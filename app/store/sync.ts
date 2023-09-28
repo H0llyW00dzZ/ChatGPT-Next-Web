@@ -164,13 +164,23 @@ export const useSyncStore = createPersistStore(
           e,
           "Will attempt fixing it",
         );
+
+        if (403) {
+          console.error("[Sync] Sync failed due to '403 Forbidden' error");
+          set({ syncing: false });
+          return false;
+        }
       }
 
       if (overwriteAccessControl) {
-        const accessControl = localState["access-control"];
-        accessControl.accessCode = "";
-        accessControl.hideUserApiKey = false;
-        accessControl.disableGPT4 = false;
+        const accessControl = localState['access-control'];
+        accessControl.token
+        accessControl.accessCode
+        accessControl.needCode
+        accessControl.hideUserApiKey
+        accessControl.hideBalanceQuery
+        accessControl.disableGPT4
+        accessControl.openaiUrl
       }
 
       if (provider === ProviderType.WebDAV) {
