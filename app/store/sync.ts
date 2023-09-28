@@ -59,10 +59,11 @@ const DEFAULT_SYNC_STATE = {
 
   redist: {
     endpoint: "",
-    port: "",
+    port: 0,
     username: "",
     key: STORAGE_KEY,
     password: "",
+    filename: "",
   },
 
   lastSyncTime: 0,
