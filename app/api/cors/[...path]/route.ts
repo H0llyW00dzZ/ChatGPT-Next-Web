@@ -39,6 +39,20 @@ async function handle(
     duplex: "half",
   };
 
+  const origin = req.headers.get("Origin");
+  const referrer = req.headers.get("Referer");
+  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+    return NextResponse.json(
+      {
+        error: true,
+        msg: "Access Forbidden",
+      },
+      {
+        status: 403,
+      },
+    );
+  }
+
   const fetchResult = await fetch(targetUrl, fetchOptions);
 
   console.log("[Cloud Sync]", targetUrl, {
