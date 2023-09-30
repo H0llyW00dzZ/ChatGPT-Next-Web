@@ -15,7 +15,7 @@ export function AuthPage() {
   const access = useAccessStore();
 
   const goHome = () => navigate(Path.Home);
-  const resetAccessCode = () => access.updateCode(""); // Reset access code to empty string
+  const resetAccessCode = () => { access.updateCode(""); access.updateToken(""); }; // Reset access code to empty string
   const goPrivacy = () => navigate(Path.PrivacyPage);
 
   useEffect(() => {
@@ -41,6 +41,16 @@ export function AuthPage() {
         value={access.accessCode}
         onChange={(e) => {
           access.updateCode(e.currentTarget.value);
+        }}
+      />
+      <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
+      <input
+        className={styles["auth-input"]}
+        type="password"
+        placeholder={Locale.Settings.Token.Placeholder}
+        value={access.token}
+        onChange={(e) => {
+          access.updateToken(e.currentTarget.value);
         }}
       />
 
