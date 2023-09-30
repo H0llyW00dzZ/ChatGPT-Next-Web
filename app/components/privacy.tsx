@@ -5,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Path } from "../constant";
 import Locale, {
-  AllLangs,
-  ALL_LANG_OPTIONS,
-  changeLang,
   getLang,
 } from "../locales";
 
