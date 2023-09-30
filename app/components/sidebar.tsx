@@ -11,6 +11,7 @@ import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import PrivacyIcon from "../icons/locked.svg";
+import ChangelogIcon from "../icons/pin.svg";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -186,6 +187,15 @@ export function SideBar(props: { className?: string }) {
           onClick={() =>
             navigate(Path.PrivacyPage, { state: { fromHome: true } })
           }
+          shadow
+        />
+      </div>
+      <div className={styles["sidebar-header-bar"]}>
+      <IconButton
+          icon={<ChangelogIcon />}
+          text={shouldNarrow ? undefined : Locale.Changelog.Name}
+          className={styles["sidebar-bar-button"]}
+          onClick={() => navigate(Path.ChangeLog, { state: { fromHome: true } })}
           shadow
         />
       </div>
