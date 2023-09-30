@@ -403,6 +403,9 @@ const en: LocaleType = {
   FineTuned: {
     Sysmessage: "You are an assistant that",
   },
+  Changelog: {
+    Name: "Change Log",
+  },
   PrivacyPage: {
     Name: "Privacy",
     Confirm: "Agree",

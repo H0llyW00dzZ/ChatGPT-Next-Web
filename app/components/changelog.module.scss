@@ -1,0 +1,65 @@
+.changelog-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+  
+    .changelog-logo {
+      width: 100px; /* Set the desired width */
+      height: 100px; /* Set the desired height */
+      margin-bottom: 20px; /* Add margin for spacing */
+    }
+  
+    .changelog-title {
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 3;
+    }
+  
+    .changelog-tips {
+      box-sizing: border-box;
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 10px;
+      font-size: 14px;
+      user-select: text;
+      word-break: break-word;
+      border: var(--border-in-light);
+      position: relative;
+      transition: all ease 0.3s;
+    }
+  
+    .changelog-input {
+      margin: 3vh 0;
+    }
+  
+    .changelog-content {
+      max-height: 78%; /* Set the desired max height */
+      overflow: auto; /* Enable scrolling */
+      width: 95%; /* Set the desired width */
+      margin-top: 25px; /* Add margin for spacing */
+      }      
+  
+    .changelog-actions {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 15px; /* Add margin for spacing */
+  
+      button:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  
+    .scroll-title {
+      font-size: 18px; /* Set the desired font size */
+      font-weight: bold;
+      line-height: 2;
+      color: #888; /* Set the desired color */
+    }
+  }
+  
