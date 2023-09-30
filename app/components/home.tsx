@@ -59,6 +59,10 @@ const PrivacyPage = dynamic(async () => (await import("./privacy")).PrivacyPage,
   loading: () => <Loading noLogo />,
 });
 
+const ChangeLog = dynamic(async () => (await import("./changelog")).ChangeLog, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -163,6 +167,7 @@ function Screen() {
               <Route path={Path.Masks} element={<MaskPage />} />
               <Route path={Path.Chat} element={<Chat />} />
               <Route path={Path.PrivacyPage} element={<PrivacyPage />} />
+              <Route path={Path.ChangeLog} element={<ChangeLog />} />
               <Route path={Path.Settings} element={<Settings />} />
             </Routes>
           </div>
