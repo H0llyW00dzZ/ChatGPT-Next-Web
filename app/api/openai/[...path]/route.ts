@@ -6,6 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
 import { DEFAULT_CORS_HOST } from "@/app/constant";
+import { getClientConfig } from "@/app/config/client";
+
+// alternative fix for tauri
+const isApp = !!getClientConfig()?.isApp;
 
 const ALLOWED_PATH = new Set(Object.values(OpenaiPath));
 
@@ -73,7 +77,7 @@ async function handle(
 
   const origin = req.headers.get("Origin");
   const referrer = req.headers.get("Referer");
-  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+  if (!isApp && (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST)))) {
     return NextResponse.json(
       {
         error: true,

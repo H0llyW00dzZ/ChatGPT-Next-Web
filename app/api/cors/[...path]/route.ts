@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_CORS_HOST } from "@/app/constant";
+import { getClientConfig } from "@/app/config/client";
+
+// Alternative fix for Tauri
+const isApp = !!getClientConfig()?.isApp;
 
 async function handle(
   req: NextRequest,
@@ -41,7 +45,7 @@ async function handle(
 
   const origin = req.headers.get("Origin");
   const referrer = req.headers.get("Referer");
-  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+  if (!isApp && (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST)))) {
     return NextResponse.json(
       {
         error: true,
