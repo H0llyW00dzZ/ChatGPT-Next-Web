@@ -24,11 +24,21 @@ export function ChangeLog(props: { onClose?: () => void }) {
     const fetchData = async () => {
       const commitInfo = getClientConfig();
 
-      let table = `## 🚀 What's Changed ? ${commitInfo?.commitDate ? new Date(parseInt(commitInfo.commitDate)).toLocaleString() : 'Unknown Date'} 🗓️\n`;
+      let table = `## 🚀 What's Changed ? ${
+        commitInfo?.commitDate
+          ? new Date(parseInt(commitInfo.commitDate)).toLocaleString()
+          : "Unknown Date"
+      } 🗓️\n`;
 
       if (commitInfo?.commitMessage.description) {
-        const changes = commitInfo?.commitMessage.description.map((change: string) => `\n\n\n   ${change}\n\n`).join("\n\n\n");
-        table += `\n\n\n  ${commitInfo?.commitMessage.summary}\n\n\n${changes}\n\n\n`;
+        let changes: string[] = commitInfo.commitMessage.description;
+        if (getClientConfig()?.isApp && changes.length > 10) {
+          changes = changes.slice(0, 10); // Limit to 10 messages for isApp
+        }
+        const changesFormatted = changes
+          .map((change: string) => `\n\n\n   ${change}\n\n`)
+          .join("\n\n\n");
+        table += `\n\n\n  ${commitInfo?.commitMessage.summary}\n\n\n${changesFormatted}\n\n\n`;
       } else {
         table += `###${commitInfo?.commitMessage.summary}###\nNo changes\n\n`;
       }
