@@ -20,7 +20,41 @@ export function AuthPage() {
 
   useEffect(() => {
     if (getClientConfig()?.isApp) {
-      navigate(Path.Settings);
+      <div className={styles["auth-page"]}>
+        <div className={`no-dark ${styles["auth-logo"]}`}>
+          <BotIcon />
+        </div>
+
+        <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
+        <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
+        <>
+          <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
+          <input
+            className={styles["auth-input"]}
+            type="password"
+            placeholder={Locale.Settings.Token.Placeholder}
+            value={access.token}
+            onChange={(e) => {
+              access.updateToken(e.currentTarget.value);
+            }}
+          />
+        </>
+
+        <div className={styles["auth-actions"]}>
+          <IconButton
+            text={Locale.Auth.Confirm}
+            type="primary"
+            onClick={goPrivacy}
+          />
+          <IconButton
+            text={Locale.Auth.Later}
+            onClick={() => {
+              resetAccessCode();
+              goHome();
+            }}
+          />
+        </div>
+      </div>
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
