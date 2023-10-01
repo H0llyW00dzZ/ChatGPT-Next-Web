@@ -438,7 +438,6 @@ export function ImagePreviewer(props: {
     const dom = previewRef.current;
     if (!dom) return;
   
-    const isMobile = useMobileScreen();
     const isApp = getClientConfig()?.isApp;
   
     try {
