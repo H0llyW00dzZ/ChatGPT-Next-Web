@@ -448,6 +448,16 @@ export function ImagePreviewer(props: {
         if (isApp && window.__TAURI__) {
           const result = await window.__TAURI__.dialog.save({
             defaultPath: `${props.topic}.png`,
+            filters: [
+              {
+                name: "PNG Files",
+                extensions: ["png"],
+              },
+              {
+                name: "All Files",
+                extensions: ["*"],
+              },
+            ],
           });
   
           if (result !== null) {
@@ -598,6 +608,16 @@ export function MarkdownPreviewer(props: {
       try {
         const result = await window.__TAURI__.dialog.save({
           defaultPath: `${props.topic}.md`,
+          filters: [
+            {
+              name: "MD Files",
+              extensions: ["md"],
+            },
+            {
+              name: "All Files",
+              extensions: ["*"],
+            },
+          ],
         });
   
         if (result !== null) {

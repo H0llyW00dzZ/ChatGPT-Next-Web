@@ -45,6 +45,16 @@ export async function downloadAs(text: object, filename: string) {
     if (window.__TAURI__) {
       const result = await window.__TAURI__.dialog.save({
         defaultPath: `${filename}.json`,
+        filters: [
+          {
+            name: "JSON Files",
+            extensions: ["json"],
+          },
+          {
+            name: "All Files",
+            extensions: ["*"],
+          },
+        ],
       });
 
       if (result !== null) {
