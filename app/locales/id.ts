@@ -305,7 +305,9 @@ const id: PartialLocaleType = {
     Usage: {
       Title: "Saldo Akun",
       SubTitle(used: any, total: any) {
-        return `Digunakan bulan ini: ${used}, total langganan: ${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "tidak diketahui";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "tidak diketahui";
+        return `Digunakan bulan ini ${used}, Batas maksimum ${hardLimitusd}, Batas penggunaan yang disetujui ${hardLimit}`;
       },
       IsChecking: "Memeriksa...",
       Check: "Periksa",

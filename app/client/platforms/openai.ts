@@ -314,12 +314,12 @@ export class ChatGPTApi implements LLMApi {
     const [used, subs] = await Promise.all([
       fetch(
         this.path(
-          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
+          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`
         ),
         {
           method: "GET",
           headers: getHeaders(),
-        },
+        }
       ),
       fetch(this.path(OpenaiPath.SubsPath), {
         method: "GET",
@@ -345,6 +345,7 @@ export class ChatGPTApi implements LLMApi {
 
     const total = (await subs.json()) as {
       hard_limit_usd?: number;
+      system_hard_limit_usd?: number;
     };
 
     if (response.error && response.error.type) {
@@ -358,11 +359,18 @@ export class ChatGPTApi implements LLMApi {
     if (total.hard_limit_usd) {
       total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
     }
-
+  
+    if (total.system_hard_limit_usd) {
+      total.system_hard_limit_usd = Math.round(total.system_hard_limit_usd * 100) / 100;
+    }
+  
     return {
       used: response.total_usage,
-      total: total.hard_limit_usd,
-    } as LLMUsage;
+      total: {
+        hard_limit_usd: total.hard_limit_usd,
+        system_hard_limit_usd: total.system_hard_limit_usd,
+      },
+    } as unknown as LLMUsage;    
   }
 
   async models(): Promise<LLMModel[]> {

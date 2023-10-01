@@ -155,7 +155,9 @@ const jp: PartialLocaleType = {
     Usage: {
       Title: "残高照会",
       SubTitle(used: any, total: any) {
-        return `今月は $${used} を使用しました。総額は $${total} です。`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "不明";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "不明";
+        return `今月の使用量 ${used}、ハードリミット ${hardLimitusd}、承認済み使用制限 ${hardLimit}`;
       },
       IsChecking: "確認中...",
       Check: "再確認",

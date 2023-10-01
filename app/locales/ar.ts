@@ -175,7 +175,9 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
     Usage: {
       Title: "رصيد الحساب",
       SubTitle(used: any, total: any) {
-        return `تم استخدام $${used} من هذا الشهر، الاشتراك ${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "غير معروف";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "غير معروف";
+        return `تم استخدامها هذا الشهر ${used}، الحد الأقصى الصعب ${hardLimitusd}، الحد المعتمد للاستخدام ${hardLimit}`;
       },
       IsChecking: "جارٍ التحقق...",
       Check: "التحقق",

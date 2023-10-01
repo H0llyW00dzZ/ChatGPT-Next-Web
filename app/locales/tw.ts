@@ -128,7 +128,9 @@ const tw: PartialLocaleType = {
     Usage: {
       Title: "帳戶餘額",
       SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，訂閱總額 $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "未知";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "未知";
+        return `本月已使用 ${used}，硬限制 ${hardLimitusd}，核准使用限制 ${hardLimit}`;
       },
       IsChecking: "正在檢查…",
       Check: "重新檢查",

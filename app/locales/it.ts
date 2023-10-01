@@ -133,7 +133,9 @@ const it: PartialLocaleType = {
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
-        return `Attualmente usato in questo mese $${used}, soglia massima $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "sconosciuto";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "sconosciuto";
+        return `Utilizzato questo mese ${used}, Limite massimo ${hardLimitusd}, Limite di utilizzo approvato ${hardLimit}`;
       },
       IsChecking: "Controllando...",
       Check: "Controlla ancora",

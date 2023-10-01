@@ -207,7 +207,9 @@ const bn: PartialLocaleType = {
     Usage: {
       Title: "একাউন্ট ব্যালেন্স",
       SubTitle(used: any, total: any) {
-        return `এই মাসে ব্যবহৃত $${used}, সাবস্ক্রিপশন $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "অজানা";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "অজানা";
+        return `মাসে ব্যবহৃত ${used}, হার্ড লিমিট ${hardLimitusd}, অনুমোদিত ব্যবহার সীমা ${hardLimit}`;
       },
       IsChecking: "চেক করা হচ্ছে...",
       Check: "চেক",

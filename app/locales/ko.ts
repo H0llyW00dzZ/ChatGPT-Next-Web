@@ -132,7 +132,9 @@ const ko: PartialLocaleType = {
     Usage: {
       Title: "계정 잔액",
       SubTitle(used: any, total: any) {
-        return `이번 달 사용액 ${used}, 구독액 ${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "알 수 없음";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "알 수 없음";
+        return `이번 달 사용량 ${used}, 하드 제한 ${hardLimitusd}, 승인된 사용 제한 ${hardLimit}`;
       },
       IsChecking: "확인 중...",
       Check: "확인",

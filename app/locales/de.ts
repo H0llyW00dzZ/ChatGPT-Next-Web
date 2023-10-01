@@ -133,7 +133,9 @@ const de: PartialLocaleType = {
     Usage: {
       Title: "Kontostand",
       SubTitle(used: any, total: any) {
-        return `Diesen Monat ausgegeben $${used}, Abonnement $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "unbekannt";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "unbekannt";
+        return `Diesen Monat verwendet ${used}, Hartes Limit ${hardLimitusd}, Genehmigtes Nutzungslimit ${hardLimit}`;
       },
       IsChecking: "Wird überprüft...",
       Check: "Erneut prüfen",

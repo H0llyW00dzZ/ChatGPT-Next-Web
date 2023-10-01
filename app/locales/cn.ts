@@ -322,7 +322,9 @@ const cn = {
     Usage: {
       Title: "余额查询",
       SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "未知";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "未知";
+        return `本月已使用 ${used}，硬限制 ${hardLimitusd}，批准使用限制 ${hardLimit}`;
       },
       IsChecking: "正在检查…",
       Check: "重新检查",

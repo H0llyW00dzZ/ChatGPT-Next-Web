@@ -115,7 +115,9 @@ const no: PartialLocaleType = {
     Usage: {
       Title: "Saldo for konto",
       SubTitle(used: any, total: any) {
-        return `Brukt denne måneden $${used}, abonnement $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "ukjent";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "ukjent";
+        return `Brukt denne månaden ${used}, Hard grense ${hardLimitusd}, Godkjent bruksbegrensning ${hardLimit}`;
       },
       IsChecking: "Sjekker ...",
       Check: "Sjekk",

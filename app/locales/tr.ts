@@ -132,7 +132,9 @@ const tr: PartialLocaleType = {
     Usage: {
       Title: "Hesap Bakiyesi",
       SubTitle(used: any, total: any) {
-        return `Bu ay kullanılan $${used}, abonelik $${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? total.hard_limit_usd : "bilinmiyor";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? total.system_hard_limit_usd : "bilinmiyor";
+        return `Bu ay kullanılan ${used}, Sert limit ${hardLimitusd}, Onaylı kullanım limiti ${hardLimit}`;
       },
       IsChecking: "Kontrol ediliyor...",
       Check: "Tekrar Kontrol Et",
