@@ -9,23 +9,23 @@ export const getBuildConfig = () => {
     try {
       const childProcess = require("child_process");
       const commitDate: string = childProcess
-        .execSync('git log -5 --format="%at000" --date=unix')
+        .execSync('git log -1 --format="%at000" --date=unix')
         .toString()
         .trim();
       const commitHash: string = childProcess
-        .execSync('git log --pretty=format:"%H" -n 5')
+        .execSync('git log --pretty=format:"%H" -n 10')
         .toString()
         .trim();
       const commitMessage: string = childProcess
-        .execSync('git log --pretty=format:"%B" -n 5')
+        .execSync('git log --pretty=format:"%B" -n 10')
         .toString()
         .trim();
       const Author: string = childProcess
-        .execSync('git log --pretty=format:"%an" -n 5')
+        .execSync('git log --pretty=format:"%an" -n 1')
         .toString()
         .trim();
       const coAuthorLine: string = childProcess
-        .execSync('git log --format="%h %(trailers:key=Co-authored-by)" -n 5')
+        .execSync('git log --format="%h %(trailers:key=Co-authored-by)" -n 10')
         .toString()
         .trim();
       const coAuthorMatch: RegExpMatchArray | null = coAuthorLine.match(
