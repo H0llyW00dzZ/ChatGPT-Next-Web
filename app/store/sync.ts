@@ -1,3 +1,4 @@
+import { getClientConfig } from "../config/client";
 import { Updater } from "../typing";
 import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
 import { createPersistStore } from "../utils/store";
@@ -63,6 +64,8 @@ const DEFAULT_SYNC_STATE = {
   syncing: false,
   lockclient: false,
 };
+// alternative fix for tauri
+const isApp = !!getClientConfig()?.isApp;
 
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
@@ -82,7 +85,7 @@ export const useSyncStore = createPersistStore(
 
     export() {
       const state = getLocalAppState();
-      const fileName = `Backup-${new Date().toLocaleString()}`;
+      const fileName = `Backup-${new Date().toLocaleString()}` + (isApp ? ".json" : "");
       downloadAs(state, fileName);
     },
 

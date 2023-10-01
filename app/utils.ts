@@ -1,33 +1,41 @@
+import { getClientConfig } from "./config/client";
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
+
+declare global {
+  interface Window {
+    __TAURI__?: {
+      invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
+      dialog: {
+        save(options?: Record<string, unknown>): Promise<string | null>;
+      };
+      fs: {
+        writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
+      };
+    };
+  }
+}
 
 export function trimTopic(topic: string) {
   return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
 
+const isApp = !!getClientConfig()?.isApp;
+
 export async function copyToClipboard(text: string) {
   try {
-    if (window.__TAURI__) {
-      window.__TAURI__.writeText(text);
-    } else {
+    if (isApp && window.__TAURI__) {
+      await window.__TAURI__.invoke("copyText", { text });
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
       await navigator.clipboard.writeText(text);
+    } else {
+      throw new Error("Clipboard API not supported");
     }
 
     showToast(Locale.Copy.Success);
   } catch (error) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-      document.execCommand("copy");
-      showToast(Locale.Copy.Success);
-    } catch (error) {
-      showToast(Locale.Copy.Failed);
-    }
-    document.body.removeChild(textArea);
+    showToast(Locale.Copy.Failed);
   }
 }
 //To ensure the expected functionality, the default file format must be JSON.
@@ -44,10 +52,7 @@ export async function downloadAs(text: object, filename: string) {
       });
 
       if (result !== null) {
-        await window.__TAURI__.fs.writeBinaryFile(
-          result,
-          Array.from(uint8Array),
-        );
+        await window.__TAURI__.fs.writeBinaryFile(result, Uint8Array.from(uint8Array));
         showToast(Locale.Download.Success);
       } else {
         showToast(Locale.Download.Failed);

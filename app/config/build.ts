@@ -9,11 +9,11 @@ export const getBuildConfig = () => {
     try {
       const childProcess = require("child_process");
       const commitDate: string = childProcess
-        .execSync('git log -1 --format="%at000" --date=unix')
+        .execSync('git log -5 --format="%at000" --date=unix')
         .toString()
         .trim();
       const commitHash: string = childProcess
-        .execSync('git log --pretty=format:"%H" -n 1')
+        .execSync('git log --pretty=format:"%H" -n 5')
         .toString()
         .trim();
       const commitMessage: string = childProcess
@@ -21,7 +21,7 @@ export const getBuildConfig = () => {
         .toString()
         .trim();
       const Author: string = childProcess
-        .execSync('git log --pretty=format:"%an" -n 1')
+        .execSync('git log --pretty=format:"%an" -n 5')
         .toString()
         .trim();
       const coAuthorLine: string = childProcess
