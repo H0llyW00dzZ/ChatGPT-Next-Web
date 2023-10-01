@@ -3,20 +3,6 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 
-declare global {
-  interface Window {
-    __TAURI__?: {
-      invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
-      dialog: {
-        save(options?: Record<string, unknown>): Promise<string | null>;
-      };
-      fs: {
-        writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
-      };
-    };
-  }
-}
-
 export function trimTopic(topic: string) {
   return topic.replace(/[，。！？”“"、,.!?]*$/, "");
 }
@@ -24,18 +10,28 @@ export function trimTopic(topic: string) {
 const isApp = !!getClientConfig()?.isApp;
 
 export async function copyToClipboard(text: string) {
+
   try {
     if (isApp && window.__TAURI__) {
-      await window.__TAURI__.invoke("copyText", { text });
-    } else if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text);
+      window.__TAURI__.writeText(text);
     } else {
-      throw new Error("Clipboard API not supported");
+      await navigator.clipboard.writeText(text);
     }
 
     showToast(Locale.Copy.Success);
   } catch (error) {
-    showToast(Locale.Copy.Failed);
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      showToast(Locale.Copy.Success);
+    } catch (error) {
+      showToast(Locale.Copy.Failed);
+    }
+    document.body.removeChild(textArea);
   }
 }
 //To ensure the expected functionality, the default file format must be JSON.

@@ -10,19 +10,15 @@ declare module "*.scss" {
 
 declare module "*.svg";
 
-declare global {
-  interface TauriAPI {
+declare interface Window {
+  __TAURI__?: {
     writeText(text: string): Promise<void>;
-    invoke(text: string, command: string, payload?: Record<string, unknown>): Promise<any>;
+    invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
     dialog: {
       save(options?: Record<string, unknown>): Promise<string | null>;
     };
     fs: {
       writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
     };
-  }
-
-  interface Window {
-    __TAURI__?: TauriAPI;
-  }
+  };
 }
