@@ -85,8 +85,12 @@ export const useSyncStore = createPersistStore(
 
     export() {
       const state = getLocalAppState();
-      const fileName = `Backup-${new Date().toLocaleString()}` + (isApp ? ".json" : "");
-      downloadAs(state, fileName);
+      const datePart = isApp
+        ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
+        : new Date().toLocaleString();
+
+      const fileName = `Backup-${datePart}`;
+      downloadAs((state), fileName);
     },
 
     async import() {

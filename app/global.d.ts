@@ -13,7 +13,7 @@ declare module "*.svg";
 declare global {
   interface TauriAPI {
     writeText(text: string): Promise<void>;
-    invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
+    invoke(text: string, command: string, payload?: Record<string, unknown>): Promise<any>;
     dialog: {
       save(options?: Record<string, unknown>): Promise<string | null>;
     };
