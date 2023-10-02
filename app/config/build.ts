@@ -12,10 +12,11 @@ export const getBuildConfig = () => {
         .execSync('git log -1 --format="%at000" --date=unix')
         .toString()
         .trim();
-      const commitHash: string = childProcess
+      const commitHash: string[] = childProcess
         .execSync('git log --pretty=format:"%H" -n 10')
         .toString()
-        .trim();
+        .trim()
+        .split("\n");
       const commitMessage: string = childProcess
         .execSync('git log --pretty=format:"%B" -n 10')
         .toString()
@@ -78,7 +79,7 @@ export const getBuildConfig = () => {
       console.error("[Build Config] No git or not from git repo.");
       return {
         commitDate: "unknown",
-        commitHash: "unknown",
+        commitHash: [],
         commitMessage: {
           summary: "unknown",
           description: undefined,

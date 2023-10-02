@@ -4,6 +4,7 @@ import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 
 const ONE_MINUTE = 60 * 1000;
+const isApp = !!getClientConfig()?.isApp;
 
 function formatVersionDate(t: string) {
   const d = new Date(+t);
@@ -80,6 +81,14 @@ export const useUpdateStore = createPersistStore(
         set(() => ({
           remoteVersion: remoteId,
         }));
+        if (window.__TAURI__ && isApp) {
+          // Show a notification using Tauri
+          await window.__TAURI__.invoke("notification", {
+            title: "New Version Available",
+            body: `A new version (${remoteId}) is available. Click here to update.`,
+            sound: 'default'
+          });
+        }
         console.log("[Got Upstream] ", remoteId);
       } catch (error) {
         console.error("[Fetch Upstream Commit Id]", error);
