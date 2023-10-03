@@ -24,18 +24,24 @@ export function ChangeLog(props: { onClose?: () => void }) {
     const fetchData = async () => {
       const commitInfo = getClientConfig();
 
-      let table = `## 🚀 What's Changed ? ${
-        commitInfo?.commitDate
+      let table = `## 🚀 What's Changed ? ${commitInfo?.commitDate
           ? new Date(parseInt(commitInfo.commitDate)).toLocaleString()
           : "Unknown Date"
       } 🗓️\n`;
 
       if (commitInfo?.commitMessage.description) {
-        let changes: string[] = commitInfo.commitMessage.description;
+        const author = commitInfo.Author || "Unknown Author";
+        const coAuthored = commitInfo.commitMessage["Co-authored-by"] || [];
+        const changes = commitInfo.commitMessage.description.filter(
+          (change: string) => !change.startsWith("...")
+        );
         const changesFormatted = changes
           .map((change: string) => `\n\n\n   ${change}\n\n`)
           .join("\n\n\n");
-        table += `\n\n\n  ${commitInfo?.commitMessage.summary}\n\n\n${changesFormatted}\n\n\n`;
+        const authorSection = coAuthored.length > 0
+          ? `[${author}](https://github.com/${author}) (Co Authored by [${coAuthored.join(", ")}](https://github.com/${coAuthored.join(", ")}))`
+          : `[${author}](https://github.com/${author})`;
+        table += `\n\n\n  ![${author}](https://github.com/github.png?size=25)![${author}](https://github.com/${author}.png?size=25) ${authorSection} :\n\n${commitInfo?.commitMessage.summary}\n\n\n${changesFormatted}\n\n\n`;
       } else {
         table += `###${commitInfo?.commitMessage.summary}###\nNo changes\n\n`;
       }
@@ -62,7 +68,7 @@ export function ChangeLog(props: { onClose?: () => void }) {
         </div>
       </div>
       <div className={styles["changelog-actions"]}>
-        <div className="changelog-action-button">
+        <div className={styles["changelog-actions-button"]}>
           <IconButton
             text={Locale.UI.Close}
             icon={<ConfirmIcon />}
