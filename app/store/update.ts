@@ -2,6 +2,7 @@ import { FETCH_COMMIT_URL, FETCH_TAG_URL, StoreKey } from "../constant";
 import { api } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
+import ChatGptIcon from "../icons/chatgpt.png";
 
 const ONE_MINUTE = 60 * 1000;
 const isApp = !!getClientConfig()?.isApp;
@@ -81,12 +82,31 @@ export const useUpdateStore = createPersistStore(
         set(() => ({
           remoteVersion: remoteId,
         }));
-        if (window.__TAURI__ && isApp) {
-          // Show a notification using Tauri
-          await window.__TAURI__.invoke("notification", {
-            title: "New Version Available",
-            body: `A new version (${remoteId}) is available. Click here to update.`,
-            sound: 'default'
+        if (window.__TAURI__?.notification && isApp) {
+          // Check if notification permission is granted
+          await window.__TAURI__?.notification.isPermissionGranted().then((granted) => {
+            if (!granted) {
+              // Send a notification without waiting for permission (because we don't neeed a permisison once client is already click "check")
+              window.__TAURI__?.notification.sendNotification({
+                title: "ChatGPT Next Web",
+                body: `A new version (${remoteId}) is available.`,
+                icon: `${ChatGptIcon.src}`,
+                sound: "Default"
+              });
+            } else {
+              // Request permission to show notifications
+              window.__TAURI__?.notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                  // Show a notification using Tauri
+                  window.__TAURI__?.notification.sendNotification({
+                    title: "ChatGPT Next Web",
+                    body: `A new version (${remoteId}) is available.`,
+                    icon: `${ChatGptIcon.src}`,
+                    sound: "Default"
+                  });
+                }
+              });
+            }
           });
         }
         console.log("[Got Upstream] ", remoteId);
