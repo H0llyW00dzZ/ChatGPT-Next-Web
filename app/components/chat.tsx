@@ -686,7 +686,12 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
-    const matchCommand = chatCommands.match(userInput);
+
+    // reduce a zod cve CVE-2023-4316
+    const sanitizedInput = userInput.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const matchCommand = chatCommands.match(sanitizedInput);
+
     if (matchCommand.matched) {
       setUserInput("");
       setPromptHints([]);
@@ -694,8 +699,8 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
+    chatStore.onUserInput(sanitizedInput).then(() => setIsLoading(false));
+    localStorage.setItem(LAST_INPUT_KEY, sanitizedInput);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
