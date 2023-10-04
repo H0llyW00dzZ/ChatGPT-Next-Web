@@ -34,6 +34,7 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import { escapeRegExp } from "lodash";
 
 import {
   ChatMessage,
@@ -688,9 +689,9 @@ function _Chat() {
     if (userInput.trim() === "") return;
 
     // reduce a zod cve CVE-2023-4316
-    const sanitizedInput = userInput.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escapedInput = escapeRegExp(userInput);
 
-    const matchCommand = chatCommands.match(sanitizedInput);
+    const matchCommand = chatCommands.match(escapedInput);
 
     if (matchCommand.matched) {
       setUserInput("");
@@ -699,8 +700,8 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
-    chatStore.onUserInput(sanitizedInput).then(() => setIsLoading(false));
-    localStorage.setItem(LAST_INPUT_KEY, sanitizedInput);
+    chatStore.onUserInput(escapedInput).then(() => setIsLoading(false));
+    localStorage.setItem(LAST_INPUT_KEY, escapedInput);
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
