@@ -41,13 +41,16 @@ export function ChangeLog(props: { onClose?: () => void }) {
 
         let coAuthorsSection = "";
         if (coAuthored.length > 0) {
-          const coAuthorLinks = coAuthored.map((coAuthor: string) => `[${coAuthor}](https://github.com/${coAuthor})`);
+          const coAuthorLinks = coAuthored.map(
+            (coAuthor: string) =>
+              `[${coAuthor.replace("[bot]", "")}](https://github.com/${coAuthor.replace("[bot]", "")})`
+          );
           coAuthorsSection = `(Co-Authored by ${coAuthorLinks.join(", ")})`;
         }
 
-        const authorSection = `[${author}](https://github.com/${author}) ${coAuthorsSection}`;
+        const authorSection = `[${author.replace("[bot]", "")}](https://github.com/${author.replace("[bot]", "")}) ${coAuthorsSection}`;
 
-        table += `\n\n\n  ![${author}](https://github.com/github.png?size=25)![${author}](https://github.com/${author}.png?size=25) ${authorSection} :\n\n${commitInfo?.commitMessage.summary}\n\n\n${changesFormatted}\n\n\n`;
+        table += `\n\n\n  ![${author.replace("[bot]", "")}](https://github.com/${author.replace("[bot]", "")}.png?size=25) ${authorSection} :\n\n${commitInfo?.commitMessage.summary}\n\n\n${changesFormatted}\n\n\n`;
       } else {
         table += `###${commitInfo?.commitMessage.summary}###\nNo changes\n\n`;
       }
