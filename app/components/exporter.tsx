@@ -172,6 +172,7 @@ export function MessageExporter() {
       );
     }
   }
+
   return (
     <>
       <Steps
@@ -526,19 +527,19 @@ export function ImagePreviewer(props: {
           </div>
           <div>
             <div className={styles["chat-info-item"]}>
-              {"🔗"} {REPO_URL}
+            {"🔗"} {REPO_URL}
             </div>
             <div className={styles["chat-info-item"]}>
-              {"🤖"} {Locale.Exporter.Model}: {mask.modelConfig.model}
+            {"🤖"} {Locale.Exporter.Model}: {mask.modelConfig.model}
             </div>
             <div className={styles["chat-info-item"]}>
-              {"💭"} {Locale.Exporter.Messages}: {props.messages.length}
+            {"💭"} {Locale.Exporter.Messages}: {props.messages.length}
             </div>
             <div className={styles["chat-info-item"]}>
-              {"💫"} {Locale.Exporter.Topic}: {session.topic}
+            {"💫"} {Locale.Exporter.Topic}: {session.topic}
             </div>
             <div className={styles["chat-info-item"]}>
-              {"🗓️"} {Locale.Exporter.Time}:{" "}
+            {"🗓️"} {Locale.Exporter.Time}:{" "}
               {new Date(
                 props.messages.at(-1)?.date ?? Date.now(),
               ).toLocaleString()}
@@ -559,9 +560,14 @@ export function ImagePreviewer(props: {
           }`;
 
           return (
-            <div className={messageClass} key={i}>
+            <div
+              className={styles["message"] + " " + styles["message-" + m.role]}
+              key={i}
+            >
               <div className={styles["avatar"]}>
-                <ExportAvatar avatar={avatar} />
+                <ExportAvatar
+                  avatar={m.role === "user" ? config.avatar : mask.avatar}
+                />
               </div>
 
               <div className={styles["body"]}>
@@ -678,8 +684,7 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    //This will automatically generate JSON files without the need to include the ".json" extension.
-    downloadAs(msgs, `${props.topic}`);
+    downloadAs((msgs), `${props.topic}.json`);
   };
 
   return (
@@ -691,7 +696,7 @@ export function JsonPreviewer(props: {
         messages={props.messages}
       />
       <div className="markdown-body" onClick={copy}>
-        <Markdown content={mdText} />
+      <Markdown content={mdText} />
       </div>
     </>
   );

@@ -31,8 +31,8 @@ export enum SlotID {
 }
 // This will automatically generate JSON files without the need to include the ".json" extension.
 export enum FileName {
-  Masks = "masks",
-  Prompts = "prompts",
+  Masks = "masks.json",
+  Prompts = "prompts.json",
 }
 
 export enum StoreKey {

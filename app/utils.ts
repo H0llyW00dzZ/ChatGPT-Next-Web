@@ -10,7 +10,6 @@ export function trimTopic(topic: string) {
 const isApp = !!getClientConfig()?.isApp;
 
 export async function copyToClipboard(text: string) {
-
   try {
     if (isApp && window.__TAURI__) {
       window.__TAURI__.writeText(text);
@@ -44,11 +43,11 @@ export async function downloadAs(text: object, filename: string) {
   try {
     if (window.__TAURI__) {
       const result = await window.__TAURI__.dialog.save({
-        defaultPath: `${filename}.json`,
+        defaultPath: `${filename}`,
         filters: [
           {
-            name: "JSON Files",
-            extensions: ["json"],
+            name: `${filename.split('.').pop()} files`,
+            extensions: [`${filename.split('.').pop()}`],
           },
           {
             name: "All Files",
@@ -58,7 +57,10 @@ export async function downloadAs(text: object, filename: string) {
       });
 
       if (result !== null) {
-        await window.__TAURI__.fs.writeBinaryFile(result, Uint8Array.from(uint8Array));
+        await window.__TAURI__.fs.writeBinaryFile(
+          result,
+          Uint8Array.from(uint8Array)
+        );
         showToast(Locale.Download.Success);
       } else {
         showToast(Locale.Download.Failed);
@@ -67,7 +69,7 @@ export async function downloadAs(text: object, filename: string) {
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = `${filename}.json`;
+      anchor.download = `${filename}`;
       anchor.click();
       URL.revokeObjectURL(url);
       showToast(Locale.Download.Success);
