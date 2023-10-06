@@ -11,7 +11,7 @@ import BlackBotIcon from "../icons/black-bot.svg";
 import { isIOS, isMacOS } from "../utils"; // Import the isIOS & isMacOS functions from the utils file
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
-  const userAgent = window.navigator.userAgent;
+  const userAgent = navigator.userAgent.toLowerCase();
   // According to this post: https://www.drupal.org/project/next_webform/issues/3358901
   // iOS 16.4 is the first version to support lookbehind
   // thanks @a6z6
