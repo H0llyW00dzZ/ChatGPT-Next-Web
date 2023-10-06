@@ -12,7 +12,7 @@ import {
 import { downloadAs, readFromFile } from "../utils";
 import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
-import { createSyncClient, ProviderType } from "../utils/cloud";
+import { createSyncClient, ProviderType, SyncClient } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
 
 export interface WebDavConfig {
@@ -113,14 +113,14 @@ export const useSyncStore = createPersistStore(
       }
     },
 
-    getClient(provider: ProviderType) {
+    getClient(provider: ProviderType): SyncClient<ProviderType> {
       const client = createSyncClient(provider, get());
       return client;
     },
 
     async sync(overwriteAccessControl: boolean = false) {
       if (get().syncing) {
-        return;
+        return false;
       }
 
       const localState = getLocalAppState();
@@ -203,12 +203,16 @@ export const useSyncStore = createPersistStore(
       return true; // Add the return statement here
     },
 
-    async syncWebDAV(client: any, value: string, localState: AppState) {
+    async syncWebDAV(client: SyncClient<ProviderType.WebDAV>, value: string, localState: AppState) {
       await client.set(value, JSON.stringify(localState));
     },
 
-    async syncGitHubGist(client: any, value: Object, localState: AppState) {
-      await client.set(localState, value);
+    async syncGitHubGist(client: SyncClient<ProviderType.GitHubGist>, value: GistConfig | string, localState: AppState | Object) {
+      if (typeof value === 'string') {
+        await client.set(localState as string, value);
+      } else {
+        await client.set(localState as string, value.filename);
+      }
     },
 
     setLockClient(value: boolean) {
