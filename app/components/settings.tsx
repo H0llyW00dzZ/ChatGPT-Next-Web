@@ -704,7 +704,7 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.isAuthorized();
+  const showUsage = accessStore.token.startsWith("sess-");
   useEffect(() => {
     // checks per minutes
     checkUpdate();

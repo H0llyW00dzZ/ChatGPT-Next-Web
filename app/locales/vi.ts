@@ -138,7 +138,7 @@ const vi: PartialLocaleType = {
       },
       IsChecking: "Đang kiểm tra...",
       Check: "Kiểm tra",
-      NoAccess: "Nhập API Key để kiểm tra hạn mức",
+      NoAccess: `Nhập Khóa Phiên vào Khóa API bắt đầu bằng tiền tố "sess-" để kiểm tra số dư.`,
     },
     AccessCode: {
       Title: "Mã truy cập",

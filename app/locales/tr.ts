@@ -139,7 +139,7 @@ const tr: PartialLocaleType = {
       },
       IsChecking: "Kontrol ediliyor...",
       Check: "Tekrar Kontrol Et",
-      NoAccess: "Bakiyeyi kontrol etmek için API anahtarını girin",
+      NoAccess: `Bakiyeyi kontrol etmek için, API Anahtarında "sess-" önekiyle başlayan Oturum Anahtarını girin.`,
     },
     AccessCode: {
       Title: "Erişim Kodu",
