@@ -41,6 +41,7 @@ interface ChatCommands {
   del?: Command;
   save?: Command;
   load?: Command;
+  copymemoryai?: Command;
 }
 
 export const ChatCommandPrefix = ":";

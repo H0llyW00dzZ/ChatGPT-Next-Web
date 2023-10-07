@@ -59,6 +59,7 @@ const id: PartialLocaleType = {
       del: "Hapus Chat",
       save: "Simpan Percakapan Sesi Saat Ini",
       load: "Muat Percakapan Sesi",
+      copymemoryai: "Salin sesi memori prompt AI",
     },
     InputActions: {
       Stop: "Berhenti",

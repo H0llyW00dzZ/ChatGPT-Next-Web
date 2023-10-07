@@ -685,6 +685,15 @@ function _Chat() {
     save: () =>
       downloadAs((session), `${session.topic}.json`),
     load: loadchat,
+    copymemoryai: () => {
+      const memoryPrompt = chatStore.currentSession().memoryPrompt;
+      if (memoryPrompt.trim() !== "") {
+        copyToClipboard(memoryPrompt);
+        showToast(Locale.Copy.Success);
+      } else {
+        showToast(Locale.Copy.Failed);
+      }
+    },
   });  
 
   // only search prompts when user input is short

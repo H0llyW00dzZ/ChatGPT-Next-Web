@@ -70,6 +70,7 @@ const cn = {
       del: "删除聊天",
       save: "保存当前会话聊天",
       load: "加载会话聊天",
+      copymemoryai: "复制一个记忆会话的提示AI",
     },
     InputActions: {
       Stop: "停止响应",
