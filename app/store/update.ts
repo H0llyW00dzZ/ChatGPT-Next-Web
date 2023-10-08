@@ -50,6 +50,7 @@ export const useUpdateStore = createPersistStore(
     lastUpdate: 0,
     version: "unknown",
     remoteVersion: "",
+    // this my stuff for later
     pub_date: "",
     platforms: {
       "linux-x86_64": {
@@ -125,9 +126,9 @@ export const useUpdateStore = createPersistStore(
                       icon: `${ChatGptIcon.src}`,
                       sound: "Default"
                     });
-                    // not yet complete because tauri dev glitch (not optimized)
+                    // this a wild for updating client app
                     window.__TAURI__?.updater.checkUpdate().then((updateResult) => {
-                      if (updateResult === "PENDING") {
+                      if (updateResult.status === "DONE") {
                         window.__TAURI__?.updater.installUpdate();
                         showToast(Locale.Settings.Update.UpdateSuccessful);
                       }
@@ -171,10 +172,10 @@ export const useUpdateStore = createPersistStore(
   }),
   {
     name: StoreKey.Update,
-    version: 1.1, // added platform for client app updater
-    migrate: (persistedState) => {
+    version: 1.1, // added platform for client app updater this my stuff for later
+    migrate: (persistedState, version) => {
       const state = persistedState as any;
-      if (state.version === 1) {
+      if (version === 1) {
         return {
           ...state,
           pub_date: "",
