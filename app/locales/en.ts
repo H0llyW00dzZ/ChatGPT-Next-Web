@@ -190,6 +190,7 @@ const en: LocaleType = {
       IsChecking: "Checking update...",
       FoundUpdate: (x: string) => `Found new version: ${x}`,
       GoToUpdate: "Update",
+      IsUpdating: "Updating...",
       UpdateSuccessful: "A Version has been updated to the latest version",
       UpdateFailed: "Update Failed",
     },
