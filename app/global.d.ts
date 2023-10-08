@@ -25,5 +25,37 @@ declare interface Window {
       isPermissionGranted(): Promise<boolean>;
       sendNotification(options: string | Options): void;
     };
+    updater: {
+      manifest: UpdateManifest;
+      shouldUpdate: boolean;
+      status: UpdateStatus;
+      checkUpdate(): Promise<UpdateResult>;
+      installUpdate(manifest: UpdateManifest): Promise<void>;
+      onUpdaterEvent(handler: (status: UpdateStatusResult) => void): Promise<UnlistenFn>;
+    };
   };
 }
+
+declare type UpdateResult = {
+  status: UpdateStatus;
+  error?: string;
+};
+
+declare type UpdateStatus = "PENDING" | "ERROR" | "DONE" | "UPTODATE";
+
+declare type UpdateManifest = {
+  version: string;
+  notes: string;
+  pub_date: string;
+  platforms: {
+    [platform: string]: {
+      signature: string;
+      url: string;
+    };
+  };
+};
+
+declare type UpdateStatusResult = {
+  status: UpdateStatus;
+  error: string | null;
+};
