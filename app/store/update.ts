@@ -49,19 +49,19 @@ export const useUpdateStore = createPersistStore(
     lastUpdate: 0,
     version: "unknown",
     remoteVersion: "",
-    pub_date: undefined,
+    pub_date: "",
     platforms: {
       "linux-x86_64": {
-        signature: undefined,
-        url: undefined
+        signature: "",
+        url: ""
       },
       "darwin-x86_64": {
-        signature: undefined,
-        url: undefined
+        signature: "",
+        url: ""
       },
       "windows-x86_64": {
-        signature: undefined,
-        url: undefined
+        signature: "",
+        url: ""
       }
     },
     used: 0,
@@ -166,18 +166,19 @@ export const useUpdateStore = createPersistStore(
       if (state.version === 1) {
         return {
           ...state,
+          pub_date: "",
           platforms: {
             "linux-x86_64": {
-              signature: undefined,
-              url: undefined
+              signature: "",
+              url: ""
             },
             "darwin-x86_64": {
-              signature: undefined,
-              url: undefined
+              signature: "",
+              url: ""
             },
             "windows-x86_64": {
-              signature: undefined,
-              url: undefined
+              signature: "",
+              url: ""
             }
           },
           version: 1.1,
