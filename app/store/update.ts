@@ -49,6 +49,21 @@ export const useUpdateStore = createPersistStore(
     lastUpdate: 0,
     version: "unknown",
     remoteVersion: "",
+    pub_date: undefined,
+    platforms: {
+      "linux-x86_64": {
+        signature: undefined,
+        url: undefined
+      },
+      "darwin-x86_64": {
+        signature: undefined,
+        url: undefined
+      },
+      "windows-x86_64": {
+        signature: undefined,
+        url: undefined
+      }
+    },
     used: 0,
     subscription: 0,
 
@@ -145,6 +160,30 @@ export const useUpdateStore = createPersistStore(
   }),
   {
     name: StoreKey.Update,
-    version: 1,
+    version: 1.1, // added platform for client app updater
+    migrate: (persistedState) => {
+      const state = persistedState as any;
+      if (state.version === 1) {
+        return {
+          ...state,
+          platforms: {
+            "linux-x86_64": {
+              signature: undefined,
+              url: undefined
+            },
+            "darwin-x86_64": {
+              signature: undefined,
+              url: undefined
+            },
+            "windows-x86_64": {
+              signature: undefined,
+              url: undefined
+            }
+          },
+          version: 1.1,
+        };
+      }
+      return state;
+    },
   },
 );
