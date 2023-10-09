@@ -61,6 +61,10 @@ const id: PartialLocaleType = {
       load: "Muat Percakapan Sesi",
       copymemoryai: "Salin sesi memori prompt AI",
       updatemasks: "Perbarui sesi memori prompt untuk sebuah topeng",
+      UI: {
+        MasksSuccess: "Berhasil memperbarui sesi topeng",
+        MasksFail: "Gagal memperbarui sesi topeng",
+      },
     },
     InputActions: {
       Stop: "Berhenti",

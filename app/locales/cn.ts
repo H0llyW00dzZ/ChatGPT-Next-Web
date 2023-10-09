@@ -72,6 +72,10 @@ const cn = {
       load: "加载会话聊天",
       copymemoryai: "复制一个记忆会话的提示AI",
       updatemasks: "更新一个用于掩码的记忆会话提示",
+      UI: {
+        MasksSuccess: "成功更新了掩码会话",
+        MasksFail: "无法更新掩码会话",
+      },
     },
     InputActions: {
       Stop: "停止响应",

@@ -711,6 +711,7 @@ function _Chat() {
             // Add any other properties you want to set for the context messages
           };
           existingContext.unshift(currentContext); // Add the new message at the beginning of the context array
+          showToast(Locale.Chat.Commands.UI.MasksSuccess);
         } else {
           // If the current context message already exists and has the role "system"
           currentContext.content = memoryPrompt; // Update the content
@@ -720,6 +721,7 @@ function _Chat() {
     
         // Set any other properties you want to update in the session
         session.mask.context = existingContext;
+        showToast(Locale.Chat.Commands.UI.MasksSuccess);
       });
     },
   });  
