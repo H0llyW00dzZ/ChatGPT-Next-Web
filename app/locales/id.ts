@@ -60,6 +60,7 @@ const id: PartialLocaleType = {
       save: "Simpan Percakapan Sesi Saat Ini",
       load: "Muat Percakapan Sesi",
       copymemoryai: "Salin sesi memori prompt AI",
+      updatemasks: "Perbarui sesi memori prompt untuk sebuah topeng",
     },
     InputActions: {
       Stop: "Berhenti",

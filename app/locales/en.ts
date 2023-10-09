@@ -73,6 +73,7 @@ const en: LocaleType = {
       save: "Save a current session chat",
       load: "Load a session chat",
       copymemoryai: "Copy a session of memory prompt ai",
+      updatemasks: "Update a session of memory prompt for a mask",
     },
     InputActions: {
       Stop: "Stop",

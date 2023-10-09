@@ -71,6 +71,7 @@ const cn = {
       save: "保存当前会话聊天",
       load: "加载会话聊天",
       copymemoryai: "复制一个记忆会话的提示AI",
+      updatemasks: "更新一个用于掩码的记忆会话提示",
     },
     InputActions: {
       Stop: "停止响应",

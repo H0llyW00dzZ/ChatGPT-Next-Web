@@ -694,6 +694,34 @@ function _Chat() {
         showToast(Locale.Copy.Failed);
       }
     },
+    updatemasks: () => {
+      chatStore.updateCurrentSession((session) => {
+        const memoryPrompt = session.memoryPrompt;
+        const currentDate = new Date().toISOString(); // Get the current date and time as a string
+        const existingContext = session.mask.context;
+        let currentContext = existingContext[0]; // Get the current context message
+    
+        if (!currentContext || currentContext.role !== "system") {
+          // If the current context message doesn't exist or doesn't have the role "system"
+          currentContext = {
+            role: "system",
+            content: memoryPrompt,
+            date: currentDate,
+            id: "", // Generate or set the ID for the new message
+            // Add any other properties you want to set for the context messages
+          };
+          existingContext.unshift(currentContext); // Add the new message at the beginning of the context array
+        } else {
+          // If the current context message already exists and has the role "system"
+          currentContext.content = memoryPrompt; // Update the content
+          currentContext.date = currentDate; // Update the date
+          // You can update other properties of the current context message here
+        }
+    
+        // Set any other properties you want to update in the session
+        session.mask.context = existingContext;
+      });
+    },
   });  
 
   // only search prompts when user input is short
