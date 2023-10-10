@@ -3,7 +3,7 @@ import EmojiPicker, {
   EmojiStyle,
   Theme as EmojiTheme,
 } from "emoji-picker-react";
-import React from "react";
+
 import { ModelType } from "../store";
 
 import BotIcon from "../icons/bot.svg";
@@ -36,18 +36,13 @@ export function debounce(func: Function, delay: number) {
 export function AvatarPicker(props: {
   onEmojiClick: (emojiId: string) => void;
 }) {
-  const debouncedEmojiClick = React.useCallback(
-    debounce(props.onEmojiClick, 300), // Debounce with a delay of 300 milliseconds
-    [props.onEmojiClick],
-  );
-
   return (
     <EmojiPicker
       lazyLoadEmojis
       theme={EmojiTheme.AUTO}
       getEmojiUrl={getEmojiUrl}
       onEmojiClick={(e) => {
-        debouncedEmojiClick(e.unified);
+        props.onEmojiClick(e.unified);
       }}
     />
   );
