@@ -50,6 +50,9 @@
       },
       "notification": {
         "all": true
+      },
+      "process": {
+        "relaunch": true
       }
     },
     "bundle": {
