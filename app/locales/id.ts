@@ -55,6 +55,7 @@ const id: PartialLocaleType = {
       newm: "Mulai Chat Baru dengan Masks",
       next: "Chat Selanjutnya",
       prev: "Chat Sebelumnya",
+      restart: "Restart klien",
       clear: "Bersihkan Percakapan",
       del: "Hapus Chat",
       save: "Simpan Percakapan Sesi Saat Ini",
