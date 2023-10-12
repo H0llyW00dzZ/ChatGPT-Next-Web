@@ -43,8 +43,7 @@
         "show": true,
         "startDragging": true,
         "unmaximize": true,
-        "unminimize": true,
-        "setAlwaysOnTop": true
+        "unminimize": true
       },
       "fs": {
         "all": true
