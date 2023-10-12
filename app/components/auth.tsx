@@ -56,15 +56,18 @@ export function AuthPage() {
             />
             </>
           ) : (
-            <input
-              className={styles["auth-input"]}
-              type="password"
-              placeholder={Locale.Settings.Token.Placeholder}
-              value={access.token}
-              onChange={(e) => {
-                access.updateToken(e.currentTarget.value);
-              }}
-            />
+            <>
+              <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
+              <input
+                className={styles["auth-input"]}
+                type="password"
+                placeholder={Locale.Settings.Token.Placeholder}
+                value={access.token}
+                onChange={(e) => {
+                  access.updateToken(e.currentTarget.value);
+                }}
+              />
+            </>
           )}
         </>
       )}

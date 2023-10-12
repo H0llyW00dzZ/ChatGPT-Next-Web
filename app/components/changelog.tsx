@@ -62,10 +62,6 @@ export function ChangeLog(props: { onClose?: () => void }) {
 
   }, []);
 
-  const goHome = () => {
-    navigate(Path.Home);
-  };
-
   return (
     <div className={styles["changelog-page"]}>
       <div className={`changelog-title ${styles["changelog-title"]}`}>
@@ -81,7 +77,7 @@ export function ChangeLog(props: { onClose?: () => void }) {
           <IconButton
             text={Locale.UI.Close}
             icon={<ConfirmIcon />}
-            onClick={goHome}
+            onClick={() => navigate(-1)}
             bordered
           />
         </div>

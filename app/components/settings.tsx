@@ -748,7 +748,7 @@ export function Settings() {
   }, []);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
-  const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
+  const showAccessCode = clientConfig?.isSysHasOpenaiApiKey && !clientConfig?.isApp;
 
   return (
     <ErrorBoundary>
