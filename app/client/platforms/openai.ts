@@ -14,6 +14,11 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+// my text-moderation module openai
+interface ModerationResponse {
+  flagged: boolean;
+  categories: Record<string, boolean>;
+}
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -68,64 +73,30 @@ export class ChatGPTApi implements LLMApi {
         };
 
         try {
-          let moderationResponse = await fetch(moderationPath, {
-            method: "POST",
-            body: JSON.stringify(moderationPayload),
-            headers: getHeaders(),
-          });
+          const moderationResponse = await this.sendModerationRequest(
+            moderationPath,
+            moderationPayload
+          );
 
-          let moderationJson = await moderationResponse.json();
+          if (moderationResponse.flagged) {
+            const flaggedCategories = Object.entries(
+              moderationResponse.categories
+            )
+              .filter(([category, flagged]) => flagged)
+              .map(([category]) => category);
 
-          if (moderationJson.results && moderationJson.results.length > 0) {
-            let moderationResult = moderationJson.results[0]; // Access the first element of the array
-
-            if (!moderationResult.flagged) {
-              const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
-              moderationPayload.model = stable;
-              moderationResponse = await fetch(moderationPath, {
-                method: "POST",
-                body: JSON.stringify(moderationPayload),
-                headers: getHeaders(),
+            if (flaggedCategories.length > 0) {
+              const translatedReasons = flaggedCategories.map((category) => {
+                const translation =
+                  (Locale.Error.Content_Policy.Reason as any)[category];
+                return translation ? translation : category; // Use category name if translation is not available
               });
+              const translatedReasonText = translatedReasons.join(", ");
+              const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
 
-              moderationJson = await moderationResponse.json();
-
-              if (moderationJson.results && moderationJson.results.length > 0) {
-                moderationResult = moderationJson.results[0]; // Access the first element of the array
-              }
-            }
-
-            if (moderationResult && moderationResult.flagged) {
-              // Display a message indicating content policy violation
-              const contentPolicyViolations = moderationResult.categories;
-              const flaggedCategories = Object.entries(contentPolicyViolations)
-                .filter(([category, flagged]) => flagged)
-                .map(([category]) => category);
-
-              if (flaggedCategories.length > 0) {
-                const translatedReasons = flaggedCategories.map((category) => {
-                  const translation = (
-                    Locale.Error.Content_Policy.Reason as any
-                  )[category];
-                  return translation ? translation : category; // Use category name if translation is not available
-                });
-                const translatedReasonText = translatedReasons.join(", ");
-                const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
-
-                // Generate text-based graph for category scores
-                const categoryScores = moderationResult.category_scores;
-                const graphLines = flaggedCategories.map((category) => {
-                  const score = categoryScores[category];
-                  const barLength = Math.round(score * 100);
-                  const bar = "█".repeat(barLength / 10);
-                  return `${category}: ${bar} [${barLength.toFixed(2)}%]`;
-                });
-                const graphText = graphLines.join("\n");
-
-                const responseWithGraph = `${responseText}${graphText}`;
-                options.onFinish(responseWithGraph);
-                return;
-              }
+              const responseWithGraph = responseText;
+              options.onFinish(responseWithGraph);
+              return;
             }
           }
         } catch (e) {
@@ -414,6 +385,46 @@ export class ChatGPTApi implements LLMApi {
       name: m.id,
       available: true,
     }));
+  }
+
+  private async sendModerationRequest(
+    moderationPath: string,
+    moderationPayload: any
+  ): Promise<ModerationResponse> {
+    const moderationResponse = await fetch(moderationPath, {
+      method: "POST",
+      body: JSON.stringify(moderationPayload),
+      headers: getHeaders(),
+    });
+
+    const moderationJson = await moderationResponse.json();
+
+    if (moderationJson.results && moderationJson.results.length > 0) {
+      let moderationResult = moderationJson.results[0]; // Access the first element of the array
+
+      if (!moderationResult.flagged) {
+        const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
+        moderationPayload.model = stable;
+        const fallbackModerationResponse = await fetch(moderationPath, {
+          method: "POST",
+          body: JSON.stringify(moderationPayload),
+          headers: getHeaders(),
+        });
+
+        const fallbackModerationJson = await fallbackModerationResponse.json();
+
+        if (
+          fallbackModerationJson.results &&
+          fallbackModerationJson.results.length > 0
+        ) {
+          moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
+        }
+      }
+
+      return moderationResult as ModerationResponse;
+    }
+
+    throw new Error("Failed to get moderation response");
   }
 }
 export { OpenaiPath };
