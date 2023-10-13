@@ -7,22 +7,20 @@ const id: PartialLocaleType = {
     Unauthorized: "Akses tidak diizinkan, silakan masukkan kode akses atau masukkan kunci API OpenAI Anda. di halaman [autentikasi](/#/auth) atau di halaman [Pengaturan](/#/settings).",
     Content_Policy: {
       Title:
-        "Permintaan Anda ditandai karena Pelanggaran Kebijakan Konten.",
-      SubTitle:
-        "Baca selengkapnya di sini: https://platform.openai.com/docs/guides/moderation/overview",
+        "Permintaan Anda ditandai karena Pelanggaran Kebijakan Konten.\nBaca di sini: https://platform.openai.com/docs/guides/moderation/overview",
       Reason: {
-        Title: "Alasan",
-        sexual: "Seksual",
-        hate: "Kebencian",
-        harassment: "Pelecehan",
-        "self-harm": "Melukai diri sendiri",
-        "sexual/minors": "Seksual/anak-anak",
-        "hate/threatening": "Kebencian/ancaman",
-        "violence/graphic": "Kekerasan/grafis",
-        "self-harm/intent": "Melukai diri sendiri/niat",
-        "self-harm/instructions": "Melukai diri sendiri/instruksi",
-        "harassment/threatening": "Pelecehan/ancaman",
-        violence: "Kekerasan",
+        Title: "alasan",
+        sexual: "seksual",
+        hate: "kebencian",
+        harassment: "pelecehan",
+        "self-harm": "melukai diri sendiri",
+        "sexual/minors": "seksual/anak-anak",
+        "hate/threatening": "kebencian/ancaman",
+        "violence/graphic": "kekerasan/grafis",
+        "self-harm/intent": "melukai diri sendiri/niat",
+        "self-harm/instructions": "melukai diri sendiri/instruksi",
+        "harassment/threatening": "pelecehan/ancaman",
+        violence: "kekerasan",
       },
     },
   },
@@ -63,13 +61,10 @@ const id: PartialLocaleType = {
       save: "Simpan Percakapan Sesi Saat Ini",
       load: "Muat Percakapan Sesi",
       copymemoryai: "Salin sesi memori prompt AI",
-      updatemasks: "Perbarui sesi memori prompt untuk sebuah Masks",
-      summarize: "Rangkum sesi obrolan saat ini",
+      updatemasks: "Perbarui sesi memori prompt untuk sebuah topeng",
       UI: {
-        MasksSuccess: "Berhasil memperbarui sesi Masks",
-        MasksFail: "Gagal memperbarui sesi Masks",
-        SummarizeSuccess: "Berhasil merangkum sesi obrolan ini",
-        SummarizeFail: "Gagal merangkum sesi obrolan ini",
+        MasksSuccess: "Berhasil memperbarui sesi topeng",
+        MasksFail: "Gagal memperbarui sesi topeng",
       },
     },
     InputActions: {
@@ -267,14 +262,6 @@ const id: PartialLocaleType = {
               "Pastikan Anda memiliki izin untuk sinkronisasi. Aktifkan Privat & Publik di sana.",
           },
         },
-
-        GoSync: {
-          Endpoint: "URL GoSync REST",
-          UserName: "Nama Backup",
-          Password: "Token GoSync REST",
-          FileName: "Nama File",
-        },
-
       },
     },
     SendKey: "Kirim",
@@ -370,30 +357,6 @@ const id: PartialLocaleType = {
       SubTitle:
         "Semakin tinggi nilai, semakin rendah kemungkinan penggunaan ulang baris yang sama",
     },
-    NumberOfImages: {
-      Title: "Buat Jumlah Gambar",
-      SubTitle:
-        "Sejumlah gambar yang akan dihasilkan\nHarus di antara 1 dan 10. Untuk dall-e-3, hanya 1 yang didukung.",
-    },
-    QualityOfImages: {
-      Title: "Buat Kualitas Gambar",
-      SubTitle:
-        "Kualitas gambar yang akan dihasilkan\nKonfigurasi ini hanya didukung untuk dall-e-3.",
-    },
-    SizeOfImages: {
-      Title: "Ukuran Gambar",
-      SubTitle:
-        "Ukuran gambar yang dihasilkan\nDALL·E-2: Harus menjadi salah satu dari `256x256`, `512x512`, atau `1024x1024`.\nDALL-E-3: Harus menjadi salah satu dari `1024x1024`, `1792x1024`, atau `1024x1792`.",
-    },
-    StyleOfImages: {
-      Title: "Gaya Gambar",
-      SubTitle:
-        "Gaya gambar yang dihasilkan\nHarus menjadi salah satu dari cerah atau alami\nKonfigurasi ini hanya didukung untuk dall-e-3",
-    },
-    SysFingerPrint: {
-      Title: "Sidik Jari Sistem alias Benih",
-      SubTitle: "Sebuah sidik jari mewakili konfigurasi backend yang digunakan oleh model.",
-    },
     TextModeration: {
       Title: "Moderasi Teks",
       SubTitle: "Moderasi Teks untuk memeriksa apakah konten sesuai dengan kebijakan penggunaan OpenAI.",
@@ -427,13 +390,7 @@ const id: PartialLocaleType = {
     Add: "Tambahkan Promp",
     Clear: "Bersihkan Konteks",
     Revert: "Kembali ke Posisi Sebelumnya",
-    ModelsDalle: (x: any) => `Anda adalah asisten AI penjelasan Gambar berdasarkan permintaan dimulai dari:\n "${x}"\n\n
-    - Respon Anda harus informatif dan logis.\n
-    - Pertahankan jawaban Anda tanpa pribadi.\n
-    - Anda tidak perlu menyebutkan bahwa saya tidak dapat langsung menampilkan gambar karena Anda adalah model berbasis teks AI.\n
-    - Anda tidak perlu menyebutkan bahwa saya minta maaf, karena Anda adalah model AI berbasis teks.\n
-    - Balas dan akhiri percakapan.\n
-    - Patuhi Aturan.`,
+    ModelsDalle: (x: any) => `Saya ingin Anda bertindak sebagai penjelasan gambar berdasarkan permintaan saya dimulai dari:\n "${x}"\n (Anda tidak perlu langsung menampilkan gambar)`,
   },
   Plugin: {
     Name: "Plugin",
@@ -479,8 +436,6 @@ const id: PartialLocaleType = {
       HideContext: {
         Title: "Sembunyikan Prompt Konteks",
         SubTitle: "Tidak menampilkan prompt konteks dalam obrolan",
-        UnHide: "Tampilkan Prompt konteks dalam obrolan",
-        Hide: "Sembunyikan Prompt konteks dalam obrolan",
       },
       Share: {
         Title: "Bagikan Masks Ini",
