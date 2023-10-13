@@ -13,22 +13,20 @@ const en: LocaleType = {
       : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
     Content_Policy: {
       Title:
-        "Your request got flagged because of a Content Policy Violation.",
-      SubTitle: 
-        "Read Here: https://platform.openai.com/docs/guides/moderation/overview",
+        "Your request got flagged because of a Content Policy Violation.\nRead Here: https://platform.openai.com/docs/guides/moderation/overview",
       Reason: {
-        Title: "Reason",
-        sexual: "Sexual",
-        hate: "Hate",
-        harassment: "Harassment",
-        "self-harm": "Self-harm",
-        "sexual/minors": "Sexual/minors",
-        "hate/threatening": "Hate/threatening",
-        "violence/graphic": "Violence/graphic",
-        "self-harm/intent": "Self-harm/intent",
-        "self-harm/instructions": "Self-harm/instructions",
-        "harassment/threatening": "Harassment/threatening",
-        violence: "Violence",
+        Title: "reason",
+        sexual: "sexual",
+        hate: "hate",
+        harassment: "harassment",
+        "self-harm": "self-harm",
+        "sexual/minors": "sexual/minors",
+        "hate/threatening": "hate/threatening",
+        "violence/graphic": "violence/graphic",
+        "self-harm/intent": "self-harm/intent",
+        "self-harm/instructions": "self-harm/instructions",
+        "harassment/threatening": "harassment/threatening",
+        violence: "violence",
       },
     },
   },
@@ -77,12 +75,9 @@ const en: LocaleType = {
       load: "Load a session chat",
       copymemoryai: "Copy a session of memory prompt ai",
       updatemasks: "Update a session of memory prompt for a mask",
-      summarize: "Summarize the current session of this chat",
       UI: {
         MasksSuccess: "Successfully updated session of masks",
         MasksFail: "Failed to update session of masks",
-        SummarizeSuccess: "Successfully summarize session of this chat",
-        SummarizeFail: "Failed to summarize session of this chat",
       },      
     },
     InputActions: {
@@ -291,14 +286,6 @@ const en: LocaleType = {
           UserName: "Backup Name",
           Password: "UpStash Redis REST Token",
         },
-
-        GoSync: {
-          Endpoint: "GoSync REST Url",
-          UserName: "Backup Name",
-          Password: "GoSync REST Token",
-          FileName: "File Name",
-        },
-
       },
 
       LocalState: "Local Data",
@@ -397,31 +384,6 @@ const en: LocaleType = {
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
     },
-    NumberOfImages: {
-      Title: "Number Image Create",
-      SubTitle:
-        "A number of images to generate\nMust be between 1 and 10. For dall-e-3, only 1 is supported.",
-    },
-    QualityOfImages: {
-      Title: "Quality Image Create",
-      SubTitle:
-        "A quality of the image that will be generated\nThis Configuration is only supported for dall-e-3.",
-    },
-    SizeOfImages: {
-      Title: "Size Image",
-      SubTitle:
-        "A size of the generated images\nDALL·E-2 : Must be one of `256x256`, `512x512`, or `1024x1024`.\nDALL-E-3 : Must be one of `1024x1024`, `1792x1024`, or `1024x1792`.",
-    },
-    StyleOfImages: {
-      Title: "Style Image",
-      SubTitle:
-        "A style of the generated images\nMust be one of vivid or natural\nThis Configuration is only supported for dall-e-3",
-    },
-    SysFingerPrint: {
-      Title : "System Finger Print A.k.a Seeds",
-      SubTitle:
-      "A fingerprint represents the backend configuration that the model runs with.",
-    },
     TextModeration: {
       Title: "Text Moderation",
       SubTitle:
@@ -455,13 +417,7 @@ const en: LocaleType = {
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
-    ModelsDalle: (x: any) => `You are an AI Image explanation assistant based on request starting request from:\n "${x}"\n\n
-    - Your responses should be informative and logical.\n
-    - Keep your answers impersonal.\n
-    - You don't have to mention that I'm unable to directly display images since you are AI text-based model.\n
-    - You don't have to mention that I apologize, since you are a text-based AI model.\n
-    - Replying and end the conversation.\n
-    - Keep Follow Rules.`,
+    ModelsDalle: (x: any) => `I want you to act as an image explanation based on my request starting request from:\n "${x}"\n (you don't have to directly display images)`,
   },
   Plugin: {
     Name: "Plugin",
@@ -509,8 +465,6 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
-        UnHide: "Show Context prompts in chat",
-        Hide: "Hide Context prompts in chat",
       },
       Share: {
         Title: "Share This Mask",
