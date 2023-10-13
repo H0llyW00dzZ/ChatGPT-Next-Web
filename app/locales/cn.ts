@@ -377,6 +377,10 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    TextModeration: {
+      Title: "文本审核",
+      SubTitle: "通过文本审核来检查内容是否符合 OpenAI 的使用政策。",
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",
