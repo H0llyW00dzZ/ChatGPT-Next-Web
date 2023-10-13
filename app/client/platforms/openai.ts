@@ -101,22 +101,6 @@ export class ChatGPTApi implements LLMApi {
           }
         } catch (e) {
           console.log("[Request] failed to make a moderation request", e);
-          options.onError?.(e as Error);
-
-          // Show error response as JSON for 401 status code
-          if (e instanceof Response && e.status === 401) {
-            const errorResponse = {
-              error: "Unauthorized",
-              extraInfo: await e.text(),
-            };
-            options.onFinish(JSON.stringify(errorResponse));
-          } else {
-            const errorResponse = {
-              error: (e as Error).message,
-              stack: (e as Error).stack,
-            };
-            options.onFinish(JSON.stringify(errorResponse));
-          }
         }
       }
     }
@@ -391,40 +375,46 @@ export class ChatGPTApi implements LLMApi {
     moderationPath: string,
     moderationPayload: any
   ): Promise<ModerationResponse> {
-    const moderationResponse = await fetch(moderationPath, {
-      method: "POST",
-      body: JSON.stringify(moderationPayload),
-      headers: getHeaders(),
-    });
-
-    const moderationJson = await moderationResponse.json();
-
-    if (moderationJson.results && moderationJson.results.length > 0) {
-      let moderationResult = moderationJson.results[0]; // Access the first element of the array
-
-      if (!moderationResult.flagged) {
-        const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
-        moderationPayload.model = stable;
-        const fallbackModerationResponse = await fetch(moderationPath, {
-          method: "POST",
-          body: JSON.stringify(moderationPayload),
-          headers: getHeaders(),
-        });
-
-        const fallbackModerationJson = await fallbackModerationResponse.json();
-
-        if (
-          fallbackModerationJson.results &&
-          fallbackModerationJson.results.length > 0
-        ) {
-          moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
+    try {
+      const moderationResponse = await fetch(moderationPath, {
+        method: "POST",
+        body: JSON.stringify(moderationPayload),
+        headers: getHeaders(),
+      });
+  
+      const moderationJson = await moderationResponse.json();
+  
+      if (moderationJson.results && moderationJson.results.length > 0) {
+        let moderationResult = moderationJson.results[0]; // Access the first element of the array
+  
+        if (!moderationResult.flagged) {
+          const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
+          moderationPayload.model = stable;
+          const fallbackModerationResponse = await fetch(moderationPath, {
+            method: "POST",
+            body: JSON.stringify(moderationPayload),
+            headers: getHeaders(),
+          });
+  
+          const fallbackModerationJson = await fallbackModerationResponse.json();
+  
+          if (
+            fallbackModerationJson.results &&
+            fallbackModerationJson.results.length > 0
+          ) {
+            moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
+          }
         }
+  
+        return moderationResult as ModerationResponse;
+      } else {
+        console.error("Moderation response is empty");
+        throw new Error("Failed to get moderation response");
       }
-
-      return moderationResult as ModerationResponse;
+    } catch (e) {
+      console.error("[Request] failed to make a moderation request", e);
+      return {} as ModerationResponse;
     }
-
-    throw new Error("Failed to get moderation response");
   }
 }
 export { OpenaiPath };
