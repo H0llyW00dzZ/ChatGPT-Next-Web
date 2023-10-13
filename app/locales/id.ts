@@ -390,6 +390,7 @@ const id: PartialLocaleType = {
     Add: "Tambahkan Promp",
     Clear: "Bersihkan Konteks",
     Revert: "Kembali ke Posisi Sebelumnya",
+    ModelsDalle: (x: any) => `Saya ingin Anda bertindak sebagai penjelasan gambar berdasarkan permintaan saya dimulai dari:\n "${x}"\n (Anda tidak perlu langsung menampilkan gambar)`,
   },
   Plugin: {
     Name: "Plugin",
