@@ -408,6 +408,7 @@ const cn = {
     Add: "新增一条对话",
     Clear: "上下文已清除",
     Revert: "恢复上下文",
+    ModelsDalle: (x: any) => `我希望你能根据我的请求作为图像解释开始请求:\n "${x}"\n (您不需要直接显示图片)`,
   },
   Plugin: {
     Name: "插件",

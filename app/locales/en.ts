@@ -417,6 +417,7 @@ const en: LocaleType = {
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
+    ModelsDalle: (x: any) => `I want you to act as an image explanation based on my request starting request from:\n "${x}"\n (you don't have to directly display images)`,
   },
   Plugin: {
     Name: "Plugin",

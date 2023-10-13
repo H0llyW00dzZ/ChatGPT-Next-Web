@@ -200,13 +200,14 @@ export class ChatGPTApi implements LLMApi {
               if (contentType?.startsWith("application/json")) {
                 const responseJson = await res.clone().json();
                 const imageUrl = responseJson.data[0]?.url;
+                const localeContent = Locale.Context.ModelsDalle(`${userMessage}`);
                 if (imageUrl) {
                   const descriptionPayload = {
                     messages: [
                       ...messages,
                       {
                         role: "user",
-                        content: `I want you to act as an image explanation based on my request starting request from:\n "${userMessage}"\n (you don't have to directly display images)`,
+                        content: localeContent,
                       },
                     ],
                     model: "gpt-3.5-turbo-0613",
