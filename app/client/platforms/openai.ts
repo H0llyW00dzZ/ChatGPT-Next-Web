@@ -54,9 +54,10 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
 
-    if (OpenaiPath.TextModeration && options.whitelist !== true) {
+    if (textmoderation && options.whitelist !== true) {
       const messages = options.messages.map((v) => ({
         role: v.role,
         content: v.content,
