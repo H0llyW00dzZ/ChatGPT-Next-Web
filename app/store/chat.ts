@@ -561,7 +561,9 @@ export const useChatStore = createPersistStore(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,
         );
-        let toBeSummarizedMsgs = messages.slice(summarizeIndex);
+        let toBeSummarizedMsgs = messages
+        .filter((msg) => !msg.isError)
+        .slice(summarizeIndex);
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
