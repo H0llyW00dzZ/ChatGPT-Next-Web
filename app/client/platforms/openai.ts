@@ -193,15 +193,56 @@ export class ChatGPTApi implements LLMApi {
               return finish();
             }
             // models image creations
+            const userMessages = messages.filter((msg) => msg.role === "user");
+            const userMessage = userMessages[userMessages.length - 1]?.content;
             if (defaultModel.includes("DALL-E-2")) {
               if (contentType?.startsWith("application/json")) {
                 const responseJson = await res.clone().json();
-                const imageUrl = responseJson.data[0]?.url;
+                const imageUrl = await responseJson.data[0]?.url;
                 if (imageUrl) {
-                  responseText = `![Image](${imageUrl})`;
+                  const descriptionPayload = {
+                    messages: [
+                      ...messages,
+                      {
+                        role: "user",
+                        content: `I want you to act as an image explanation based on my request starting request from:\n "${userMessage}"\n (you don't have to directly display images)`,
+                      },
+                    ],
+                    model: "gpt-3.5-turbo-0613",
+                    temperature: modelConfig.temperature,
+                  };
+
+                  const descriptionResponse = await fetch(
+                    `api/openai/${OpenaiPath.ChatPath}`,
+                    {
+                      method: "POST",
+                      body: JSON.stringify(descriptionPayload),
+                      headers: getHeaders(),
+                    }
+                  );
+
+                  const descriptionContentType = descriptionResponse.headers.get(
+                    "content-type"
+                  );
+                  let description = "";
+
+                  if (descriptionContentType?.startsWith("application/json")) {
+                    const descriptionJson = await descriptionResponse.json();
+                    description = descriptionJson.choices?.[0]?.message?.content ?? "";
+                  } else {
+                    description = "Failed to generate description for the image.";
+                  }
+
+                  // Delay before displaying the final response
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                  responseText = `![Image](${imageUrl})\n\n${description}`;
+                  return finish();
+                } else {
+                  responseText = "Failed to generate image.";
+                  return finish();
                 }
-                return finish();
-              } 
+              }
             }
   
             if (
