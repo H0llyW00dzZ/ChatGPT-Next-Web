@@ -462,6 +462,11 @@ const en: LocaleType = {
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
     },
+    TextModeration: {
+      Title: "Text Moderation",
+      SubTitle:
+        "A Text Moderation to check whether content complies with OpenAI's usage policies.",
+    },
     NumberOfImages: {
       Title: "Number Image Create",
       SubTitle:

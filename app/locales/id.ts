@@ -394,6 +394,10 @@ const id: PartialLocaleType = {
       SubTitle:
         "Semakin tinggi nilai, semakin rendah kemungkinan penggunaan ulang baris yang sama",
     },
+    TextModeration: {
+      Title: "Moderasi Teks",
+      SubTitle: "Moderasi Teks untuk memeriksa apakah konten sesuai dengan kebijakan penggunaan OpenAI.",
+    },
     NumberOfImages: {
       Title: "Buat Jumlah Gambar",
       SubTitle:
