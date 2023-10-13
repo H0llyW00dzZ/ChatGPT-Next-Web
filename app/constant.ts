@@ -78,7 +78,11 @@ export const OpenaiPath = {
     latest: "text-moderation-latest",
     stable: "text-moderation-stable",
   },
-  TodoPath: false,
+  // image creation (dalle models)
+  ImageCreationPath: "v1/images/generations",
+  // todo
+  ImageEditPath: "v1/images/edits",
+  ImageVariationPath: "v1/images/variations",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
@@ -161,6 +165,10 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo-16k-0613",
+    available: true,
+  },
+  {
+    name: "DALL-E-2",
     available: true,
   },
 ] as const;

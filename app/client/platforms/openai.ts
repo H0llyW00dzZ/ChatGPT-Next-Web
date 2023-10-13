@@ -1,10 +1,8 @@
 import {
-  ApiPath,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
-  ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -16,7 +14,6 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { makeAzurePath } from "@/app/azure";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -31,35 +28,20 @@ export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
-    const accessStore = useAccessStore.getState();
+    let openaiUrl = useAccessStore.getState().openaiUrl;
+    const apiPath = "/api/openai";
 
-    const isAzure = accessStore.provider === ServiceProvider.Azure;
-
-    if (isAzure && !accessStore.isValidAzure()) {
-      throw Error(
-        "incomplete azure config, please check it in your settings page",
-      );
-    }
-
-    let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
-
-    if (baseUrl.length === 0) {
+    if (openaiUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp ? DEFAULT_API_HOST : ApiPath.OpenAI;
+      openaiUrl = isApp ? DEFAULT_API_HOST : apiPath;
     }
-
-    if (baseUrl.endsWith("/")) {
-      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    if (openaiUrl.endsWith("/")) {
+      openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.OpenAI)) {
-      baseUrl = "https://" + baseUrl;
+    if (!openaiUrl.startsWith("http") && !openaiUrl.startsWith(apiPath)) {
+      openaiUrl = "https://" + openaiUrl;
     }
-
-    if (isAzure) {
-      path = makeAzurePath(path, accessStore.azureApiVersion);
-    }
-
-    return [baseUrl, path].join("/");
+    return [openaiUrl, path].join("/");
   }
 
   extractMessage(res: any) {
@@ -183,23 +165,27 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    let requestPayload: any = {
-      messages,
-      stream: options.config.stream,
-      model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
-      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
-      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
-    };
+    const defaultModel = modelConfig.model;
 
-    if (OpenaiPath.TodoPath) {
+    let requestPayload: any;
+    let chatPath: string;
+
+    if (defaultModel.includes("DALL-E-2")) {
       requestPayload = {
-        input: userMessage,
-        model: latest,
+        prompt: userMessage,
       };
+      chatPath = this.path(OpenaiPath.ImageCreationPath);
+    } else {
+      requestPayload = {
+        messages,
+        stream: options.config.stream,
+        model: defaultModel,
+        temperature: modelConfig.temperature,
+        presence_penalty: modelConfig.presence_penalty,
+        frequency_penalty: modelConfig.frequency_penalty,
+        top_p: modelConfig.top_p,
+      };
+      chatPath = this.path(OpenaiPath.ChatPath);
     }
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -251,7 +237,18 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-
+            // models image creations
+            if (defaultModel.includes("DALL-E-2")) {
+              if (contentType?.startsWith("application/json")) {
+                const responseJson = await res.clone().json();
+                const imageUrl = responseJson.data[0]?.url;
+                if (imageUrl) {
+                  responseText = `![Image](${imageUrl})`;
+                }
+                return finish();
+              } 
+            }
+  
             if (
               !res.ok ||
               !res.headers
@@ -285,20 +282,14 @@ export class ChatGPTApi implements LLMApi {
             }
             const text = msg.data;
             try {
-              const json = JSON.parse(text) as {
-                choices: Array<{
-                  delta: {
-                    content: string;
-                  };
-                }>;
-              };
-              const delta = json.choices[0]?.delta?.content;
+              const json = JSON.parse(text);
+              const delta = json.choices[0].delta.content;
               if (delta) {
                 responseText += delta;
                 options.onUpdate?.(responseText, delta);
               }
             } catch (e) {
-              console.error("[Request] parse error", text);
+              console.error("[Request] parse error", text, msg);
             }
           },
           onclose() {

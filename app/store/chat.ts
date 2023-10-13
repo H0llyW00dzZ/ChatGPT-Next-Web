@@ -491,20 +491,42 @@ export const useChatStore = createPersistStore(
               content: Locale.Store.Prompt.Topic,
             }),
           );
-          api.llm.chat({
-            messages: topicMessages,
-            config: {
-              model: getSummarizeModel(session.mask.modelConfig.model),
-            },
-            whitelist: true,
-            onFinish(message) {
-              get().updateCurrentSession(
-                (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
-              );
-            },
-          });
+      
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model);
+      
+          if (topicModel === "DALL-E-2") {
+            // Summarize topic using gpt-3.5-turbo model
+            api.llm.chat({
+              messages: topicMessages,
+              config: {
+                model: "gpt-3.5-turbo",
+              },
+              whitelist: true,
+              onFinish(message) {
+                get().updateCurrentSession(
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
+              },
+            });
+          } else {
+            // Summarize topic using the selected model
+            api.llm.chat({
+              messages: topicMessages,
+              config: {
+                model: topicModel,
+              },
+              whitelist: true,
+              onFinish(message) {
+                get().updateCurrentSession(
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
+              },
+            });
+          }
         }
 
         const modelConfig = session.mask.modelConfig;
@@ -512,9 +534,7 @@ export const useChatStore = createPersistStore(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,
         );
-        let toBeSummarizedMsgs = messages
-          .filter((msg) => !msg.isError)
-          .slice(summarizeIndex);
+        let toBeSummarizedMsgs = messages.slice(summarizeIndex);
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
@@ -541,31 +561,52 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
-          api.llm.chat({
-            messages: toBeSummarizedMsgs.concat(
-              createMessage({
-                role: "system",
-                content: Locale.Store.Prompt.Summarize,
-                date: "",
-              }),
-            ),
-            config: {
-              ...modelConfig,
-              stream: true,
-              model: getSummarizeModel(session.mask.modelConfig.model),
-            },
-            whitelist: false,
-            onUpdate(message) {
-              session.memoryPrompt = message;
-            },
-            onFinish(message) {
-              console.log("[Memory] ", message);
-              session.lastSummarizeIndex = lastSummarizeIndex;
-            },
-            onError(err) {
-              console.error("[Summarize] ", err);
-            },
-          });
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
+
+          if (summarizeModel === "DALL-E-2") {
+            // Summarize using gpt-3.5-turbo model
+            api.llm.chat({
+              messages: toBeSummarizedMsgs.concat(
+                createMessage({
+                  role: "system",
+                  content: Locale.Store.Prompt.Summarize,
+                  date: "",
+                }),
+              ),
+              config: { ...modelConfig, model: "gpt-3.5-turbo", stream: true },
+              whitelist: false,
+              onFinish(message) {
+                console.log("[Memory] ", message);
+                session.lastSummarizeIndex = lastSummarizeIndex;
+              },
+              onError(err) {
+                console.error("[Summarize] ", err);
+              },
+            });
+          } else {
+            // Summarize using the selected model
+            api.llm.chat({
+              messages: toBeSummarizedMsgs.concat(
+                createMessage({
+                  role: "system",
+                  content: Locale.Store.Prompt.Summarize,
+                  date: "",
+                }),
+              ),
+              config: { ...modelConfig, stream: true },
+              onUpdate(message) {
+                session.memoryPrompt = message;
+              },
+              whitelist: false,
+              onFinish(message) {
+                console.log("[Memory] ", message);
+                session.lastSummarizeIndex = lastSummarizeIndex;
+              },
+              onError(err) {
+                console.error("[Summarize] ", err);
+              },
+            });
+          }
         }
       },
 
