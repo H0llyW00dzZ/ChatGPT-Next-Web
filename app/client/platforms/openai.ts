@@ -165,21 +165,27 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    let requestPayload: any = {
-      messages,
-      stream: options.config.stream,
-      model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
-    };
+    const defaultModel = modelConfig.model;
 
-    if (OpenaiPath.TodoPath) {
+    let requestPayload: any;
+    let chatPath: string;
+
+    if (defaultModel.includes("DALL-E-2")) {
       requestPayload = {
-        input: userMessage,
-        model: latest,
+        prompt: userMessage,
       };
+      chatPath = this.path(OpenaiPath.ImageCreationPath);
+    } else {
+      requestPayload = {
+        messages,
+        stream: options.config.stream,
+        model: defaultModel,
+        temperature: modelConfig.temperature,
+        presence_penalty: modelConfig.presence_penalty,
+        frequency_penalty: modelConfig.frequency_penalty,
+        top_p: modelConfig.top_p,
+      };
+      chatPath = this.path(OpenaiPath.ChatPath);
     }
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -231,7 +237,18 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-
+            // models image creations
+            if (defaultModel.includes("DALL-E-2")) {
+              if (contentType?.startsWith("application/json")) {
+                const responseJson = await res.clone().json();
+                const imageUrl = responseJson.data[0]?.url;
+                if (imageUrl) {
+                  responseText = `![Image](${imageUrl})`;
+                }
+                return finish();
+              } 
+            }
+  
             if (
               !res.ok ||
               !res.headers
