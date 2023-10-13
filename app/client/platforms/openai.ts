@@ -198,7 +198,7 @@ export class ChatGPTApi implements LLMApi {
             if (defaultModel.includes("DALL-E-2")) {
               if (contentType?.startsWith("application/json")) {
                 const responseJson = await res.clone().json();
-                const imageUrl = await responseJson.data[0]?.url;
+                const imageUrl = responseJson.data[0]?.url;
                 if (imageUrl) {
                   const descriptionPayload = {
                     messages: [
@@ -237,9 +237,11 @@ export class ChatGPTApi implements LLMApi {
                   await new Promise((resolve) => setTimeout(resolve, 1000));
 
                   responseText = `![Image](${imageUrl})\n\n${description}`;
+                  options.onFinish(responseText);
                   return finish();
                 } else {
                   responseText = "Failed to generate image.";
+                  options.onFinish(responseText);
                   return finish();
                 }
               }
