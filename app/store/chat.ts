@@ -80,10 +80,9 @@ function createEmptySession(): ChatSession {
   };
 }
 
-// fix known issue where summarize is not using the current model selected
-function getSummarizeModel(currentModel: string, modelConfig: ModelConfig) {
-  // should be depends of user selected
-  return currentModel.startsWith("gpt") ? modelConfig.model : currentModel;
+function getSummarizeModel(currentModel: string) {
+  // if it is using gpt-* models, force to use 3.5 to summarize
+  return currentModel.startsWith("gpt") ? SUMMARIZE_MODEL : currentModel;
 }
 
 function countMessages(msgs: ChatMessage[]) {
@@ -493,32 +492,22 @@ export const useChatStore = createPersistStore(
             }),
           );
       
-          const sessionModelConfig = this.currentSession().mask.modelConfig;
-          const topicModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model);
       
-          if (topicModel === "dall-e-2-beta-instruct-vision" || topicModel === "dall-e-3-beta-instruct-vision" || topicModel === "dall-e-2" || topicModel === "dall-e-3") {
-            // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
+          if (topicModel === "DALL-E-2") {
+            // Summarize topic using gpt-3.5-turbo model
             api.llm.chat({
               messages: topicMessages,
               config: {
-                model: "gpt-4-vision-preview",
+                model: "gpt-3.5-turbo",
               },
               whitelist: true,
               onFinish(message) {
                 get().updateCurrentSession(
-                  (session) => {
-                    session.topic =
-                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
-                    // Add system message after summarizing the topic
-                    // which is powerful based of fine-tuning
-                    const systemMessage: ChatMessage = {
-                      date: new Date().toLocaleString(),
-                      id: nanoid(),
-                      role: "system",
-                      content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
-                    };
-                    session.messages = [systemMessage, ...session.messages];
-                  });
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
               },
             });
           } else {
@@ -531,20 +520,10 @@ export const useChatStore = createPersistStore(
               whitelist: true,
               onFinish(message) {
                 get().updateCurrentSession(
-                  (session) => {
-                  session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
-                  // Add system message after summarizing the topic
-                  // which is powerful based of fine-tuning
-                  const systemMessage: ChatMessage = {
-                    date: new Date().toLocaleString(),
-                    id: nanoid(),
-                    role: "system",
-                    content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
-                  };
-                  session.messages = [systemMessage, ...session.messages];
-                });
-                showToast(Locale.Chat.Commands.UI.SummarizeSuccess);
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
               },
             });
           }
@@ -555,9 +534,7 @@ export const useChatStore = createPersistStore(
           session.lastSummarizeIndex,
           session.clearContextIndex ?? 0,
         );
-        let toBeSummarizedMsgs = messages
-        .filter((msg) => !msg.isError)
-        .slice(summarizeIndex);
+        let toBeSummarizedMsgs = messages.slice(summarizeIndex);
 
         const historyMsgLength = countMessages(toBeSummarizedMsgs);
 
@@ -584,11 +561,10 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
-          const sessionModelConfig = this.currentSession().mask.modelConfig;
-          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
 
-          if (summarizeModel === "dall-e-2-beta-instruct-vision" || summarizeModel === "dall-e-3-beta-instruct-vision" || summarizeModel === "dall-e-2" || summarizeModel === "dall-e-3") {
-            // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
+          if (summarizeModel === "DALL-E-2") {
+            // Summarize using gpt-3.5-turbo model
             api.llm.chat({
               messages: toBeSummarizedMsgs.concat(
                 createMessage({
@@ -597,8 +573,8 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, model: "gpt-4-vision-preview", stream: true },
-              whitelist: true,
+              config: { ...modelConfig, model: "gpt-3.5-turbo", stream: true },
+              whitelist: false,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
@@ -621,15 +597,13 @@ export const useChatStore = createPersistStore(
               onUpdate(message) {
                 session.memoryPrompt = message;
               },
-              whitelist: true,
+              whitelist: false,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
-                showToast(Locale.Chat.Commands.UI.SummarizeSuccess);
               },
               onError(err) {
                 console.error("[Summarize] ", err);
-                showToast(Locale.Chat.Commands.UI.SummarizeFail);
               },
             });
           }
