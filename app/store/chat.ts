@@ -522,11 +522,11 @@ export const useChatStore = createPersistStore(
           const topicModel = getSummarizeModel(session.mask.modelConfig.model);
       
           if (topicModel === "DALL-E-2") {
-            // Summarize topic using gpt-3.5-turbo model
+            // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: topicMessages,
               config: {
-                model: "gpt-3.5-turbo",
+                model: "gpt-3.5-turbo-0613",
               },
               whitelist: true,
               onFinish(message) {
@@ -593,7 +593,7 @@ export const useChatStore = createPersistStore(
           const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
 
           if (summarizeModel === "DALL-E-2") {
-            // Summarize using gpt-3.5-turbo model
+            // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: toBeSummarizedMsgs.concat(
                 createMessage({
@@ -602,7 +602,7 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, model: "gpt-3.5-turbo", stream: true },
+              config: { ...modelConfig, model: "gpt-3.5-turbo-0613", stream: true },
               whitelist: false,
               onFinish(message) {
                 console.log("[Memory] ", message);
