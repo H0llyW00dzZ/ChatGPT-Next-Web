@@ -151,7 +151,6 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -193,20 +192,19 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-            // models image creations
-            const userMessages = messages.filter((msg) => msg.role === "user");
-            const userMessage = userMessages[userMessages.length - 1]?.content;
             if (defaultModel.includes("DALL-E-2")) {
+              const userMessages = messages.filter((msg) => msg.role === "user");
+              const userMessage = userMessages[userMessages.length - 1]?.content;
               if (contentType?.startsWith("application/json")) {
                 const responseJson = await res.clone().json();
                 const imageUrl = responseJson.data[0]?.url;
-                const localeContent = Locale.Context.ModelsDalle(`${userMessage}`);
+                const localeContent = Locale.Context.ModelsDalle(`${userMessage}\n\n![Image](${imageUrl})`);
                 if (imageUrl) {
                   const descriptionPayload = {
                     messages: [
                       ...messages,
                       {
-                        role: "user",
+                        role: "system",
                         content: localeContent,
                       },
                     ],
@@ -214,8 +212,10 @@ export class ChatGPTApi implements LLMApi {
                     temperature: modelConfig.temperature,
                   };
 
+                  const isApp = !!getClientConfig()?.isApp;
+                  const apiPath = "api/openai/";
                   const descriptionResponse = await fetch(
-                    `api/openai/${OpenaiPath.ChatPath}`,
+                    (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath,
                     {
                       method: "POST",
                       body: JSON.stringify(descriptionPayload),
