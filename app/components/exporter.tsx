@@ -560,14 +560,9 @@ export function ImagePreviewer(props: {
           }`;
 
           return (
-            <div
-              className={styles["message"] + " " + styles["message-" + m.role]}
-              key={i}
-            >
+            <div className={messageClass} key={i}>
               <div className={styles["avatar"]}>
-                <ExportAvatar
-                  avatar={m.role === "user" ? config.avatar : mask.avatar}
-                />
+                <ExportAvatar avatar={avatar} />
               </div>
 
               <div className={styles["body"]}>
