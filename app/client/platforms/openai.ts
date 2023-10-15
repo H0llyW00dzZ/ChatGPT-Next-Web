@@ -124,13 +124,66 @@ export class ChatGPTApi implements LLMApi {
     const defaultModel = modelConfig.model;
 
     let requestPayload: any;
-    let chatPath: string;
-
+    let chatPath: string = "";
     if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-      requestPayload = {
-        prompt: userMessage,
-      };
-      chatPath = this.path(OpenaiPath.ImageCreationPath);
+      if (userMessage) {
+        const instructionPayload = {
+          messages: [
+            ...messages,
+          ],
+          model: "gpt-3.5-turbo-0613",
+          temperature: modelConfig.temperature,
+          presence_penalty: modelConfig.presence_penalty,
+          frequency_penalty: modelConfig.frequency_penalty,
+          top_p: modelConfig.top_p,
+        };
+
+        const instructionResponse = await fetch(
+          this.path(OpenaiPath.ChatPath),
+          {
+            method: "POST",
+            body: JSON.stringify(instructionPayload),
+            headers: getHeaders(),
+          }
+        );
+
+        const instructionContentType = instructionResponse.headers.get(
+          "content-type"
+        );
+
+        if (instructionContentType?.startsWith("application/json")) {
+          const instructionJson = await instructionResponse.json();
+          const instructionDelta = instructionJson.choices?.[0]?.message?.content;
+
+          const instructionPayloadx = {
+            ...instructionPayload,
+            messages: [
+              ...messages,
+              {
+                role: "system",
+                content: instructionDelta,
+              },
+            ],
+            
+          };
+
+          const instructionResponsex = await fetch(
+            this.path(OpenaiPath.ChatPath),
+            {
+              method: "POST",
+              body: JSON.stringify(instructionPayloadx),
+              headers: getHeaders(),
+            }
+          );
+
+          if (instructionDelta) {
+            const imageDescription = await this.generateImageDescription(userMessage);
+            const responseWithGraph = `${instructionDelta}\n\n${imageDescription}`;
+            options.onFinish(responseWithGraph);
+            return;
+          }
+        }
+      }
     } else {
       requestPayload = {
         messages,
@@ -192,63 +245,6 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-            if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-              const userMessages = messages.filter((msg) => msg.role === "user");
-              const userMessage = userMessages[userMessages.length - 1]?.content;
-              if (contentType?.startsWith("application/json")) {
-                const responseJson = await res.clone().json();
-                const imageUrl = responseJson.data[0]?.url;
-                const localeContent = Locale.Context.ModelsDalle(`${userMessage}\n\n![Image](${imageUrl})`);
-                if (imageUrl) {
-                  const descriptionPayload = {
-                    messages: [
-                      ...messages,
-                      {
-                        role: "system",
-                        content: localeContent,
-                      },
-                    ],
-                    model: "gpt-3.5-turbo-0613",
-                    temperature: modelConfig.temperature,
-                    presence_penalty: modelConfig.presence_penalty,
-                    frequency_penalty: modelConfig.frequency_penalty,
-                    top_p: modelConfig.top_p,
-                  };
-
-                  const isApp = !!getClientConfig()?.isApp;
-                  const apiPath = "api/openai/";
-                  const descriptionResponse = await fetch(
-                    (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath,
-                    {
-                      method: "POST",
-                      body: JSON.stringify(descriptionPayload),
-                      headers: getHeaders(),
-                    }
-                  );
-
-                  const descriptionContentType = descriptionResponse.headers.get(
-                    "content-type"
-                  );
-                  let description = "";
-
-                  if (descriptionContentType?.startsWith("application/json")) {
-                    const descriptionJson = await descriptionResponse.json();
-                    description = descriptionJson.choices?.[0]?.message?.content ?? "";
-                  } else {
-                    description = "Failed to generate description for the image.";
-                  }
-
-                  responseText = `![Image](${imageUrl})\n\n${description}`;
-                  options.onFinish(responseText);
-                  return finish();
-                } else {
-                  responseText = "Failed to generate image.";
-                  options.onFinish(responseText);
-                  return finish();
-                }
-              }
-            }
-  
             if (
               !res.ok ||
               !res.headers
@@ -314,6 +310,24 @@ export class ChatGPTApi implements LLMApi {
       console.log("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
     }
+  }
+
+  async generateImageDescription(userMessage: string): Promise<string> {
+    const dallePayload = {
+      prompt: userMessage,
+    };
+
+    const dalleResponse = await fetch(this.path(OpenaiPath.ImageCreationPath), {
+      method: "POST",
+      body: JSON.stringify(dallePayload),
+      headers: getHeaders(),
+    });
+
+    const dalleJson = await dalleResponse.json();
+    const imageUrl = dalleJson.data?.[0]?.url;
+    const imageDescription = imageUrl ? `Source:\n\n ![Image](${imageUrl})\n\nLink Download:\n [Here](${imageUrl})` : "";
+  
+    return imageDescription;
   }
 
   async usage() {
