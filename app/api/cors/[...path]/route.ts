@@ -1,24 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEFAULT_CORS_HOST } from "@/app/constant";
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
   if (req.method === "OPTIONS") {
-    // Set CORS headers for preflight requests
-    return NextResponse.json(
-      { body: "OK" },
-      {
-        status: 200,
-        headers: {
-          "Access-Control-Allow-Origin": `${DEFAULT_CORS_HOST}`, // Replace * with the appropriate origin(s)
-          "Access-Control-Allow-Methods": "GET, POST, OPTIONS", // Add other allowed methods if needed
-          "Access-Control-Allow-Headers": "*", // Replace * with the appropriate headers
-          "Access-Control-Max-Age": "86400", // Adjust the max age value if needed
-        },
-      },
-    );
+    return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
   const [protocol, ...subpath] = params.path;
@@ -29,19 +16,22 @@ async function handle(
     method?.toLowerCase() ?? "",
   );
 
-  const fetchOptions: RequestInit = {
-    headers: {
-      authorization: req.headers.get("authorization") ?? "",
-    },
-    body: shouldNotHaveBody ? null : req.body,
-    method,
-    // @ts-ignore
-    duplex: "half",
-  };
+  function isRealDevicez(userAgent: string | null): boolean {
+    // Author : @H0llyW00dzZ
+    // Note : This just an experiment for a prevent suspicious bot
+    // Modify this function to define your logic for determining if the user-agent belongs to a real device
+    // For example, you can check if the user-agent contains certain keywords or patterns that indicate a real device
+    if (userAgent) {
+      return userAgent.includes("AppleWebKit") && !userAgent.includes("Headless");
+    }
+    return false;
+  }
+  
 
-  const origin = req.headers.get("Origin");
-  const referrer = req.headers.get("Referer");
-  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+  const userAgent = req.headers.get("User-Agent");
+  const isRealDevice = isRealDevicez(userAgent);
+
+  if (!isRealDevice) {
     return NextResponse.json(
       {
         error: true,
@@ -52,6 +42,16 @@ async function handle(
       },
     );
   }
+
+  const fetchOptions: RequestInit = {
+    headers: {
+      authorization: req.headers.get("authorization") ?? "",
+    },
+    body: shouldNotHaveBody ? null : req.body,
+    method,
+    // @ts-ignore
+    duplex: "half",
+  };
 
   const fetchResult = await fetch(targetUrl, fetchOptions);
 
