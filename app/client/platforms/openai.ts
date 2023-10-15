@@ -125,7 +125,14 @@ export class ChatGPTApi implements LLMApi {
 
     let requestPayload: any;
     let chatPath: string = "";
-    if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+    if (defaultModel.includes("DALL-E-2")) {
+      if (userMessage) {
+        const imageDescription = await this.generateImageDescription(userMessage);
+        const responseWithGraph = `${imageDescription}`;
+        options.onFinish(responseWithGraph);
+        return;
+      }
+    } else if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
       if (userMessage) {
         const instructionPayload = {
           messages: [
