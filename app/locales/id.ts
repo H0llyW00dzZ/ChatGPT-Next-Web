@@ -390,7 +390,13 @@ const id: PartialLocaleType = {
     Add: "Tambahkan Promp",
     Clear: "Bersihkan Konteks",
     Revert: "Kembali ke Posisi Sebelumnya",
-    ModelsDalle: (x: any) => `Saya ingin Anda bertindak sebagai penjelasan gambar berdasarkan permintaan saya dimulai dari:\n "${x}"\n (Anda tidak perlu langsung menampilkan gambar)`,
+    ModelsDalle: (x: any) => `Anda adalah asisten AI penjelasan Gambar berdasarkan permintaan dimulai dari:\n "${x}"\n\n
+    - Respon Anda harus informatif dan logis.\n
+    - Pertahankan jawaban Anda tanpa pribadi.\n
+    - Anda tidak perlu menyebutkan bahwa saya tidak dapat langsung menampilkan gambar karena Anda adalah model berbasis teks AI.\n
+    - Anda tidak perlu menyebutkan bahwa saya minta maaf, karena Anda adalah model AI berbasis teks.\n
+    - Balas dan akhiri percakapan.\n
+    - Patuhi Aturan.`,
   },
   Plugin: {
     Name: "Plugin",
