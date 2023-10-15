@@ -156,7 +156,7 @@ export const DEFAULT_MODELS = [
     available: true,
   },
   {
-    name: "DALL-E-2",
+    name: "DALL-E-2-BETA-INSTRUCT-0613",
     available: true,
   },
 ] as const;

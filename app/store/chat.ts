@@ -522,7 +522,7 @@ export const useChatStore = createPersistStore(
       
           const topicModel = getSummarizeModel(session.mask.modelConfig.model);
       
-          if (topicModel === "DALL-E-2") {
+          if (topicModel === "DALL-E-2-BETA-INSTRUCT-0613") {
             // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: topicMessages,
@@ -609,7 +609,7 @@ export const useChatStore = createPersistStore(
         ) {
           const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
 
-          if (summarizeModel === "DALL-E-2") {
+          if (summarizeModel === "DALL-E-2-BETA-INSTRUCT-0613") {
             // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: toBeSummarizedMsgs.concat(

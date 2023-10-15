@@ -126,7 +126,7 @@ export class ChatGPTApi implements LLMApi {
     let requestPayload: any;
     let chatPath: string;
 
-    if (defaultModel.includes("DALL-E-2")) {
+    if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
       requestPayload = {
         prompt: userMessage,
       };
@@ -192,7 +192,7 @@ export class ChatGPTApi implements LLMApi {
               responseText = await res.clone().text();
               return finish();
             }
-            if (defaultModel.includes("DALL-E-2")) {
+            if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
               const userMessages = messages.filter((msg) => msg.role === "user");
               const userMessage = userMessages[userMessages.length - 1]?.content;
               if (contentType?.startsWith("application/json")) {
