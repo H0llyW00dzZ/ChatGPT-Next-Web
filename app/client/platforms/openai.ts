@@ -210,6 +210,9 @@ export class ChatGPTApi implements LLMApi {
                     ],
                     model: "gpt-3.5-turbo-0613",
                     temperature: modelConfig.temperature,
+                    presence_penalty: modelConfig.presence_penalty,
+                    frequency_penalty: modelConfig.frequency_penalty,
+                    top_p: modelConfig.top_p,
                   };
 
                   const isApp = !!getClientConfig()?.isApp;
