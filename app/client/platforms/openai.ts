@@ -318,10 +318,27 @@ export class ChatGPTApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
-
+  // DALL·E Models
   async generateImageDescription(userMessage: string): Promise<string> {
+
+    // example 
+    //n: 1,
+    //size: "1024x1024",
+    // usage in this chat : prompt n: <number> size: <width>x<height>
+    // Example : Triangulum Galaxy n: 3 size: 1080x1024
+
+    const nMatch = userMessage.match(/n:\s*(\d+)\b/i);
+    const sizeMatch = userMessage.match(/size:\s*(\d+x\d+)\b/i);
+  
+    const n = nMatch ? parseInt(nMatch[1]) : 1;
+    const size = sizeMatch ? sizeMatch[1] : "1024x1024";
+  
+    const prompt = userMessage.replace(/n:\s*\d+\b/i, "").replace(/size:\s*\d+x\d+\b/i, "").trim();
+
     const dallePayload = {
-      prompt: userMessage,
+      prompt: prompt,
+      n: n,
+      size: size,
     };
 
     const dalleResponse = await fetch(this.path(OpenaiPath.ImageCreationPath), {
@@ -331,7 +348,7 @@ export class ChatGPTApi implements LLMApi {
     });
 
     const dalleJson = await dalleResponse.json();
-    const imageUrl = dalleJson.data?.[0]?.url;
+    const imageUrl = dalleJson.data?.[0]?.url;                  // will refactor this later
     const imageDescription = imageUrl ? `Source:\n\n ![Image](${imageUrl})\n\nLink Download:\n [Here](${imageUrl})` : "";
   
     return imageDescription;
