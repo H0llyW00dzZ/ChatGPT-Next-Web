@@ -238,9 +238,6 @@ export class ChatGPTApi implements LLMApi {
                     description = "Failed to generate description for the image.";
                   }
 
-                  // Delay before displaying the final response
-                  await new Promise((resolve) => setTimeout(resolve, 1000));
-
                   responseText = `![Image](${imageUrl})\n\n${description}`;
                   options.onFinish(responseText);
                   return finish();
