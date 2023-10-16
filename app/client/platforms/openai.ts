@@ -132,7 +132,7 @@ export class ChatGPTApi implements LLMApi {
         options.onFinish(responseWithGraph);
         return;
       }
-    } else if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+    } if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
       if (userMessage) {
         const instructionPayload = {
           messages: [
@@ -347,11 +347,29 @@ export class ChatGPTApi implements LLMApi {
       headers: getHeaders(),
     });
 
+    const modelConfig = {
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+    };
+
+    const defaultModel = modelConfig.model;
+
     const dalleJson = await dalleResponse.json();
-    const imageUrl = dalleJson.data?.[0]?.url;                  // will refactor this later
-    const imageDescription = imageUrl ? `Source:\n\n ![Image](${imageUrl})\n\nLink Download:\n [Here](${imageUrl})` : "";
-  
-    return imageDescription;
+    const createdUrls = Array.isArray(dalleJson.created) ? dalleJson.created.map((item: { url: string }) => item.url) : [];
+    const imageRows = dalleJson.data?.map((item: { url: string }, index: number) => {
+      const imageUrl = item.url;
+      const createdUrl = createdUrls[index] || "undefined";
+      const imageDescription = `![${prompt}](${imageUrl})`;
+      const downloadLink = `[Download Here](${imageUrl})`;
+      const size = dallePayload.size;
+      const n = dallePayload.n;
+      return `#### ${prompt} (${n})\n\n\n | ${imageDescription} |\n|---|\n| Size: ${size} |\n| ${downloadLink} |\n| 🤖 AI Models: ${defaultModel} |`;
+    }).filter((row: string, index: any, self: any[]) => {
+      const firstIndex = self.findIndex((r) => r.includes(row.split("|")[1].trim()));
+      return index === firstIndex;
+    });
+    const table = imageRows ? imageRows.join("\n") : "";
+
+    return table;
   }
 
   async usage() {
