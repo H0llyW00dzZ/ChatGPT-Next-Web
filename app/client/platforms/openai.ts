@@ -125,14 +125,7 @@ export class ChatGPTApi implements LLMApi {
 
     let requestPayload: any;
     let chatPath: string = "";
-    if (defaultModel.includes("DALL-E-2")) {
-      if (userMessage) {
-        const imageDescription = await this.generateImageDescription(userMessage);
-        const responseWithGraph = `${imageDescription}`;
-        options.onFinish(responseWithGraph);
-        return;
-      }
-    } if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+    if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
       if (userMessage) {
         const instructionPayload = {
           messages: [
@@ -202,6 +195,15 @@ export class ChatGPTApi implements LLMApi {
         top_p: modelConfig.top_p,
       };
       chatPath = this.path(OpenaiPath.ChatPath);
+    }
+
+    if (defaultModel.includes("DALL-E-2")) {
+      if (userMessage) {
+        const imageDescription = await this.generateImageDescription(userMessage);
+        const responseWithGraph = `${imageDescription}`;
+        options.onFinish(responseWithGraph);
+        return;
+      }
     }
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -358,7 +360,14 @@ export class ChatGPTApi implements LLMApi {
     const imageRows = dalleJson.data?.map((item: { url: string }, index: number) => {
       const imageUrl = item.url;
       const createdUrl = createdUrls[index] || "undefined";
-      const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+      let imageDescription = "";
+  
+      if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+        imageDescription = ` (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+      } else if (defaultModel.includes("DALL-E-2")) {
+        imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+      }
+
       return imageDescription;
     }).filter((row: string, index: any, self: any[]) => {
       const firstIndex = self.findIndex((r) => r.includes(row.split("|")[1].trim()));
