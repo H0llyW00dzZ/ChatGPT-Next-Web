@@ -358,16 +358,13 @@ export class ChatGPTApi implements LLMApi {
     const imageRows = dalleJson.data?.map((item: { url: string }, index: number) => {
       const imageUrl = item.url;
       const createdUrl = createdUrls[index] || "undefined";
-      const imageDescription = `![${prompt}](${imageUrl})`;
-      const downloadLink = `[Download Here](${imageUrl})`;
-      const size = dallePayload.size;
-      const n = dallePayload.n;
-      return `#### ${prompt} (${n})\n\n\n | ${imageDescription} |\n|---|\n| Size: ${size} |\n| ${downloadLink} |\n| 🤖 AI Models: ${defaultModel} |`;
+      const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+      return imageDescription;
     }).filter((row: string, index: any, self: any[]) => {
       const firstIndex = self.findIndex((r) => r.includes(row.split("|")[1].trim()));
       return index === firstIndex;
     });
-    const table = imageRows ? imageRows.join("\n") : "";
+    const table = imageRows ? imageRows.join("\n\n") : "";
 
     return table;
   }
