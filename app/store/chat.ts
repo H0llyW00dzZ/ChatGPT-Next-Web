@@ -620,7 +620,7 @@ export const useChatStore = createPersistStore(
                 }),
               ),
               config: { ...modelConfig, model: "gpt-3.5-turbo-0613", stream: true },
-              whitelist: false,
+              whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
@@ -643,7 +643,7 @@ export const useChatStore = createPersistStore(
               onUpdate(message) {
                 session.memoryPrompt = message;
               },
-              whitelist: false,
+              whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;

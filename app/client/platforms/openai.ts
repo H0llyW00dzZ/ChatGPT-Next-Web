@@ -132,10 +132,6 @@ export class ChatGPTApi implements LLMApi {
         const instructionPayload = {
           messages: [
             ...messages,
-            {
-              role: "user",
-              content: userMessage,
-            },
           ],
           model: "gpt-3.5-turbo-0613",
           temperature: modelConfig.temperature,
@@ -376,7 +372,7 @@ export class ChatGPTApi implements LLMApi {
       let imageDescription = "";
   
       if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-        imageDescription = `\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+        imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
       } else if (defaultModel.includes("DALL-E-2")) {
         imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
       }
