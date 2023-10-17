@@ -27,6 +27,8 @@ import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
+import DownloadIcon from "../icons/download.svg";
+import UploadIcon from "../icons/upload.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -103,12 +105,50 @@ export function SessionConfigModel(props: { onClose: () => void }) {
   const maskStore = useMaskStore();
   const navigate = useNavigate();
 
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    await downloadAs(session, `${session.topic}.json`);
+    setExporting(false);
+  };
+
+  const importchat = () => {
+    readFromFile().then((content) => {
+      try {
+        const importedData = JSON.parse(content);
+        chatStore.updateCurrentSession((session) => {
+          Object.assign(session, importedData);
+        });
+      } catch (e) {
+        console.error("[Import] Failed to import JSON file:", e);
+        showToast(Locale.Settings.Sync.ImportFailed);
+      }
+    });
+  };
+
   return (
     <div className="modal-mask">
       <Modal
         title={Locale.Context.Edit}
         onClose={() => props.onClose()}
         actions={[
+          <IconButton
+            key="export"
+            icon={<DownloadIcon />}
+            bordered
+            text={Locale.UI.Export}
+            onClick={handleExport}
+            disabled={exporting}
+          />,
+          <IconButton
+            key="import"
+            icon={<UploadIcon />}
+            bordered
+            text={Locale.UI.Import}
+            onClick={importchat}
+          />,
           <IconButton
             key="reset"
             icon={<ResetIcon />}
@@ -657,11 +697,9 @@ function _Chat() {
   const loadchat = () => {
     readFromFile().then((content) => {
       try {
-        const importedSession = JSON.parse(content);
+        const importedData = JSON.parse(content);
         chatStore.updateCurrentSession((session) => {
-          session.messages = importedSession.messages;
-          session.topic = importedSession.topic;
-          session.memoryPrompt = importedSession.memoryPrompt;
+          Object.assign(session, importedData);
           // Set any other properties you want to update in the session
         });
       } catch (e) {
