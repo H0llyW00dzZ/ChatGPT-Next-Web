@@ -14,7 +14,11 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-// my text-moderation module openai
+
+/**
+ * Models Text-Moderations OpenAI
+ * Author: @H0llyW00dzZ
+ **/
 interface ModerationResponse {
   flagged: boolean;
   categories: Record<string, boolean>;
@@ -102,6 +106,12 @@ export class ChatGPTApi implements LLMApi {
           }
         } catch (e) {
           console.log("[Request] failed to make a moderation request", e);
+          const error = {
+            error: (e as Error).message,
+            stack: (e as Error).stack,
+          };
+          options.onFinish(JSON.stringify(error));
+          return;
         }
       }
     }
@@ -110,118 +120,91 @@ export class ChatGPTApi implements LLMApi {
       role: v.role,
       content: v.content,
     }));
-    const userMessages = messages.filter((msg) => msg.role === "user");
-    const userMessage = userMessages[userMessages.length - 1]?.content;
-
-    const appConfig = useAppConfig.getState();
-    const chatStore = useChatStore.getState();
-    const currentSession = chatStore.currentSession();
 
     const modelConfig = {
-      ...appConfig.modelConfig,
-      ...currentSession.mask.modelConfig,
-      model: options.config.model,
+      ...useAppConfig.getState().modelConfig,
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+      ...{
+        model: options.config.model,
+      },
     };
 
-    const defaultModel = modelConfig.model;
+    const userMessages = messages.filter((msg) => msg.role === "user");
+    const userMessage = userMessages[userMessages.length - 1]?.content;
+    /**
+     * DALL·E Models
+     * Author: @H0llyW00dzZ
+     * usage in this chat: prompt n: <number> size: <width>x<height>
+     * Example: Andromeda Galaxy n: 3 size: 1024x1024
+     **/
 
-    let requestPayload: any;
-    let chatPath: string = "";
-    if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-      if (userMessage) {
-        const instructionPayload = {
-          messages: [
-            ...messages,
-          ],
-          model: "gpt-3.5-turbo-0613",
-          temperature: modelConfig.temperature,
-          presence_penalty: modelConfig.presence_penalty,
-          frequency_penalty: modelConfig.frequency_penalty,
-          top_p: modelConfig.top_p,
-        };
+    const nMatch = userMessage.match(/n:\s*(\d+)\b/i);
+    const sizeMatch = userMessage.match(/size:\s*(\d+x\d+)\b/i);
 
-        const instructionResponse = await fetch(
-          this.path(OpenaiPath.ChatPath),
-          {
-            method: "POST",
-            body: JSON.stringify(instructionPayload),
-            headers: getHeaders(),
-          }
-        );
+    const n = nMatch ? parseInt(nMatch[1]) : 1;
+    const size = sizeMatch ? sizeMatch[1] : "1024x1024";
 
-        const instructionContentType = instructionResponse.headers.get(
-          "content-type"
-        );
+    const prompt = userMessage
+      .replace(/n:\s*\d+\b/i, "")
+      .replace(/size:\s*\d+x\d+\b/i, "")
+      .trim();
 
-        if (instructionContentType?.startsWith("application/json")) {
-          const instructionJson = await instructionResponse.json();
-          const instructionDelta = instructionJson.choices?.[0]?.message?.content;
-
-          if (instructionDelta) {
-            const instructionPayloadx = {
-              ...instructionPayload,
-              messages: [
-                ...messages,
-                {
-                  role: "system",
-                  content: instructionDelta,
-                },
-              ],
-            };
-
-            const instructionResponsee = await fetch(
-              this.path(OpenaiPath.ChatPath),
-              {
-                method: "POST",
-                body: JSON.stringify(instructionPayloadx),
-                headers: getHeaders(),
-              }
-            );
-
-            const instructionContentType = instructionResponsee.headers.get(
-              "content-type"
-            );
-
-            if (instructionContentType?.startsWith("application/json")) {
-              const imageDescription = await this.generateImageDescription(
-                userMessage
-              );
-              const responseWithGraph = `${imageDescription}\n\n${instructionDelta}`;
-              options.onFinish(responseWithGraph);
-              return;
-            }
-          }
-        }
-      }
-    } else {
-      requestPayload = {
+    const requestPayloads = {
+      chat: {
         messages,
         stream: options.config.stream,
-        model: defaultModel,
+        model: modelConfig.model,
         temperature: modelConfig.temperature,
         presence_penalty: modelConfig.presence_penalty,
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
-      };
-      chatPath = this.path(OpenaiPath.ChatPath);
+      },
+      image: {
+        prompt: prompt,
+        n: n,
+        size: size,
+        model: modelConfig.model,
+      },
+    };
+
+    if (modelConfig.model.includes("DALL-E-2")) {
+      console.log("[Request] openai payload: ", {
+        image: requestPayloads.image,
+      });
+    } else {
+      console.log("[Request] openai payload: ", {
+        chat: requestPayloads.chat,
+      });
     }
 
-    if (defaultModel.includes("DALL-E-2")) {
-      if (userMessage) {
-        const imageDescription = await this.generateImageDescription(userMessage);
-        const responseWithGraph = `${imageDescription}`;
-        options.onFinish(responseWithGraph);
-        return;
-      }
-    }
-
-    console.log("[Request] openai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
+      const dallemodels =
+        modelConfig.model.includes("DALL-E-2")
+      let chatPath = dallemodels
+        ? this.path(OpenaiPath.ImageCreationPath)
+        : this.path(OpenaiPath.ChatPath);
+
+      let requestPayload;
+      if (
+        modelConfig.model.includes("DALL-E-2")
+      ) {
+        /**
+         * Use the image payload structure
+         */
+        const { model, ...imagePayload } = requestPayloads.image;
+        requestPayload = imagePayload;
+      } else {
+        /**
+         * Use the chat model payload structure
+         */
+        requestPayload = requestPayloads.chat;
+      }
+
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -235,9 +218,8 @@ export class ChatGPTApi implements LLMApi {
         REQUEST_TIMEOUT_MS,
       );
 
-      let responseText = "";
-
       if (shouldStream) {
+        let responseText = "";
         let finished = false;
 
         const finish = () => {
@@ -254,13 +236,23 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
+            console.log("[OpenAI] request response content type: ", contentType);
 
             if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
+              responseText = await res.clone().json();
+            } else if (contentType?.startsWith("application/json")) {
+              if (modelConfig.model.includes("DALL-E-2")) {
+                const jsonResponse = await res.clone().json();
+                const imageUrl = jsonResponse.data[0]?.url;
+                const prompt = requestPayloads.image.prompt;
+                const index = requestPayloads.image.n - 1;
+                const size = requestPayloads.image.size;
+                const defaultModel = modelConfig.model;
+
+                const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+
+                responseText = `${imageDescription}\n\n${responseText}`;
+              }
               return finish();
             }
             if (
@@ -320,71 +312,13 @@ export class ChatGPTApi implements LLMApi {
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
-        responseText = this.extractMessage(resJson);
+        const message = this.extractMessage(resJson);
+        options.onFinish(message);
       }
-
-      options.onFinish(responseText);
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
       options.onError?.(e as Error);
     }
-  }
-  // DALL·E Models
-  async generateImageDescription(userMessage: string): Promise<string> {
-
-    // example 
-    //n: 1,
-    //size: "1024x1024",
-    // usage in this chat : prompt n: <number> size: <width>x<height>
-    // Example : Triangulum Galaxy n: 3 size: 1080x1024
-
-    const nMatch = userMessage.match(/n:\s*(\d+)\b/i);
-    const sizeMatch = userMessage.match(/size:\s*(\d+x\d+)\b/i);
-  
-    const n = nMatch ? parseInt(nMatch[1]) : 1;
-    const size = sizeMatch ? sizeMatch[1] : "1024x1024";
-  
-    const prompt = userMessage.replace(/n:\s*\d+\b/i, "").replace(/size:\s*\d+x\d+\b/i, "").trim();
-
-    const dallePayload = {
-      prompt: prompt,
-      n: n,
-      size: size,
-    };
-
-    const dalleResponse = await fetch(this.path(OpenaiPath.ImageCreationPath), {
-      method: "POST",
-      body: JSON.stringify(dallePayload),
-      headers: getHeaders(),
-    });
-
-    const modelConfig = {
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-    };
-
-    const defaultModel = modelConfig.model;
-
-    const dalleJson = await dalleResponse.json();
-    const createdUrls = Array.isArray(dalleJson.created) ? dalleJson.created.map((item: { url: string }) => item.url) : [];
-    const imageRows = dalleJson.data?.map((item: { url: string }, index: number) => {
-      const imageUrl = item.url;
-      const createdUrl = createdUrls[index] || "undefined";
-      let imageDescription = "";
-  
-      if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-        imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
-      } else if (defaultModel.includes("DALL-E-2")) {
-        imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
-      }
-
-      return imageDescription;
-    }).filter((row: string, index: any, self: any[]) => {
-      const firstIndex = self.findIndex((r) => r.includes(row.split("|")[1].trim()));
-      return index === firstIndex;
-    });
-    const table = imageRows ? imageRows.join("\n\n") : "";
-
-    return table;
   }
 
   async usage() {
@@ -487,6 +421,11 @@ export class ChatGPTApi implements LLMApi {
     }));
   }
 
+  /**
+   * Models Text-Moderations OpenAI
+   * Author: @H0llyW00dzZ
+   **/
+
   private async sendModerationRequest(
     moderationPath: string,
     moderationPayload: any
@@ -532,5 +471,26 @@ export class ChatGPTApi implements LLMApi {
       return {} as ModerationResponse;
     }
   }
+  /** TODO */
+  private async sendRequest(path: string, payload: any) {
+    try {
+      const response = await fetch(path, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: getHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${path}: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Failed to send request to ${path}`, error);
+      throw error;
+    }
+  }
 }
+
 export { OpenaiPath };
