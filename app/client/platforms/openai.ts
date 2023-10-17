@@ -129,6 +129,8 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
+    const defaultModel = modelConfig.model;
+
     const userMessages = messages.filter((msg) => msg.role === "user");
     const userMessage = userMessages[userMessages.length - 1]?.content;
     /**
@@ -167,7 +169,7 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    if (modelConfig.model.includes("DALL-E-2")) {
+    if (defaultModel.includes("DALL-E-2")) {
       console.log("[Request] openai payload: ", {
         image: requestPayloads.image,
       });
@@ -184,14 +186,14 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       const dallemodels =
-        modelConfig.model.includes("DALL-E-2")
+        defaultModel.includes("DALL-E-2")
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
         : this.path(OpenaiPath.ChatPath);
 
       let requestPayload;
       if (
-        modelConfig.model.includes("DALL-E-2")
+        defaultModel.includes("DALL-E-2")
       ) {
         /**
          * Use the image payload structure
@@ -231,6 +233,9 @@ export class ChatGPTApi implements LLMApi {
 
         controller.signal.onabort = finish;
 
+        const isApp = !!getClientConfig()?.isApp;
+        const apiPath = "api/openai/";
+
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
@@ -239,9 +244,9 @@ export class ChatGPTApi implements LLMApi {
             console.log("[OpenAI] request response content type: ", contentType);
 
             if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().json();
+              responseText = await res.clone().text();
             } else if (contentType?.startsWith("application/json")) {
-              if (modelConfig.model.includes("DALL-E-2")) {
+              if (defaultModel.includes("DALL-E-2")) {
                 const jsonResponse = await res.clone().json();
                 const imageUrl = jsonResponse.data[0]?.url;
                 const prompt = requestPayloads.image.prompt;
@@ -251,7 +256,63 @@ export class ChatGPTApi implements LLMApi {
 
                 const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
-                responseText = `${imageDescription}\n\n${responseText}`;
+                responseText = `${imageDescription}`;
+              }
+              if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+                const jsonResponse = await res.clone().json();
+                const imageUrl = jsonResponse.data[0]?.url;
+                const prompt = requestPayloads.image.prompt;
+                const size = requestPayloads.image.size;
+                const defaultModel = modelConfig.model;
+
+                const instructx = await fetch(
+                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
+                  {
+                    method: "POST",
+                    body: JSON.stringify({
+                      messages: [
+                        ...messages,
+                      ],
+                      model: "gpt-3.5-turbo-0613",
+                      temperature: modelConfig.temperature,
+                      presence_penalty: modelConfig.presence_penalty,
+                      frequency_penalty: modelConfig.frequency_penalty,
+                      top_p: modelConfig.top_p,
+                    }),
+                    headers: getHeaders(),
+                  }
+                );
+                clearTimeout(requestTimeoutId);
+                const instructxx = await instructx.json();
+
+                const instructionDelta = instructxx.choices?.[0]?.message?.content;
+                const instructionPayload = {
+                  messages: [
+                    ...messages,
+                    {
+                      role: "system",
+                      content: instructionDelta,
+                    },
+                  ],
+                  model: "gpt-3.5-turbo-0613",
+                  temperature: modelConfig.temperature,
+                  presence_penalty: modelConfig.presence_penalty,
+                  frequency_penalty: modelConfig.frequency_penalty,
+                  top_p: modelConfig.top_p,
+                };
+
+                const instructionResponse = await fetch(
+                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, {
+                  method: "POST",
+                  body: JSON.stringify(instructionPayload),
+                  headers: getHeaders(),
+                });
+
+                const instructionJson = await instructionResponse.json();
+                const instructionMessage = instructionJson.choices?.[0]?.message?.content; // Access the appropriate property containing the message
+                const imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+
+                responseText = `${imageDescription}\n\n${instructionMessage}`;
               }
               return finish();
             }
