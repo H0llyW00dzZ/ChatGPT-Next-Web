@@ -245,26 +245,20 @@ export class ChatGPTApi implements LLMApi {
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
+              return finish();
             } else if (contentType?.startsWith("application/json")) {
-              if (defaultModel.includes("DALL-E-2")) {
-                const jsonResponse = await res.clone().json();
-                const imageUrl = jsonResponse.data[0]?.url;
-                const prompt = requestPayloads.image.prompt;
-                const index = requestPayloads.image.n - 1;
-                const size = requestPayloads.image.size;
-                const defaultModel = modelConfig.model;
+              const jsonResponse = await res.clone().json();
+              const imageUrl = jsonResponse.data?.[0]?.url;
+              const prompt = requestPayloads.image.prompt;
+              const index = requestPayloads.image.n - 1;
+              const size = requestPayloads.image.size;
+              const defaultModel = modelConfig.model;
 
+              if (defaultModel.includes("DALL-E-2")) {
                 const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}`;
-              }
-              if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
-                const jsonResponse = await res.clone().json();
-                const imageUrl = jsonResponse.data[0]?.url;
-                const prompt = requestPayloads.image.prompt;
-                const size = requestPayloads.image.size;
-                const defaultModel = modelConfig.model;
-
+              } if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
                 const instructx = await fetch(
                   (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
                   {
@@ -302,11 +296,13 @@ export class ChatGPTApi implements LLMApi {
                 };
 
                 const instructionResponse = await fetch(
-                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, {
-                  method: "POST",
-                  body: JSON.stringify(instructionPayload),
-                  headers: getHeaders(),
-                });
+                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath,
+                  {
+                    method: "POST",
+                    body: JSON.stringify(instructionPayload),
+                    headers: getHeaders(),
+                  }
+                );
 
                 const instructionJson = await instructionResponse.json();
                 const instructionMessage = instructionJson.choices?.[0]?.message?.content; // Access the appropriate property containing the message
@@ -314,7 +310,6 @@ export class ChatGPTApi implements LLMApi {
 
                 responseText = `${imageDescription}\n\n${instructionMessage}`;
               }
-              return finish();
             }
             if (
               !res.ok ||
