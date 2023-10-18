@@ -245,7 +245,6 @@ export class ChatGPTApi implements LLMApi {
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
-              return finish();
             } else if (contentType?.startsWith("application/json")) {
               const jsonResponse = await res.clone().json();
               const imageUrl = jsonResponse.data?.[0]?.url;
