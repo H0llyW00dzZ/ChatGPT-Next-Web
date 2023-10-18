@@ -308,6 +308,25 @@ export class ChatGPTApi implements LLMApi {
                 const imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}\n\n${instructionMessage}`;
+              } if (
+                !res.ok ||
+                !res.headers
+                  .get("content-type")
+                  ?.startsWith(EventStreamContentType) ||
+                res.status !== 200
+              ) {
+                let anyinfo = await res.clone().text();
+                try {
+                  const infJson = await res.clone().json();
+                  anyinfo = prettyObject(infJson);
+                } catch { }
+                if (res.status === 401) {
+                  responseText = "\n\n" + Locale.Error.Unauthorized;
+                  if (anyinfo) {
+                    responseText += "\n\n" + anyinfo;
+                  }
+                }
+                return;
               }
             }
             if (
