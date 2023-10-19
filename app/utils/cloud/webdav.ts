@@ -19,6 +19,7 @@ export function createWebDavClient(store: SyncStore) {
           method: "PROPFIND",
           headers: this.headers(),
           proxyUrl,
+          mode: "cors",
         });
         console.log(
           "[WebDav] Check Data From File Name",
@@ -39,6 +40,7 @@ export function createWebDavClient(store: SyncStore) {
         method: "GET",
         headers: this.headers(),
         proxyUrl,
+        mode: "cors",
       });
 
       console.log("[WebDav] Get File Name =", key, res.status, res.statusText);
@@ -55,6 +57,7 @@ export function createWebDavClient(store: SyncStore) {
           headers: this.headers(),
           body: "",
           proxyUrl,
+          mode: "cors",
         });
       }
 
@@ -63,6 +66,7 @@ export function createWebDavClient(store: SyncStore) {
         headers: this.headers(),
         body: value,
         proxyUrl,
+        mode: "cors",
       });
 
       console.log(
