@@ -325,6 +325,8 @@ export class ChatGPTApi implements LLMApi {
                 } catch { }
                 if (res.status === 401) {
                   responseText = "\n\n" + Locale.Error.Unauthorized;
+                }
+                if (res.status !== 200) {
                   if (anyinfo) {
                     responseText += "\n\n" + anyinfo;
                   }
