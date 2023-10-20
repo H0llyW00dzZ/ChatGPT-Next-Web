@@ -18,11 +18,11 @@ export const ID_MASKS: BuiltinMask[] = [
                 role: "assistant",
                 content: "Ya, saya dapat membantu Anda menulis esai tentang rumus matematika. Mohon beri tahu saya rumus mana yang ingin Anda fokuskan, dan saya akan dengan senang hati membantu Anda.",
                 streaming: false,
-                model: "gpt-3.5-turbo-16k"
+                model: "gpt-3.5-turbo-16k-0613"
             }
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 0.5,
             top_p: 1,
             max_tokens: 2000,
@@ -60,12 +60,12 @@ export const ID_MASKS: BuiltinMask[] = [
                 role: "assistant",
                 content: "Untuk menemukan biaya menutupi dinding dengan kertas dinding, kita perlu menghitung luas dinding dan kemudian mengalikannya dengan harga per kaki persegi kertas dinding.\n\nLuas persegi panjang diberikan oleh rumus: Luas = panjang × lebar.\n\nDalam kasus ini, panjang dinding adalah 20 kaki dan lebarnya adalah 15 kaki. Jadi, luas dindingnya adalah:\n\nLuas = 20 kaki × 15 kaki = 300 kaki persegi.\n\nSekarang, kita dapat menghitung biaya menutupi dinding dengan kertas dinding dengan mengalikan luas dengan harga per kaki persegi:\n\nBiaya = Luas × Harga per kaki persegi.\n\nDiberikan bahwa harga per kaki persegi adalah ₹50, kita dapat menggantikan nilainya:\n\nBiaya = 300 kaki persegi × ₹50/kaki persegi\n\nBiaya = ₹15.000\n\nOleh karena itu, biaya menutupi dinding dengan kertas dinding adalah ₹15.000.",
                 streaming: false,
-                model: "gpt-3.5-turbo-16k"
+                model: "gpt-3.5-turbo-16k-0613"
             }
         ],
         syncGlobalConfig: true,
         modelConfig: {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 0.5,
             top_p: 1,
             max_tokens: 2000,
@@ -94,7 +94,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 0.3,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -140,7 +140,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 0.5,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -166,7 +166,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 0.5,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -200,7 +200,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 0.5,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -247,7 +247,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-16k-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -275,7 +275,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -303,7 +303,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -331,7 +331,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -359,7 +359,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -387,7 +387,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -415,7 +415,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -449,7 +449,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 0.5,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -477,7 +477,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -512,7 +512,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -547,7 +547,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
@@ -607,7 +607,7 @@ export const ID_MASKS: BuiltinMask[] = [
             },
         ],
         modelConfig: {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-0613",
             temperature: 1,
             max_tokens: 2000,
             presence_penalty: 0,
