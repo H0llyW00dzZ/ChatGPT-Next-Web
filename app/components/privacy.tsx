@@ -25,6 +25,19 @@ export function PrivacyPage(props: { onClose?: () => void }) {
   const [scrollTitle, setScrollTitle] = useState("");
   const [showTerms, setShowTerms] = useState(true);
 
+  const handleAgree = async () => {
+    const lang = getLang(); // Get the current language
+    const response = await fetch("privacy.json");
+    const data = await response.json();
+    const privacyPolicy = data[lang][1][1];
+    const termsOfService = data[lang][1][1];
+    setShowTerms(false);
+    setMdText(`${termsOfService}`);
+    setPageTitle(data[lang][1][0]);
+    setScrollTitle(data[lang][0][0]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const lang = getLang(); // Get the current language
@@ -35,22 +48,10 @@ export function PrivacyPage(props: { onClose?: () => void }) {
       setMdText(`${privacyPolicy}`);
       setPageTitle(data[lang][0][0]);
       setScrollTitle(data[lang][0][1]);
-      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page
+      window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     fetchData();
-
-    const handleAgree = async () => {
-      const lang = getLang(); // Get the current language
-      const response = await fetch("privacy.json");
-      const data = await response.json();
-      const privacyPolicy = data[lang][1][1];
-      const termsOfService = data[lang][1][1];
-      setShowTerms(false);
-      setMdText(`${termsOfService}`);
-      setPageTitle(data[lang][1][0]);
-      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page
-    };
 
     window.addEventListener("scroll", handleAgree);
     return () => window.removeEventListener("scroll", handleAgree);
@@ -62,19 +63,6 @@ export function PrivacyPage(props: { onClose?: () => void }) {
 
   const copy = () => {
     copyToClipboard(mdText);
-  };
-
-  const handleAgree = async () => {
-    const lang = getLang(); // Get the current language
-    const response = await fetch("privacy.json");
-    const data = await response.json();
-    const privacyPolicy = data[lang][1][1];
-    const termsOfService = data[lang][1][1];
-    setShowTerms(false);
-    setMdText(`${termsOfService}`);
-    setPageTitle(data[lang][1][0]);
-    setScrollTitle(data[lang][0][0]);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page
   };
 
   return (
