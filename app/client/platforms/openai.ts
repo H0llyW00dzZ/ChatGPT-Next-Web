@@ -161,6 +161,13 @@ export class ChatGPTApi implements LLMApi {
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
       },
+      /** Legacy Models
+       * coming soon
+       */
+      legacy: {
+        prompt: messages,
+        model: modelConfig.model,
+      },
       image: {
         prompt: prompt,
         n: n,
@@ -179,18 +186,18 @@ export class ChatGPTApi implements LLMApi {
       });
     }
 
-
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const dallemodels =
-        defaultModel.includes("DALL-E-2")
+      const dallemodels = defaultModel.includes("DALL-E-2");
+      const legacyModels = defaultModel.includes("fanw-json-eval" || "babbage-002" || "davinci-002");
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
+        : legacyModels
+        ? this.path(OpenaiPath.LegacyPath)
         : this.path(OpenaiPath.ChatPath);
-
       let requestPayload;
       if (
         defaultModel.includes("DALL-E-2")
@@ -200,6 +207,11 @@ export class ChatGPTApi implements LLMApi {
          */
         const { model, ...imagePayload } = requestPayloads.image;
         requestPayload = imagePayload;
+      } else if (defaultModel.includes("fanw-json-eval")) {
+        /**
+         * Use the legacy payload structure
+         */
+        requestPayload = requestPayloads.legacy;
       } else {
         /**
          * Use the chat model payload structure
@@ -257,7 +269,9 @@ export class ChatGPTApi implements LLMApi {
                 const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}`;
-              } if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
+              }
+
+              if (defaultModel.includes("DALL-E-2-BETA-INSTRUCT-0613")) {
                 const instructx = await fetch(
                   (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
                   {
@@ -308,7 +322,9 @@ export class ChatGPTApi implements LLMApi {
                 const imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}\n\n${instructionMessage}`;
-              } if (
+              }
+
+              if (
                 !res.ok ||
                 !res.headers
                   .get("content-type")
@@ -457,18 +473,19 @@ export class ChatGPTApi implements LLMApi {
     if (total.hard_limit_usd) {
       total.hard_limit_usd = Math.round(total.hard_limit_usd * 100) / 100;
     }
-  
+
     if (total.system_hard_limit_usd) {
-      total.system_hard_limit_usd = Math.round(total.system_hard_limit_usd * 100) / 100;
+      total.system_hard_limit_usd =
+        Math.round(total.system_hard_limit_usd * 100) / 100;
     }
-  
+
     return {
       used: response.total_usage,
       total: {
         hard_limit_usd: total.hard_limit_usd,
         system_hard_limit_usd: total.system_hard_limit_usd,
       },
-    } as unknown as LLMUsage;    
+    } as unknown as LLMUsage;
   }
 
   async models(): Promise<LLMModel[]> {
@@ -512,12 +529,12 @@ export class ChatGPTApi implements LLMApi {
         body: JSON.stringify(moderationPayload),
         headers: getHeaders(),
       });
-  
+
       const moderationJson = await moderationResponse.json();
-  
+
       if (moderationJson.results && moderationJson.results.length > 0) {
         let moderationResult = moderationJson.results[0]; // Access the first element of the array
-  
+
         if (!moderationResult.flagged) {
           const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
           moderationPayload.model = stable;
@@ -526,9 +543,10 @@ export class ChatGPTApi implements LLMApi {
             body: JSON.stringify(moderationPayload),
             headers: getHeaders(),
           });
-  
-          const fallbackModerationJson = await fallbackModerationResponse.json();
-  
+
+          const fallbackModerationJson =
+            await fallbackModerationResponse.json();
+
           if (
             fallbackModerationJson.results &&
             fallbackModerationJson.results.length > 0
@@ -536,7 +554,7 @@ export class ChatGPTApi implements LLMApi {
             moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
           }
         }
-  
+
         return moderationResult as ModerationResponse;
       } else {
         console.error("Moderation response is empty");
@@ -557,7 +575,9 @@ export class ChatGPTApi implements LLMApi {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch ${path}: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch ${path}: ${response.status} ${response.statusText}`
+        );
       }
 
       const data = await response.json();
