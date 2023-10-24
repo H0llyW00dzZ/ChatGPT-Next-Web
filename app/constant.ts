@@ -74,6 +74,8 @@ export const OpenaiPath = {
   // todo
   ImageEditPath: "v1/images/edits",
   ImageVariationPath: "v1/images/variations",
+  // legacy path
+  LegacyPath: "v1/completions",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
@@ -162,6 +164,22 @@ export const DEFAULT_MODELS = [
   {
     name: "DALL-E-2-BETA-INSTRUCT-0613",
     available: true,
+  },
+  /** Legacy Model's 
+   * can be used for multi-tasking
+   * coming soon..
+   */
+  {
+    name: "babbage-002",
+    available: false,
+  },
+  {
+    name: "davinci-002",
+    available: false,
+  },
+  {
+    name: "fanw-json-eval",
+    available: false,
   },
 ] as const;
 
