@@ -9,9 +9,10 @@ declare global {
       MODEL_LIST?: string;
       PROXY_URL?: string;
       VERCEL?: string;
-      VERCEL_ANALYTICS?: string; // vercel web analytics
+      VERCEL_ANALYTICS?: boolean; // vercel web analytics
       HIDE_USER_API_KEY?: string; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
+      DISABLE_CUSTOMMODELS?: boolean; // allow user to use custom models or not
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
       HIDE_BALANCE_QUERY?: string; // allow user to query balance or not
