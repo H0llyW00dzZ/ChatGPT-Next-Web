@@ -29,12 +29,11 @@ export function PrivacyPage(props: { onClose?: () => void }) {
     const lang = getLang(); // Get the current language
     const response = await fetch("privacy.json");
     const data = await response.json();
-    const privacyPolicy = data[lang][1][1];
     const termsOfService = data[lang][1][1];
     setShowTerms(false);
     setMdText(`${termsOfService}`);
     setPageTitle(data[lang][1][0]);
-    setScrollTitle(data[lang][0][0]);
+    setScrollTitle(data[lang][1][1]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -44,7 +43,6 @@ export function PrivacyPage(props: { onClose?: () => void }) {
       const response = await fetch("privacy.json");
       const data = await response.json();
       const privacyPolicy = data[lang][0][1];
-      const termsOfService = data[lang][1][1];
       setMdText(`${privacyPolicy}`);
       setPageTitle(data[lang][0][0]);
       setScrollTitle(data[lang][0][1]);
@@ -53,8 +51,6 @@ export function PrivacyPage(props: { onClose?: () => void }) {
 
     fetchData();
 
-    window.addEventListener("scroll", handleAgree);
-    return () => window.removeEventListener("scroll", handleAgree);
   }, []);
 
   const goChat = () => {
