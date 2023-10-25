@@ -28,7 +28,7 @@ export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  const { accessCode, apiKey } = parseApiKey(authToken);
+  const { accessCode, apiKey: token } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
@@ -39,30 +39,22 @@ export function auth(req: NextRequest) {
   console.log("[User IP] ", getIP(req));
   console.log("[Time] ", new Date().toLocaleString());
 
-  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !apiKey) {
+  if (serverConfig.needCode && !serverConfig.codes.has(hashedCode) && !token) {
     return {
       error: true,
       msg: !accessCode ? "empty access code" : "wrong access code",
     };
   }
 
-  // if user does not provide an api key, inject system api key
-  if (!apiKey) {
-    const serverApiKey = serverConfig.isAzure
-      ? serverConfig.azureApiKey
-      : serverConfig.apiKey;
-
-    if (serverApiKey) {
-      console.log("[Auth] use system api key");
-      req.headers.set(
-        "Authorization",
-        `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`,
-      );
-    } else {
-      console.log("[Auth] admin did not provide an api key");
-    }
+  // Check if the access code has a corresponding API key
+  const apiKey = serverConfig.apiKeys.get(hashedCode);
+  if (apiKey) {
+    console.log("[Auth] use access code-specific API key");
+    req.headers.set("Authorization", `Bearer ${apiKey}`);
+  } else if (token) {
+    console.log("[Auth] use user API key");
   } else {
-    console.log("[Auth] use user api key");
+    console.log("[Auth] admin did not provide an API key");
   }
 
   return {

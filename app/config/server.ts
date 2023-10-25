@@ -40,11 +40,24 @@ export const getServerSideConfig = () => {
     );
   }
 
+  const apiKey = process.env.OPENAI_API_KEY;
+  const accessCodes = process.env.CODE?.split(",") ?? [];
+  const codes = new Set(accessCodes.map((code) => md5.hash(code.trim())));
+  const needCode = codes.size > 0;
+
+  const apiKeys = new Map<string, string>();
+  accessCodes.forEach((code, index) => {
+    const apiKeyIndex = index < (apiKey?.split(",")?.length ?? 0) ? index : 0;
+    const hashedCode = md5.hash(code.trim());
+    const apiKeyValue = (apiKey?.split(",")?.[apiKeyIndex]?.trim() ?? "")!;
+    apiKeys.set(hashedCode, apiKeyValue);
+  });
+
   return {
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey,
     code: process.env.CODE,
-    codes: ACCESS_CODES,
-    needCode: ACCESS_CODES.size > 0,
+    codes,
+    needCode,
     baseUrl: process.env.BASE_URL,
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
@@ -53,5 +66,6 @@ export const getServerSideConfig = () => {
     disableGPT4: !!process.env.DISABLE_GPT4,
     disableCustomModels: !!process.env.DISABLE_CUSTOMMODELS,
     hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
+    apiKeys,
   };
 };
