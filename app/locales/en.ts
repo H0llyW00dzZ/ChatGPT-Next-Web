@@ -531,6 +531,8 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+        UnHide: "Show Context prompts in chat",
+        Hide: "Hide Context prompts in chat",
       },
       Share: {
         Title: "Share This Mask",

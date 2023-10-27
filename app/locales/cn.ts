@@ -523,6 +523,8 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+        UnHide: "在聊天中显示默认对话框",
+        Hide: "在聊天中隐藏默认对话框",        
       },
       Share: {
         Title: "分享此面具",
