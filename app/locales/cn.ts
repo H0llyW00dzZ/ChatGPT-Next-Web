@@ -11,7 +11,9 @@ const cn = {
       : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
     Content_Policy: {
       Title:
-        "您的请求因违反内容政策而被标记。\n阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
+        "您的请求因违反内容政策而被标记。",
+      SubTitle: 
+        "阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
       Reason: {
         Title: "理由",
         sexual: "性别",
