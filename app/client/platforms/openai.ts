@@ -93,7 +93,7 @@ export class ChatGPTApi implements LLMApi {
             if (flaggedCategories.length > 0) {
               const translatedReasons = flaggedCategories.map((category) => {
                 const translation =
-                  (Locale.Error.Content_Policy.Reason as any)[category];
+                  (Locale.Error.Content_Policy.Reason.Title as any)[category];
                 return translation ? translation : category; // Use category name if translation is not available
               });
               const translatedReasonText = translatedReasons.join(", ");
