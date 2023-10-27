@@ -442,6 +442,8 @@ const id: PartialLocaleType = {
       HideContext: {
         Title: "Sembunyikan Prompt Konteks",
         SubTitle: "Tidak menampilkan prompt konteks dalam obrolan",
+        UnHide: "Tampilkan Prompt konteks dalam obrolan",
+        Hide: "Sembunyikan Prompt konteks dalam obrolan",
       },
       Share: {
         Title: "Bagikan Masks Ini",
