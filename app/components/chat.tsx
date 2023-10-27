@@ -36,6 +36,8 @@ import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
 import RobotIcon from "../icons/robot.svg";
+import EyeOnIcon from "../icons/eye.svg";
+import EyeOffIcon from "../icons/eye-off.svg";
 import { escapeRegExp } from "lodash";
 
 import {
@@ -452,6 +454,8 @@ export function ChatActions(props: {
   scrollToBottom: () => void;
   showPromptHints: () => void;
   hitBottom: boolean;
+  showContextPrompts: boolean;
+  toggleContextPrompts: () => void;
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -527,6 +531,22 @@ export function ChatActions(props: {
         onClick={props.showPromptHints}
         text={Locale.Chat.InputActions.Prompt}
         icon={<PromptIcon />}
+      />
+
+      <ChatAction
+        onClick={props.toggleContextPrompts}
+        text={
+          props.showContextPrompts
+            ? Locale.Mask.Config.HideContext.UnHide
+            : Locale.Mask.Config.HideContext.Hide
+        }
+        icon={
+          props.showContextPrompts ? (
+            <EyeOffIcon />
+          ) : (
+            <EyeOnIcon />
+          )
+        }
       />
 
       <ChatAction
@@ -1367,6 +1387,8 @@ function _Chat() {
             setUserInput("/");
             onSearch("");
           }}
+          showContextPrompts={false}
+          toggleContextPrompts={() => showToast(Locale.WIP)}
         />
         <div className={styles["chat-input-panel-inner"]}>
           <textarea
