@@ -120,15 +120,14 @@ export class ChatGPTApi implements LLMApi {
                 .filter(([category, flagged]) => flagged)
                 .map(([category]) => category);
 
-              if (flaggedCategories.length > 0) {
-                const translatedReasons = flaggedCategories.map((category) => {
-                  const translation = (
-                    Locale.Error.Content_Policy.Reason as any
-                  )[category];
-                  return translation ? translation : category; // Use category name if translation is not available
-                });
-                const translatedReasonText = translatedReasons.join(", ");
-                const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
+            if (flaggedCategories.length > 0) {
+              const translatedReasons = flaggedCategories.map((category) => {
+                const translation =
+                  (Locale.Error.Content_Policy.Reason as any)[category];
+                return translation ? translation : category; // Use category name if translation is not available
+              });
+              const translatedReasonText = translatedReasons.join(", ");
+              const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n${Locale.Error.Content_Policy.SubTitle}\n`;
 
                 // Generate text-based graph for category scores
                 const categoryScores = moderationResult.category_scores;
