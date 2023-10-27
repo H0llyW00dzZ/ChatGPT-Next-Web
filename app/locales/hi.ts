@@ -4,9 +4,7 @@ import type { PartialLocaleType } from "./index";
 const hi: PartialLocaleType = {
   WIP: "जल्द ही आ रहा है...",
   Error: {
-    Unauthorized: isApp
-      ? "अवैध API कुंजी, कृपया इसे [सेटिंग्स](/#/settings) पृष्ठ पर जांचें।"
-      : "अधिकृत पहुंच नहीं है, कृपया पहुंच कोड को [ऑथ](/#/auth) पृष्ठ पर दर्ज करें, या अपना OpenAI API कुंजी दर्ज करें।",
+    Unauthorized: "अधिकृत पहुंच नहीं है, कृपया पहुंच कोड को [ऑथ](/#/auth) पृष्ठ पर दर्ज करें, या अपना OpenAI API कुंजी दर्ज करें।",
   },
   Auth: {
     Title: "पहुंच कोड आवश्यक",
@@ -163,7 +161,7 @@ const hi: PartialLocaleType = {
     CheckUpdate: "संस्करण की जाँच करें",
     IsChecking: "संस्करण की जाँच की जा रही है...",
     FoundUpdate: (x: string) => `नए संस्करण पाया गया है: ${x}`,
-    GoToUpdate: "अपड,
+    GoToUpdate: "अपड",
   },
     SendKey: "कुंजी भेजें",
     Theme: "थीम",
@@ -200,11 +198,24 @@ const hi: PartialLocaleType = {
           SubTitle:
             "केवल इस परियोजना के लिए बने CORS प्रॉक्सी के लिए लागू होता है",
         },
-
         WebDav: {
-          Endpoint: "WebDAV अंतरबिंदु",
-          UserName: "उपयोगकर्ता नाम",
-          Password: "पासवर्ड",
+          Endpoint: {
+            Name: "WebDAV अंतरबिंदु",
+            SubTitle: "WebDav अंतरबिंदु कॉन्फ़िगर करें",
+          },
+          UserName: {
+            Name: "उपयोगकर्ता नाम",
+            SubTitle: "उपयोगकर्ता नाम कॉन्फ़िगर करें",
+          },
+          Password: {
+            Name: "पासवर्ड",
+            SubTitle: "पासवर्ड कॉन्फ़िगर करें",
+          },
+          FileName: {
+            Name: "फ़ाइल का नाम",
+            SubTitle:
+              "फ़ाइल का नाम, उदाहरण के लिए: backtrackz.json (यह एक JSON फ़ाइल होनी चाहिए)",
+          },
         },
 
         UpStash: {
@@ -414,6 +425,6 @@ const hi: PartialLocaleType = {
   },
 };
 
-};
+
 
 export default hi;
