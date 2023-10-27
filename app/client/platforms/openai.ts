@@ -97,7 +97,7 @@ export class ChatGPTApi implements LLMApi {
                 return translation ? translation : category; // Use category name if translation is not available
               });
               const translatedReasonText = translatedReasons.join(", ");
-              const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n`;
+              const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n${Locale.Error.Content_Policy.SubTitle}\n`;
 
               const responseWithGraph = responseText;
               options.onFinish(responseWithGraph);
