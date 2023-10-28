@@ -18,40 +18,41 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
-export function PrivacyPage(props: { onClose?: () => void }) {
+export function PrivacyPage() {
   const navigate = useNavigate();
   const [mdText, setMdText] = useState("");
   const [pageTitle, setPageTitle] = useState("");
-  const [scrollTitle, setScrollTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [showTerms, setShowTerms] = useState(true);
-
-  const handleAgree = async () => {
-    const lang = getLang(); // Get the current language
-    const response = await fetch("privacy.json");
-    const data = await response.json();
-    const termsOfService = data[lang][1][1];
-    setShowTerms(false);
-    setMdText(`${termsOfService}`);
-    setPageTitle(data[lang][1][0]);
-    setScrollTitle(data[lang][1][1]);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const [privacyTerms, setPrivacyTerms] = useState<any>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const lang = getLang(); // Get the current language
-      const response = await fetch("privacy.json");
+    const fetchPrivacyTerms = async () => {
+      const lang = getLang();
+      const response = await fetch("./privacy.json");
       const data = await response.json();
+      setPrivacyTerms(data);
       const privacyPolicy = data[lang][0][1];
-      setMdText(`${privacyPolicy}`);
+      setMdText(privacyPolicy);
       setPageTitle(data[lang][0][0]);
-      setScrollTitle(data[lang][0][1]);
+      setDescription(data[lang][0][2]); // Assuming the description is at index 2
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    fetchData();
+    if (!privacyTerms) {
+      fetchPrivacyTerms();
+    }
+  }, [privacyTerms]);
 
-  }, []);
+  const handleAgree = () => {
+    const lang = getLang();
+    const termsOfService = privacyTerms[lang][1][1];
+    setShowTerms(false);
+    setMdText(termsOfService);
+    setPageTitle(privacyTerms[lang][1][0]);
+    setDescription(privacyTerms[lang][1][2]); // Assuming the description is at index 2
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const goChat = () => {
     navigate(Path.Chat);
@@ -82,7 +83,7 @@ export function PrivacyPage(props: { onClose?: () => void }) {
           <Markdown content={mdText} />
         </div>
       </div>
-      {showTerms && (
+      {showTerms ? (
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
@@ -101,8 +102,7 @@ export function PrivacyPage(props: { onClose?: () => void }) {
             />
           </div>
         </div>
-      )}
-      {!showTerms && (
+      ) : (
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
