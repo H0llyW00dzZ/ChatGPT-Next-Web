@@ -10,6 +10,7 @@ import Locale, {
 
 import ConfirmIcon from "../icons/confirm.svg";
 import LoadingIcon from "../icons/three-dots.svg";
+import CloseIcon from "../icons/close.svg";
 import dynamic from "next/dynamic";
 import { copyToClipboard } from "../utils";
 
@@ -17,46 +18,41 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
 
-export function PrivacyPage(props: { onClose?: () => void }) {
+export function PrivacyPage() {
   const navigate = useNavigate();
   const [mdText, setMdText] = useState("");
   const [pageTitle, setPageTitle] = useState("");
-  const [scrollTitle, setScrollTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [showTerms, setShowTerms] = useState(true);
+  const [privacyTerms, setPrivacyTerms] = useState<any>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const lang = getLang(); // Get the current language
-      const response = await fetch("privacy.json");
+    const fetchPrivacyTerms = async () => {
+      const lang = getLang();
+      const response = await fetch("./privacy.json");
       const data = await response.json();
+      setPrivacyTerms(data);
       const privacyPolicy = data[lang][0][1];
-      const termsOfService = data[lang][1][1];
-      setMdText(`${privacyPolicy}`);
+      setMdText(privacyPolicy);
       setPageTitle(data[lang][0][0]);
-      setScrollTitle(data[lang][0][1]);
+      setDescription(data[lang][0][2]); // Assuming the description is at index 2
+      window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    fetchData();
+    if (!privacyTerms) {
+      fetchPrivacyTerms();
+    }
+  }, [privacyTerms]);
 
-    const handleScroll = () => {
-      const privacyTitleElement = document.getElementById("privacy-title");
-      const termsTitleElement = document.getElementById("terms-title");
-
-      if (privacyTitleElement && termsTitleElement) {
-        const privacyTitleRect = privacyTitleElement.getBoundingClientRect();
-        const termsTitleRect = termsTitleElement.getBoundingClientRect();
-
-        if (privacyTitleRect.top < 0 && termsTitleRect.top >= 1) {
-          setScrollTitle("Privacy Policy");
-        } else {
-          setScrollTitle("Terms of Service");
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const handleAgree = () => {
+    const lang = getLang();
+    const termsOfService = privacyTerms[lang][1][1];
+    setShowTerms(false);
+    setMdText(termsOfService);
+    setPageTitle(privacyTerms[lang][1][0]);
+    setDescription(privacyTerms[lang][1][2]); // Assuming the description is at index 2
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const goChat = () => {
     navigate(Path.Chat);
@@ -64,19 +60,6 @@ export function PrivacyPage(props: { onClose?: () => void }) {
 
   const copy = () => {
     copyToClipboard(mdText);
-  };
-
-  const handleAgree = async () => {
-    const lang = getLang(); // Get the current language
-    const response = await fetch("privacy.json");
-    const data = await response.json();
-    const privacyPolicy = data[lang][1][1];
-    const termsOfService = data[lang][1][1];
-    setShowTerms(false);
-    setMdText(`${termsOfService}`);
-    setPageTitle(data[lang][1][0]);
-    setScrollTitle(data[lang][0][0]);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page
   };
 
   return (
@@ -100,7 +83,7 @@ export function PrivacyPage(props: { onClose?: () => void }) {
           <Markdown content={mdText} />
         </div>
       </div>
-      {showTerms && (
+      {showTerms ? (
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
@@ -110,9 +93,16 @@ export function PrivacyPage(props: { onClose?: () => void }) {
               bordered
             />
           </div>
+          <div className="window-action-button">
+            <IconButton
+              text={Locale.UI.Cancel}
+              icon={<CloseIcon />}
+              bordered
+              onClick={() => navigate(-1)}
+            />
+          </div>
         </div>
-      )}
-      {!showTerms && (
+      ) : (
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
@@ -120,6 +110,14 @@ export function PrivacyPage(props: { onClose?: () => void }) {
               icon={<ConfirmIcon />}
               onClick={goChat}
               bordered
+            />
+          </div>
+          <div className="window-action-button">
+            <IconButton
+              text={Locale.UI.Cancel}
+              icon={<CloseIcon />}
+              bordered
+              onClick={() => navigate(-1)}
             />
           </div>
         </div>
