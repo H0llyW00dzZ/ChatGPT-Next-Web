@@ -555,6 +555,16 @@ export class ChatGPTApi implements LLMApi {
           }
         }
 
+        console.log("[Text Moderation] flagged:", moderationResult.flagged); // Log the flagged result
+
+        if (moderationResult.flagged) {
+          const flaggedCategories = Object.entries(moderationResult.categories)
+            .filter(([category, flagged]) => flagged)
+            .map(([category]) => category);
+
+          console.log("[Text Moderation] flagged categories:", flaggedCategories); // Log the flagged categories
+        }
+
         return moderationResult as ModerationResponse;
       } else {
         console.error("Moderation response is empty");
