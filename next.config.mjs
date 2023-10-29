@@ -59,6 +59,11 @@ if (mode !== "export") {
         source: "/api/:path*",
         headers: CorsHeaders,
       },
+      {
+        source: '/api/backend/:path*',
+        destination: '/api/backend',
+        headers: CorsHeaders,
+      },
     ];
   };
 
