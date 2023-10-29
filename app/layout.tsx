@@ -3,13 +3,8 @@ import "./styles/globals.scss";
 import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
-import { type Metadata, type Viewport } from "next";
+import { type Metadata } from "next";
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-};
 
 export const themeColor = [
   { media: "(prefers-color-scheme: light)", color: "#fafafa" },
@@ -36,7 +31,6 @@ export default function RootLayout({
         <meta name="config" content={JSON.stringify(getClientConfig())} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/serviceWorkerRegister.js" defer></script>
-        <meta name="viewport" content={JSON.stringify(viewport)} />
         <meta name="theme-color" content={JSON.stringify(themeColor)} />
       </head>
       <body>{children}</body>
