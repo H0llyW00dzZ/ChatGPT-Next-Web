@@ -58,6 +58,12 @@ const DEFAULT_SYNC_STATE = {
     filename: "",
   },
 
+  gosync: {
+    filename: "",
+    username: STORAGE_KEY,
+    token: "",
+  },
+
   lastSyncTime: 0,
   lastProvider: "",
   lastUpdateTime: 0,
@@ -226,11 +232,14 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1.1,
+    version: 1.2, // golang syncing 
     migrate(persistedState, version) {
       const newState = persistedState as typeof DEFAULT_SYNC_STATE;
       if (version < 1.1) {
         newState.upstash.username = STORAGE_KEY;
+      }
+      if (version < 1.2) {
+        newState.gosync.username = STORAGE_KEY;
       }
       return newState as any;
     },

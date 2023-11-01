@@ -283,6 +283,14 @@ const cn = {
           UserName: "备份名称",
           Password: "UpStash Redis REST Token",
         },
+
+        GoSync: {
+          Endpoint: "GoSync REST URL",
+          UserName: "备份名称",
+          Password: "GoSync REST 令牌",
+          FileName: "文件名",
+        },
+
       },
 
       LocalState: "本地数据",

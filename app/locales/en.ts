@@ -288,6 +288,14 @@ const en: LocaleType = {
           UserName: "Backup Name",
           Password: "UpStash Redis REST Token",
         },
+
+        GoSync: {
+          Endpoint: "GoSync REST Url",
+          UserName: "Backup Name",
+          Password: "GoSync REST Token",
+          FileName: "File Name",
+        },
+
       },
 
       LocalState: "Local Data",

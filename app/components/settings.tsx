@@ -556,6 +556,11 @@ function SyncConfigModal(props: { onClose?: () => void }) {
             </List>
           </>
         )}
+        {syncStore.provider === ProviderType.GoSync && (
+          <List>
+            <ListItem title={Locale.WIP}></ListItem>
+          </List>
+        )}
       </Modal>
     </div>
   );
