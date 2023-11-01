@@ -262,6 +262,14 @@ const id: PartialLocaleType = {
               "Pastikan Anda memiliki izin untuk sinkronisasi. Aktifkan Privat & Publik di sana.",
           },
         },
+
+        GoSync: {
+          Endpoint: "URL GoSync REST",
+          UserName: "Nama Backup",
+          Password: "Token GoSync REST",
+          FileName: "Nama File",
+        },
+
       },
       LocalState: "Data Lokal",
       Overview: (overview: any) => {
