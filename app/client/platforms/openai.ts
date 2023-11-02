@@ -207,7 +207,7 @@ export class ChatGPTApi implements LLMApi {
          */
         const { model, ...imagePayload } = requestPayloads.image;
         requestPayload = imagePayload;
-      } else if (defaultModel.includes("fanw-json-eval" || "babbage-002" || "davinci-002")) {
+      } else if (defaultModel.includes("fanw-json-eval")) {
         /**
          * Use the legacy payload structure
          */
