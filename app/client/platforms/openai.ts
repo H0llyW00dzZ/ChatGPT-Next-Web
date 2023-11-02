@@ -161,13 +161,6 @@ export class ChatGPTApi implements LLMApi {
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
       },
-      /** Legacy Models
-       * coming soon
-       */
-      legacy: {
-        prompt: messages,
-        model: modelConfig.model,
-      },
       image: {
         prompt: prompt,
         n: n,
@@ -191,12 +184,10 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const dallemodels = defaultModel.includes("DALL-E-2");
-      const legacyModels = defaultModel.includes("fanw-json-eval" || "babbage-002" || "davinci-002");
+      const dallemodels =
+        defaultModel.includes("DALL-E-2")
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
-        : legacyModels
-        ? this.path(OpenaiPath.LegacyPath)
         : this.path(OpenaiPath.ChatPath);
       let requestPayload;
       if (
@@ -207,11 +198,6 @@ export class ChatGPTApi implements LLMApi {
          */
         const { model, ...imagePayload } = requestPayloads.image;
         requestPayload = imagePayload;
-      } else if (defaultModel.includes("fanw-json-eval")) {
-        /**
-         * Use the legacy payload structure
-         */
-        requestPayload = requestPayloads.legacy;
       } else {
         /**
          * Use the chat model payload structure
