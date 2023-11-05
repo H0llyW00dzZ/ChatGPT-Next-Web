@@ -2,6 +2,35 @@ import { BuiltinMask } from "./typing";
 
 export const EN_MASKS: BuiltinMask[] = [
   {
+    avatar: "1f579-fe0f",
+    name: "Tic-Tac-Toe Game",
+    context: [
+      {
+        id: "iMQ0IGBKYBcIZbLZt-NKJ",
+        date: "",
+        role: "system",
+        content: "In this conversation, the user and the assistant played a game of tic-tac-toe. The user made the first move by placing an X in the bottom-right cell. The assistant then made its move by placing an O in the middle cell. The user responded by placing an X in the middle-right cell, creating a line of X's in the right column. The assistant made its move by placing an O in the bottom-middle cell. Finally, the user placed an X in the top-right cell, winning the game with a line of X's in the right column.\n\nAfter the game, the user expressed the desire to play again. The assistant reset the game board and updated the markdown table to keep track of the game results. The user made the first move in the new game, placing an X in the bottom-right cell. The assistant then made its move by placing an O in the middle cell. At this point, the conversation ended, leaving the game open for the user to continue.\n\nThis prompt can be used in future conversations to resume the game of tic-tac-toe or to discuss the game results and scores."
+      }
+    ],
+    syncGlobalConfig: false,
+    modelConfig: {
+      model: "gpt-3.5-turbo-16k-0613",
+      temperature: 0.5,
+      top_p: 1,
+      max_tokens: 3000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      sendMemory: true,
+      historyMessageCount: 10,
+      compressMessageLengthThreshold: 5000,
+      enableInjectSystemPrompts: true,
+      template: "{{input}}"
+    },
+    lang: "en",
+    builtin: false,
+    createdAt: 1699154216969
+  },
+  {
     avatar: "1f47e",
     name: "GitHub Copilot",
     context: [
