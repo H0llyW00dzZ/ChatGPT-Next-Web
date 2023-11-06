@@ -156,11 +156,19 @@ export const DEFAULT_MODELS = [
     available: true,
   },
   {
-    name: "DALL-E-2",
+    name: "dall-e-2",
     available: true,
   },
   {
-    name: "DALL-E-2-BETA-INSTRUCT-0613",
+    name: "dall-e-3",
+    available: true,
+  },
+  {
+    name: "dall-e-2-beta-instruct-vision",
+    available: true,
+  },
+  {
+    name: "dall-e-3-beta-instruct-vision",
     available: true,
   },
 ] as const;
