@@ -789,6 +789,8 @@ function _Chat() {
         showToast(Locale.Chat.Commands.UI.MasksSuccess);
       });
     },
+    // Currently the feature to summarize a conversation as manual is not yet enabled.
+    summarize: () => chatStore.summarizeSession(),
   });  
 
   // only search prompts when user input is short
