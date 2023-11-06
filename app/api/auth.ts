@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import md5 from "spark-md5";
+import binary from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
 
 function getIP(req: NextRequest) {
@@ -30,7 +30,7 @@ export function auth(req: NextRequest) {
   // check if it is openai api key or user token
   const { accessCode, apiKey: token } = parseApiKey(authToken);
 
-  const hashedCode = md5.hash(accessCode ?? "").trim();
+  const hashedCode = binary.hash(accessCode ?? "").trim();
 
   const serverConfig = getServerSideConfig();
   console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);

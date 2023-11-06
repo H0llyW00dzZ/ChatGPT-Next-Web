@@ -1,4 +1,4 @@
-import md5 from "spark-md5";
+import binary from "spark-md5";
 
 declare global {
   namespace NodeJS {
@@ -26,7 +26,7 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   try {
     const codes = (code?.split(",") ?? [])
       .filter((v) => !!v)
-      .map((v) => md5.hash(v.trim()));
+      .map((v) => binary.hash(v.trim()));
     return new Set(codes);
   } catch (e) {
     return new Set();
@@ -42,13 +42,13 @@ export const getServerSideConfig = () => {
 
   const apiKey = process.env.OPENAI_API_KEY;
   const accessCodes = process.env.CODE?.split(",") ?? [];
-  const codes = new Set(accessCodes.map((code) => md5.hash(code.trim())));
+  const codes = new Set(accessCodes.map((code) => binary.hash(code.trim())));
   const needCode = codes.size > 0;
 
   const apiKeys = new Map<string, string>();
   accessCodes.forEach((code, index) => {
     const apiKeyIndex = index < (apiKey?.split(",")?.length ?? 0) ? index : 0;
-    const hashedCode = md5.hash(code.trim());
+    const hashedCode = binary.hash(code.trim());
     const apiKeyValue = (apiKey?.split(",")?.[apiKeyIndex]?.trim() ?? "")!;
     apiKeys.set(hashedCode, apiKeyValue);
   });
