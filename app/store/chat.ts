@@ -543,6 +543,7 @@ export const useChatStore = createPersistStore(
                   };
                   session.messages = [systemMessage, ...session.messages];
                 });
+                showToast(Locale.Chat.Commands.UI.SummarizeSuccess);
               },
             });
           }
@@ -622,9 +623,11 @@ export const useChatStore = createPersistStore(
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
+                showToast(Locale.Chat.Commands.UI.SummarizeSuccess);
               },
               onError(err) {
                 console.error("[Summarize] ", err);
+                showToast(Locale.Chat.Commands.UI.SummarizeFail);
               },
             });
           }
