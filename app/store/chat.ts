@@ -495,12 +495,12 @@ export const useChatStore = createPersistStore(
       
           const topicModel = getSummarizeModel(session.mask.modelConfig.model);
       
-          if (topicModel === "DALL-E-2-BETA-INSTRUCT-0613" ||  topicModel === "DALL-E-2") {
+          if (topicModel === "dall-e-2-beta-instruct-vision" || topicModel === "dall-e-3-beta-instruct-vision" || topicModel === "dall-e-2" || topicModel === "dall-e-3") {
             // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: topicMessages,
               config: {
-                model: "gpt-3.5-turbo-0613",
+                model: "gpt-4-vision-preview",
               },
               whitelist: true,
               onFinish(message) {
@@ -582,7 +582,7 @@ export const useChatStore = createPersistStore(
         ) {
           const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
 
-          if (summarizeModel === "DALL-E-2-BETA-INSTRUCT-0613" || summarizeModel === "DALL-E-2") {
+          if (summarizeModel === "dall-e-2-beta-instruct-vision" || summarizeModel === "dall-e-3-beta-instruct-vision" || summarizeModel === "dall-e-2" || summarizeModel === "dall-e-3") {
             // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
             api.llm.chat({
               messages: toBeSummarizedMsgs.concat(
@@ -592,7 +592,7 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, model: "gpt-3.5-turbo-0613", stream: true },
+              config: { ...modelConfig, model: "gpt-4-vision-preview", stream: true },
               whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
