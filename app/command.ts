@@ -47,6 +47,7 @@ interface ChatCommands {
   load?: Command;
   copymemoryai?: Command;
   updatemasks?: Command;
+  summarize?: Command;
 }
 
 export const ChatCommandPrefix = ":";

@@ -62,9 +62,12 @@ const id: PartialLocaleType = {
       load: "Muat Percakapan Sesi",
       copymemoryai: "Salin sesi memori prompt AI",
       updatemasks: "Perbarui sesi memori prompt untuk sebuah Masks",
+      summarize: "Rangkum sesi obrolan saat ini",
       UI: {
         MasksSuccess: "Berhasil memperbarui sesi Masks",
         MasksFail: "Gagal memperbarui sesi Masks",
+        SummarizeSuccess: "Berhasil merangkum sesi obrolan ini",
+        SummarizeFail: "Gagal merangkum sesi obrolan ini",
       },
     },
     InputActions: {
