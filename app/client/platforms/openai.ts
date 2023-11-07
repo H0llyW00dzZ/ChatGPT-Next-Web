@@ -150,11 +150,11 @@ export class ChatGPTApi implements LLMApi {
       .replace(/n:\s*\d+\b/i, "")
       .replace(/size:\s*\d+x\d+\b/i, "")
       .trim();
-
+    // this instruct still wip
     function getModelForInstructVersion(inputModel: string): string {
       const modelMap: Record<string, string> = {
-        'dall-e-2-beta-instruct-vision': 'dall-e-2',
-        'dall-e-3-beta-instruct-vision': 'dall-e-3',
+        "dall-e-2-beta-instruct-vision": "dall-e-2",
+        "dall-e-3-beta-instruct-vision": "dall-e-3",
       };
       return modelMap[inputModel] || inputModel;
     }
@@ -170,7 +170,8 @@ export class ChatGPTApi implements LLMApi {
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
         // beta test for new model's since it consumed much tokens
-        max_tokens: modelConfig.model.includes("gpt-4-1106-preview") || modelConfig.model.includes("gpt-4-vision-preview") ? modelConfig.max_tokens : undefined,
+        // model "gpt-4-vision-preview" required this max_tokens and max is 4096
+        max_tokens: modelConfig.model.includes("gpt-4-vision-preview") ? modelConfig.max_tokens : undefined,
       },
       image: {
         model: actualModel,
