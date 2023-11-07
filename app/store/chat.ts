@@ -402,7 +402,7 @@ export const useChatStore = createPersistStore(
 
         // system prompts, to get close to OpenAI Web ChatGPT
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
-        let systemPrompts = shouldInjectSystemPrompts ? [] : [];
+        let systemPrompts: ChatMessage[] = shouldInjectSystemPrompts ? [] : [];
 
         if (shouldInjectSystemPrompts) {
           const model = modelConfig.model;
@@ -422,7 +422,8 @@ export const useChatStore = createPersistStore(
             }),
           });
           console.log("[Global System Prompt] ", systemPrompt.content);
-        }
+          systemPrompts.push(systemPrompt);
+        }        
 
         // long term memory
         const shouldSendLongTermMemory =
