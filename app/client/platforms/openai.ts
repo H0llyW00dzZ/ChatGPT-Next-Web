@@ -180,7 +180,7 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    if (defaultModel.includes("dall-e-2" || "dall-e-3")) {
+    if (defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3")) {
       console.log("[Request] openai payload: ", {
         image: requestPayloads.image,
       });
