@@ -80,9 +80,9 @@ function createEmptySession(): ChatSession {
   };
 }
 
-function getSummarizeModel(currentModel: string) {
+// fix known issue where summarize is not using the current model selected
+function getSummarizeModel(currentModel: string, modelConfig: ModelConfig) {
   // should be depends of user selected
-  const modelConfig = useAppConfig.getState().modelConfig;
   return currentModel.startsWith("gpt") ? modelConfig.model : currentModel;
 }
 
@@ -493,7 +493,8 @@ export const useChatStore = createPersistStore(
             }),
           );
       
-          const topicModel = getSummarizeModel(session.mask.modelConfig.model);
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
       
           if (topicModel === "dall-e-2-beta-instruct-vision" || topicModel === "dall-e-3-beta-instruct-vision" || topicModel === "dall-e-2" || topicModel === "dall-e-3") {
             // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
@@ -583,7 +584,8 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
-          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
 
           if (summarizeModel === "dall-e-2-beta-instruct-vision" || summarizeModel === "dall-e-3-beta-instruct-vision" || summarizeModel === "dall-e-2" || summarizeModel === "dall-e-3") {
             // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
