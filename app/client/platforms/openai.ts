@@ -151,6 +151,15 @@ export class ChatGPTApi implements LLMApi {
       .replace(/size:\s*\d+x\d+\b/i, "")
       .trim();
 
+    function getModelForInstructVersion(inputModel: string): string {
+      const modelMap: Record<string, string> = {
+        'dall-e-2-beta-instruct-vision': 'dall-e-2',
+        'dall-e-3-beta-instruct-vision': 'dall-e-3',
+      };
+      return modelMap[inputModel] || inputModel;
+    }
+    const actualModel = getModelForInstructVersion(modelConfig.model);
+
     const requestPayloads = {
       chat: {
         messages,
@@ -162,7 +171,7 @@ export class ChatGPTApi implements LLMApi {
         top_p: modelConfig.top_p,
       },
       image: {
-        model: modelConfig.model,
+        model: actualModel,
         prompt: prompt,
         n: n,
         size: size,
@@ -185,14 +194,14 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       const dallemodels =
-        defaultModel.includes("dall-e-2" || "dall-e-3")
+        defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3");
+
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
         : this.path(OpenaiPath.ChatPath);
+
       let requestPayload;
-      if (
-        defaultModel.includes("dall-e-2" || "dall-e-3")
-      ) {
+      if (dallemodels) {
         /**
          * Use the image payload structure
          */
@@ -251,13 +260,13 @@ export class ChatGPTApi implements LLMApi {
               const size = requestPayloads.image.size;
               const defaultModel = modelConfig.model;
 
-              if (defaultModel.includes("dall-e-2" || "dall-e-3")) {
+              if (defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3")) {
                 const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}`;
               }
 
-              if (defaultModel.includes("dall-e-2-beta-instruct-vision" || "dall-e-3-beta-instruct-vision")) {
+              if (defaultModel.includes("dall-e-2-beta-instruct-vision") || defaultModel.includes("dall-e-3-beta-instruct-vision")) {
                 const instructx = await fetch(
                   (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
                   {
@@ -271,6 +280,8 @@ export class ChatGPTApi implements LLMApi {
                       presence_penalty: modelConfig.presence_penalty,
                       frequency_penalty: modelConfig.frequency_penalty,
                       top_p: modelConfig.top_p,
+                      // have to add this max_tokens for dall-e instruct
+                      max_tokens: modelConfig.max_tokens,
                     }),
                     headers: getHeaders(),
                   }
@@ -292,6 +303,7 @@ export class ChatGPTApi implements LLMApi {
                   presence_penalty: modelConfig.presence_penalty,
                   frequency_penalty: modelConfig.frequency_penalty,
                   top_p: modelConfig.top_p,
+                  max_tokens: modelConfig.max_tokens,
                 };
 
                 const instructionResponse = await fetch(
