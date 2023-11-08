@@ -390,6 +390,10 @@ const id: PartialLocaleType = {
       SubTitle:
         "Gaya gambar yang dihasilkan\nHarus menjadi salah satu dari cerah atau alami\nKonfigurasi ini hanya didukung untuk dall-e-3",
     },
+    SysFingerPrint: {
+      Title: "Sidik Jari Sistem alias Benih",
+      SubTitle: "Sebuah sidik jari mewakili konfigurasi backend yang digunakan oleh model.",
+    },
     TextModeration: {
       Title: "Moderasi Teks",
       SubTitle: "Moderasi Teks untuk memeriksa apakah konten sesuai dengan kebijakan penggunaan OpenAI.",
