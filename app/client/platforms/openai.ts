@@ -57,6 +57,20 @@ export class ChatGPTApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? "";
   }
 
+  /** System Fingerprint & Max Tokens
+   * Author : @H0llyW00dzZ
+   * This method should be a member of the ChatGPTApi class, not nested inside another method
+   **/
+  private getNewStuff(modelConfig: any): number | undefined {
+    // Logic for determining `max_tokens` and `system_fingerprint` based on the model
+    // note : codebase still looks bad hahaha, might refactor this later for list models name.
+    if (modelConfig.model.includes("gpt-4-1160-preview") || modelConfig.model.includes("gpt-4-vision-preview")) {
+      return modelConfig.max_tokens && modelConfig.system_fingerprint;
+    }
+    // Return undefined or any default value if the condition does not match
+    return undefined;
+  }
+
   async chat(options: ChatOptions) {
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
@@ -165,7 +179,8 @@ export class ChatGPTApi implements LLMApi {
         top_p: modelConfig.top_p,
         // beta test for new model's since it consumed much tokens
         // max is 4096
-        max_tokens: modelConfig.model.includes("gpt-4-1160-preview") || modelConfig.model.includes("gpt-4-vision-preview") ? modelConfig.max_tokens : undefined,
+        max_tokens: this.getNewStuff(modelConfig),
+        system_fingerprint: this.getNewStuff(modelConfig),
       },
       image: {
         model: actualModel,
