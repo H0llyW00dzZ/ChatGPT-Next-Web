@@ -61,14 +61,24 @@ export class ChatGPTApi implements LLMApi {
    * Author : @H0llyW00dzZ
    * This method should be a member of the ChatGPTApi class, not nested inside another method
    **/
-  private getNewStuff(modelConfig: any): number | undefined {
+  private getNewStuff(
     // Logic for determining `max_tokens` and `system_fingerprint` based on the model
     // note : codebase still looks bad hahaha, might refactor this later for list models name.
-    if (modelConfig.model.includes("gpt-4-1160-preview") || modelConfig.model.includes("gpt-4-vision-preview")) {
-      return modelConfig.max_tokens && modelConfig.system_fingerprint;
+    model: string,
+    max_tokens: number | undefined,
+    system_fingerprint: string | undefined
+  ): { max_tokens?: number; system_fingerprint?: string } {
+    const modelConfig = {
+      ...useAppConfig.getState().modelConfig,
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+    };
+    if (model.includes("gpt-4-1106-preview") || model.includes("gpt-4-vision-preview")) {
+      return {
+        max_tokens: max_tokens !== undefined ? max_tokens : modelConfig.max_tokens,
+        system_fingerprint: system_fingerprint !== undefined ? system_fingerprint : modelConfig.system_fingerprint,
+      };
     }
-    // Return undefined or any default value if the condition does not match
-    return undefined;
+    return {}; // Return an empty object if the condition doesn't match
   }
 
   async chat(options: ChatOptions) {
@@ -167,6 +177,11 @@ export class ChatGPTApi implements LLMApi {
       return modelMap[inputModel] || inputModel;
     }
     const actualModel = getModelForInstructVersion(modelConfig.model);
+    const { max_tokens, system_fingerprint } = this.getNewStuff(
+      modelConfig.model,
+      modelConfig.max_tokens,
+      modelConfig.system_fingerprint
+    );
 
     const requestPayloads = {
       chat: {
@@ -179,8 +194,9 @@ export class ChatGPTApi implements LLMApi {
         top_p: modelConfig.top_p,
         // beta test for new model's since it consumed much tokens
         // max is 4096
-        max_tokens: this.getNewStuff(modelConfig),
-        system_fingerprint: this.getNewStuff(modelConfig),
+        ...{ max_tokens }, // Spread the max_tokens value
+        // not yet ready
+        //...{ system_fingerprint }, // Spread the system_fingerprint value
       },
       image: {
         model: actualModel,
