@@ -136,15 +136,9 @@ export class ChatGPTApi implements LLMApi {
     /**
      * DALL·E Models
      * Author: @H0llyW00dzZ
-     * usage in this chat: prompt n: <number> size: <width>x<height>
-     * Example: Andromeda Galaxy n: 3 size: 1024x1024
+     * Usage in this chat: prompt
+     * Example: A Best Picture of Andromeda Galaxy
      **/
-
-    const nMatch = userMessage.match(/n:\s*(\d+)\b/i);
-    const sizeMatch = userMessage.match(/size:\s*(\d+x\d+)\b/i);
-
-    const n = nMatch ? parseInt(nMatch[1]) : 1;
-    const size = sizeMatch ? sizeMatch[1] : "1024x1024";
 
     const prompt = userMessage
       .replace(/n:\s*\d+\b/i, "")
@@ -176,8 +170,10 @@ export class ChatGPTApi implements LLMApi {
       image: {
         model: actualModel,
         prompt: prompt,
-        n: n,
-        size: size,
+        n: modelConfig.n,
+        quality: modelConfig.quality,
+        style: modelConfig.style,
+        size: modelConfig.size,
       },
     };
 
@@ -206,10 +202,18 @@ export class ChatGPTApi implements LLMApi {
       let requestPayload;
       if (dallemodels) {
         /**
+         * Author : @H0llyW00dzZ
          * Use the image payload structure
          */
-        // const { model, ...imagePayload } = requestPayloads.image;
-        requestPayload = requestPayloads.image;
+        if (defaultModel.includes("dall-e-2")) {
+          /**
+           * Magic TypeScript payload parameter 🎩 🪄
+           **/
+          const { quality, style, ...imagePayload } = requestPayloads.image;
+          requestPayload = imagePayload;
+        } else {
+          requestPayload = requestPayloads.image;
+        }
       } else {
         /**
          * Use the chat model payload structure
