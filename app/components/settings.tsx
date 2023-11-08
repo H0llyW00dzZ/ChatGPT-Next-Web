@@ -50,7 +50,13 @@ import Locale, {
 } from "../locales";
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
-import { Path, RELEASE_URL, STORAGE_KEY, UPDATE_URL } from "../constant";
+import {
+  OPENAI_BASE_URL,
+  Path,
+  RELEASE_URL,
+  STORAGE_KEY,
+  UPDATE_URL,
+} from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
@@ -681,13 +687,19 @@ export function Settings() {
     console.log("[Update] remote version ", updateStore.remoteVersion);
   }
 
+  const accessStore = useAccessStore();
+  const shouldHideBalanceQuery = useMemo(() => {
+    const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
+    return accessStore.hideBalanceQuery || isOpenAiUrl;
+  }, [accessStore.hideBalanceQuery, accessStore.openaiUrl]);
+
   const usage = {
     used: updateStore.used,
     subscription: updateStore.subscription,
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage(force = false) {
-    if (accessStore.hideBalanceQuery) {
+    if (shouldHideBalanceQuery) {
       return;
     }
 
@@ -697,7 +709,6 @@ export function Settings() {
     });
   }
 
-  const accessStore = useAccessStore();
   const enabledAccessControl = useMemo(
     () => accessStore.enabledAccessControl(),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -709,7 +720,7 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.token.startsWith("sess-");
+  const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
     checkUpdate();
@@ -987,7 +998,9 @@ export function Settings() {
                 type="text"
                 placeholder={Locale.Settings.AccessCode.Placeholder}
                 onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
+                  accessStore.update(
+                    (access) => (access.accessCode = e.currentTarget.value),
+                  );
                 }}
               />
             </ListItem>
@@ -1006,7 +1019,9 @@ export function Settings() {
                   value={accessStore.openaiUrl}
                   placeholder="https://api.openai.com/"
                   onChange={(e) =>
-                    accessStore.updateOpenAiUrl(e.currentTarget.value)
+                    accessStore.update(
+                      (access) => (access.openaiUrl = e.currentTarget.value),
+                    )
                   }
                 ></input>
               </ListItem>
@@ -1019,14 +1034,16 @@ export function Settings() {
                   type="text"
                   placeholder={Locale.Settings.Token.Placeholder}
                   onChange={(e) => {
-                    accessStore.updateToken(e.currentTarget.value);
+                    accessStore.update(
+                      (access) => (access.token = e.currentTarget.value),
+                    );
                   }}
                 />
               </ListItem>
             </>
           ) : null}
 
-          {!accessStore.hideBalanceQuery ? (
+          {!shouldHideBalanceQuery ? (
             <ListItem
               title={Locale.Settings.Usage.Title}
               subTitle={
