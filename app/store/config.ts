@@ -76,6 +76,10 @@ export const DEFAULT_CONFIG = {
      * `Natural` causes the model to produce more natural, less hyper-real looking images. 
      */
     style: "vivid", // Only DALL·E-3 for DALL·E-2 not really needed
+    /** System Fingerprint for New Models
+     * Author: @H0llyW00dzZ
+     **/
+    system_fingerprint: "",
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -139,6 +143,11 @@ export const ModalConfigValidator = {
     const validStyles = ["vivid", "natural"];
     return validStyles.includes(x) ? x : "vivid";
   },
+  system_fingerprint(x: string) {
+    // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit
+    const regex = /^fp_[0-9a-fA-F]{10}$/;
+    return regex.test(x) ? x : "";
+  }, 
 };
 
 export const useAppConfig = createPersistStore(
@@ -183,7 +192,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.2, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -225,6 +234,13 @@ export const useAppConfig = createPersistStore(
           quality: "hd",
           size: "1024x1024",
           style: "vivid",
+        };
+      }
+    // currently doing experimental with new system called `fingerprint` hahaha
+      if (version < 4.2) {
+        state.modelConfig = {
+          ...state.modelConfig,
+          system_fingerprint: "",
         };
       }
 
