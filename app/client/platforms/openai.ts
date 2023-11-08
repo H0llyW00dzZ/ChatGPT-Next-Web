@@ -71,7 +71,8 @@ export class ChatGPTApi implements LLMApi {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
     };
-    if (model.includes("gpt-4-1106-preview") || model.includes("gpt-4-vision-preview")) {
+    const isNewModel = model.startsWith("gpt-4-") && model.endsWith("-preview");
+    if (isNewModel) {
       return {
         system_fingerprint: system_fingerprint !== undefined ? system_fingerprint : modelConfig.system_fingerprint,
       };
