@@ -199,7 +199,7 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
-    if (defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3")) {
+    if (defaultModel.startsWith("dall-e")) {
       console.log("[Request] openai payload: ", {
         image: requestPayloads.image,
       });
@@ -215,7 +215,7 @@ export class ChatGPTApi implements LLMApi {
 
     try {
       const dallemodels =
-        defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3");
+        defaultModel.startsWith("dall-e");
 
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
@@ -288,14 +288,15 @@ export class ChatGPTApi implements LLMApi {
               const index = requestPayloads.image.n - 1;
               const size = requestPayloads.image.size;
               const defaultModel = modelConfig.model;
+              const InstrucModel = defaultModel.startsWith("dall-e") && defaultModel.endsWith("-vision");
 
-              if (defaultModel.includes("dall-e-2") || defaultModel.includes("dall-e-3")) {
+              if (defaultModel.startsWith("dall-e")) {
                 const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
 
                 responseText = `${imageDescription}`;
               }
 
-              if (defaultModel.includes("dall-e-2-beta-instruct-vision") || defaultModel.includes("dall-e-3-beta-instruct-vision")) {
+              if (InstrucModel) {
                 const instructx = await fetch(
                   (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
                   {
