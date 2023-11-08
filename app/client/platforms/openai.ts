@@ -164,10 +164,6 @@ export class ChatGPTApi implements LLMApi {
      * Example: A Best Picture of Andromeda Galaxy
      **/
 
-    const prompt = userMessage
-      .replace(/n:\s*\d+\b/i, "")
-      .replace(/size:\s*\d+x\d+\b/i, "")
-      .trim();
     // this instruct still wip
     function getModelForInstructVersion(inputModel: string): string {
       const modelMap: Record<string, string> = {
@@ -200,7 +196,7 @@ export class ChatGPTApi implements LLMApi {
       },
       image: {
         model: actualModel,
-        prompt: prompt,
+        prompt: userMessage,
         n: modelConfig.n,
         quality: modelConfig.quality,
         style: modelConfig.style,
