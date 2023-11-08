@@ -11,7 +11,8 @@ const DANGER_CONFIG = {
   hideUserApiKey: serverConfig.hideUserApiKey,
   disableGPT4: serverConfig.disableGPT4,
   hideBalanceQuery: serverConfig.hideBalanceQuery,
-  enableVercelWebAnalytics: serverConfig.isVercelWebAnalytics,
+  disableFastLink: serverConfig.disableFastLink,
+  customModels: serverConfig.customModels,
 };
 
 declare global {

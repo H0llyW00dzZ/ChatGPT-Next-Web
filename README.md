@@ -159,7 +159,7 @@ Your openai api key.
 
 ### `CODE` (optional)
 
-Access passsword, separated by comma.
+Access password, separated by comma.
 
 ### `BASE_URL` (optional)
 
@@ -185,17 +185,24 @@ If you do not want users to input their own API key, set this value to 1.
 
 If you do not want users to use GPT-4, set this value to 1.
 
-### `HIDE_BALANCE_QUERY` (optional)
+### `ENABLE_BALANCE_QUERY` (optional)
 
 > Default: Empty
 
-If you do not want users to query balance, set this value to 1.
+If you do want users to query balance, set this value to 1, or you should set it to 0.
 
-### MODEL_LIST (optional)
-If you want to reduce the number of options in the model list, you can set it to a custom list, such as "gpt3.5, gpt4". 
-This is particularly useful when deploying ChatGPT on Azure.
+### `DISABLE_FAST_LINK` (optional)
 
 > Default: Empty
+
+If you want to disable parse settings from url, set this to 1.
+
+### `CUSTOM_MODELS` (optional)
+
+> Default: Empty
+> Example: `+llama,+claude-2,-gpt-3.5-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list.
+
+To control custom models, use `+` to add a custom model, use `-` to hide a model, separated by comma.
 
 ## Requirements
 
@@ -263,6 +270,10 @@ If your proxy needs password, use:
 bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
 ```
 
+## Synchronizing Chat Records (UpStash)
+
+| [简体中文](./docs/synchronise-chat-logs-cn.md) | [English](./docs/synchronise-chat-logs-en.md) | [Italiano](./docs/synchronise-chat-logs-es.md) | [日本語](./docs/synchronise-chat-logs-ja.md) | [한국어](./docs/synchronise-chat-logs-ko.md)
+
 ## Documentation
 
 > Please go to the [docs][./docs] directory for more documentation instructions.
@@ -315,6 +326,7 @@ If you want to add a new translation, read this [document](./docs/translation.md
 [@AnsonHyq](https://github.com/AnsonHyq)
 [@synwith](https://github.com/synwith)
 [@piksonGit](https://github.com/piksonGit)
+[@ouyangzhiping](https://github.com/ouyangzhiping)
 
 ### Contributor
 
