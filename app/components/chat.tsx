@@ -1140,9 +1140,7 @@ function _Chat() {
           ).then((res) => {
             if (!res) return;
             if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
+              accessStore.update((access) => (access.token = payload.key!));
             }
             if (payload.url) {
               accessStore.update((access) => (access.openaiUrl = payload.url!));

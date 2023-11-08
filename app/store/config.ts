@@ -49,7 +49,7 @@ export const DEFAULT_CONFIG = {
     model: "gpt-3.5-turbo" as ModelType,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 2000, // this bad if keep 8192 as default lmao we are not only using other ai that 100% not stable hahaha
+    max_tokens: 8192,
     presence_penalty: 0,
     frequency_penalty: 0,
     /**
