@@ -456,6 +456,10 @@ const cn = {
       SubTitle:
         "生成图像的风格\n必须是生动或自然之一\n此配置仅适用于dall-e-3",
     },
+    SysFingerPrint: {
+      Title: "系统指纹，又称种子",
+      SubTitle: "指纹代表模型运行的后端配置。",
+    },
     TextModeration: {
       Title: "文本审核",
       SubTitle: "通过文本审核来检查内容是否符合 OpenAI 的使用政策。",

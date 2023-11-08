@@ -463,6 +463,11 @@ const en: LocaleType = {
       SubTitle:
         "A style of the generated images\nMust be one of vivid or natural\nThis Configuration is only supported for dall-e-3",
     },
+    SysFingerPrint: {
+      Title : "System Finger Print A.k.a Seeds",
+      SubTitle:
+      "A fingerprint represents the backend configuration that the model runs with.",
+    },
     TextModeration: {
       Title: "Text Moderation",
       SubTitle:
