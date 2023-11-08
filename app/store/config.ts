@@ -77,6 +77,7 @@ export const DEFAULT_CONFIG = {
      * `Natural` causes the model to produce more natural, less hyper-real looking images. 
      */
     style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
+    system_fingerprint: "",
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -204,6 +205,13 @@ export const useAppConfig = createPersistStore(
           quality: "hd",
           size: "1024x1024",
           style: "vivid",
+        };
+      }
+
+      if (version < 4.2) {
+        state.modelConfig = {
+          ...state.modelConfig,
+          system_fingerprint: "",
         };
       }
 

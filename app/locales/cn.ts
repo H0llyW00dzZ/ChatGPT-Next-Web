@@ -11,7 +11,9 @@ const cn = {
       : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
     Content_Policy: {
       Title:
-        "您的请求因违反内容政策而被标记。\n阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
+        "您的请求因违反内容政策而被标记。",
+      SubTitle: 
+        "阅读详情：https://platform.openai.com/docs/guides/moderation/overview",
       Reason: {
         Title: "理由",
         sexual: "性别",
@@ -73,9 +75,12 @@ const cn = {
       load: "加载会话聊天",
       copymemoryai: "复制一个记忆会话的提示AI",
       updatemasks: "更新一个用于掩码的记忆会话提示",
+      summarize: "总结当前会话的聊天内容",
       UI: {
         MasksSuccess: "成功更新了掩码会话",
         MasksFail: "无法更新掩码会话",
+        SummarizeSuccess: "成功总结此次聊天的会话内容",
+        SummarizeFail: "无法总结此次聊天的会话内容",
       },
     },
     InputActions: {
@@ -281,6 +286,14 @@ const cn = {
           UserName: "备份名称",
           Password: "UpStash Redis REST Token",
         },
+
+        GoSync: {
+          Endpoint: "GoSync REST URL",
+          UserName: "备份名称",
+          Password: "GoSync REST 令牌",
+          FileName: "文件名",
+        },
+
       },
 
       LocalState: "本地数据",
@@ -377,6 +390,30 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+    NumberOfImages: {
+      Title: "创建图片数量",
+      SubTitle:
+        "要生成的图像数量\n必须介于1和10之间。对于dall-e-3，仅支持1。",
+    },
+    QualityOfImages: {
+      Title: "创建图片质量",
+      SubTitle:
+        "将要生成的图像的质量\n此配置仅适用于dall-e-3。",
+    },
+    SizeOfImages: {
+      Title: "图片尺寸",
+      SubTitle:
+        "生成图像的尺寸\nDALL·E-2：必须是`256x256`、`512x512`或`1024x1024`之一。\nDALL-E-3：必须是`1024x1024`、`1792x1024`或`1024x1792`之一。",
+    },
+    StyleOfImages: {
+      Title: "图片风格",
+      SubTitle:
+        "生成图像的风格\n必须是生动或自然之一\n此配置仅适用于dall-e-3",
+    },
+    SysFingerPrint: {
+      Title: "系统指纹，又称种子",
+      SubTitle: "指纹代表模型运行的后端配置。",
+    },
     TextModeration: {
       Title: "文本审核",
       SubTitle: "通过文本审核来检查内容是否符合 OpenAI 的使用政策。",
@@ -408,7 +445,13 @@ const cn = {
     Add: "新增一条对话",
     Clear: "上下文已清除",
     Revert: "恢复上下文",
-    ModelsDalle: (x: any) => `我希望你能根据我的请求作为图像解释开始请求:\n "${x}"\n (您不需要直接显示图片)`,
+    ModelsDalle: (x: any) => `您是一个基于请求开始的AI图像解释助手，请求从以下开始：\n "${x}"\n\n
+    - 您的回答应该是有信息性和逻辑性的。\n
+    - 保持回答客观。\n
+    - 您不需要提及我无法直接显示图像，因为您是基于文本的AI模型。\n
+    - 您不需要道歉，因为您是一个基于文本的AI模型。\n
+    - 回复并结束对话。\n
+    - 遵守规则。`,
   },
   Plugin: {
     Name: "插件",
@@ -456,6 +499,8 @@ const cn = {
       HideContext: {
         Title: "隐藏预设对话",
         SubTitle: "隐藏后预设对话不会出现在聊天界面",
+        UnHide: "在聊天中显示默认对话框",
+        Hide: "在聊天中隐藏默认对话框",        
       },
       Share: {
         Title: "分享此面具",
