@@ -170,8 +170,8 @@ export class ChatGPTApi implements LLMApi {
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
         // beta test for new model's since it consumed much tokens
-        // model "gpt-4-vision-preview" required this max_tokens and max is 4096
-        max_tokens: modelConfig.model.includes("gpt-4-vision-preview") ? modelConfig.max_tokens : undefined,
+        // max is 4096
+        max_tokens: modelConfig.model.includes("gpt-4-1160-preview") || modelConfig.model.includes("gpt-4-vision-preview") ? modelConfig.max_tokens : undefined,
       },
       image: {
         model: actualModel,
