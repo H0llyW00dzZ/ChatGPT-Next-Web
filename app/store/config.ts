@@ -55,6 +55,7 @@ export const DEFAULT_CONFIG = {
     /**
      * DALL·E Models
      * Author: @H0llyW00dzZ
+     *
      **/
     n: 1, // The number of images to generate. Must be between 1 and 10. For dall-e-3, only n=1 is supported.
     /** Quality Only DALL·E-3 Models
@@ -63,7 +64,7 @@ export const DEFAULT_CONFIG = {
      * `hd` creates images with finer details and greater consistency across the image.
      **/
     quality: "hd", // Only DALL·E-3 for DALL·E-2 not not really needed
-    /** SIZE ALL DALL·E Models
+    /** SIZE ALL·E Models
      * Author: @H0llyW00dzZ
      * DALL·E-2 : Must be one of `256x256`, `512x512`, or `1024x1024`.
      * DALL-E-3 : Must be one of `1024x1024`, `1792x1024`, or `1024x1792`.
@@ -75,11 +76,7 @@ export const DEFAULT_CONFIG = {
      * `Vivid` causes the model to lean towards generating hyper-real and dramatic images. 
      * `Natural` causes the model to produce more natural, less hyper-real looking images. 
      */
-    style: "vivid", // Only DALL·E-3 for DALL·E-2 not really needed
-    /** System Fingerprint for New Models
-     * Author: @H0llyW00dzZ
-     **/
-    system_fingerprint: "",
+    style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -129,25 +126,6 @@ export const ModalConfigValidator = {
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);
   },
-  n(x: number) {
-    return limitNumber(x, 1, 10, 1);
-  },
-  quality(x: string) {
-    return ["hd"].includes(x) ? x : "hd";
-  },
-  size(x: string) {
-    const validSizes = ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"];
-    return validSizes.includes(x) ? x : "1024x1024";
-  },
-  style(x: string) {
-    const validStyles = ["vivid", "natural"];
-    return validStyles.includes(x) ? x : "vivid";
-  },
-  system_fingerprint(x: string) {
-    // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit
-    const regex = /^fp_[0-9a-fA-F]{10}$/;
-    return regex.test(x) ? x : "";
-  }, 
 };
 
 export const useAppConfig = createPersistStore(
@@ -184,7 +162,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.2, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.1, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -226,13 +204,6 @@ export const useAppConfig = createPersistStore(
           quality: "hd",
           size: "1024x1024",
           style: "vivid",
-        };
-      }
-    // currently doing experimental with new system called `fingerprint` hahaha
-      if (version < 4.2) {
-        state.modelConfig = {
-          ...state.modelConfig,
-          system_fingerprint: "",
         };
       }
 
