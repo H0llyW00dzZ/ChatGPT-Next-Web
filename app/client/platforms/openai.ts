@@ -576,26 +576,29 @@ export class ChatGPTApi implements LLMApi {
       return {} as ModerationResponse;
     }
   }
-  /** TODO */
-  private async sendRequest(path: string, payload: any) {
+
+  /**
+   * DALL·E Models
+   * Author : @H0llyW00dzZ
+   * Todo : Function to save an image from a response json object and make it accessible locally
+   */
+
+  private async saveImageFromResponse(imageResponse: any, filename: string): Promise<void> {
     try {
-      const response = await fetch(path, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: getHeaders(),
-      });
+      const blob = await imageResponse.blob();
 
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch ${path}: ${response.status} ${response.statusText}`
-        );
-      }
+      const url = URL.createObjectURL(blob);
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(`Failed to send request to ${path}`, error);
-      throw error;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      console.log('Image saved successfully:', filename);
+    } catch (e) {
+      console.error('Failed to save image:', e);
     }
   }
 }
