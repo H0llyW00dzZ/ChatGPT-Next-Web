@@ -1,4 +1,5 @@
 import binary from "spark-md5";
+import { DEFAULT_MODELS } from "../constant";
 
 declare global {
   namespace NodeJS {
@@ -8,6 +9,7 @@ declare global {
       BASE_URL?: string;
       MODEL_LIST?: string;
       PROXY_URL?: string;
+      OPENAI_ORG_ID?: string;
       VERCEL?: string;
       VERCEL_ANALYTICS?: boolean; // vercel web analytics
       HIDE_USER_API_KEY?: string; // disable user's api key input
@@ -16,6 +18,9 @@ declare global {
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
       HIDE_BALANCE_QUERY?: string; // allow user to query balance or not
+      ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
+      DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
+      CUSTOM_MODELS?: string; // to control custom models
     }
   }
 }
@@ -40,6 +45,7 @@ export const getServerSideConfig = () => {
     );
   }
 
+
   const apiKey = process.env.OPENAI_API_KEY;
   const accessCodes = process.env.CODE?.split(",") ?? [];
   const codes = new Set(accessCodes.map((code) => binary.hash(code.trim())));
@@ -53,6 +59,16 @@ export const getServerSideConfig = () => {
     apiKeys.set(hashedCode, apiKeyValue);
   });
 
+  let disableGPT4 = !!process.env.DISABLE_GPT4;
+  let customModels = process.env.CUSTOM_MODELS ?? "";
+
+  if (disableGPT4) {
+    if (customModels) customModels += ",";
+    customModels += DEFAULT_MODELS.filter((m) => m.name.startsWith("gpt-4"))
+      .map((m) => "-" + m.name)
+      .join(",");
+  }
+
   return {
     apiKey,
     code: process.env.CODE,
@@ -60,12 +76,15 @@ export const getServerSideConfig = () => {
     needCode,
     baseUrl: process.env.BASE_URL,
     proxyUrl: process.env.PROXY_URL,
+    openaiOrgId: process.env.OPENAI_ORG_ID,
     isVercel: !!process.env.VERCEL,
     isVercelWebAnalytics: !!process.env.VERCEL_ANALYTICS,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
-    disableGPT4: !!process.env.DISABLE_GPT4,
     disableCustomModels: !!process.env.DISABLE_CUSTOMMODELS,
-    hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
     apiKeys,
+    disableGPT4,
+    hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
+    disableFastLink: !!process.env.DISABLE_FAST_LINK,
+    customModels,
   };
 };

@@ -153,6 +153,7 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
+
     const defaultModel = modelConfig.model;
 
     const userMessages = messages.filter((msg) => msg.role === "user");
