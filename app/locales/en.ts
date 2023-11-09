@@ -331,6 +331,11 @@ const en: LocaleType = {
       SubTitle:
         "Will compress if uncompressed messages length exceeds the value",
     },
+    Token: {
+      Title: "API Key",
+      SubTitle: "Use your key to ignore access code limit",
+      Placeholder: "OpenAI API Key",
+    },
 
     Usage: {
       Title: "Account Balance",
@@ -343,6 +348,15 @@ const en: LocaleType = {
       IsChecking: "Checking...",
       Check: "Check",
       NoAccess: `Enter Session Key in API Key starting with prefix "sess-" to check balance.`,
+    },
+    AccessCode: {
+      Title: "Access Code",
+      SubTitle: "Access control enabled",
+      Placeholder: "Need Access Code",
+    },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "Custom endpoint must start with http(s)://",
     },
     Access: {
       AccessCode: {

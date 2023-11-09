@@ -325,6 +325,11 @@ const cn = {
       Title: "历史消息长度压缩阈值",
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
+    Token: {
+      Title: "API Key",
+      SubTitle: "使用自己的 Key 可绕过密码访问限制",
+      Placeholder: "OpenAI API Key",
+    },
 
     Usage: {
       Title: "余额查询",
@@ -337,6 +342,15 @@ const cn = {
       IsChecking: "正在检查…",
       Check: "重新检查",
       NoAccess: `在以"sess-"为前缀的API密钥中输入会话密钥以检查余额。`,
+    },
+    AccessCode: {
+      Title: "访问密码",
+      SubTitle: "管理员已开启加密访问",
+      Placeholder: "请输入访问密码",
+    },
+    Endpoint: {
+      Title: "接口地址",
+      SubTitle: "除默认地址外，必须包含 http(s)://",
     },
 
     Access: {
