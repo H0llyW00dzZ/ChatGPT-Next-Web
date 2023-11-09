@@ -1,0 +1,42 @@
+############################
+# Author : H0llyW00dzZ     #
+############################
+name: CI/CD Kubernetes Cluster
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+
+env:
+  KUBECONFIG: ${{ secrets.KUBECONFIG }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login docker.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Pull Docker image
+        run: docker pull yidadaa/chatgpt-next-web:latest
+
+      - name: Set up Kubernetes environment
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          # try get config from gist 🏴‍☠️
+      - name: Get config from gist
+        run: |
+            mkdir -p .github/k8s
+            curl -o .github/k8s/k8s-config.yaml https://gist.githubusercontent.com/${{ github.repository_owner }}/45898b94401b4b5a907ec93ae49f7385/raw/92309a9acb98ba5c6fa96d7aabf90191052bc128/k8s-config.yaml
+
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f .github/k8s/k8s-config.yaml
