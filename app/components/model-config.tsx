@@ -10,7 +10,9 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
-
+/**
+ * will refactor the configuration style for the DALL·E 3 models later
+ */
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -32,6 +34,69 @@ export function ModelConfigList(props: {
           ))}
         </Select>
       </ListItem>
+      {props.modelConfig.model.startsWith("dall-e") && (
+        <>
+          <ListItem
+            title={Locale.Settings.NumberOfImages.Title}
+            subTitle={Locale.Settings.NumberOfImages.SubTitle}
+          >
+            <InputRange
+              value={props.modelConfig.n?.toFixed(1)}
+              min="1"
+              max="10"
+              step="1"
+              onChange={(e) => {
+                props.updateConfig((config) => {
+                  config.n = ModalConfigValidator.n(e.currentTarget.valueAsNumber);
+                });
+              }}
+            ></InputRange>
+          </ListItem>
+          <ListItem
+            title={Locale.Settings.QualityOfImages.Title}
+            subTitle={Locale.Settings.QualityOfImages.SubTitle}
+          >
+              <input
+                type="text"
+                value={props.modelConfig.quality}
+                onChange={(e) =>
+                  props.updateConfig(
+                    (config) => (config.quality = e.currentTarget.value),
+                  )
+                }
+              ></input>
+            </ListItem>
+            <ListItem
+            title={Locale.Settings.SizeOfImages.Title}
+            subTitle={Locale.Settings.SizeOfImages.SubTitle}
+          >
+              <input
+                type="text"
+                value={props.modelConfig.size}
+                onChange={(e) =>
+                  props.updateConfig(
+                    (config) => (config.size = e.currentTarget.value),
+                  )
+                }
+              ></input>
+            </ListItem>
+            <ListItem
+            title={Locale.Settings.StyleOfImages.Title}
+            subTitle={Locale.Settings.StyleOfImages.SubTitle}
+          >
+              <input
+                type="text"
+                value={props.modelConfig.style}
+                onChange={(e) =>
+                  props.updateConfig(
+                    (config) => (config.style = e.currentTarget.value),
+                  )
+                }
+              ></input>
+            </ListItem>
+        </>
+      )}
+
       <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}

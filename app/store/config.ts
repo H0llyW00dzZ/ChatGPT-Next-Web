@@ -127,6 +127,25 @@ export const ModalConfigValidator = {
   top_p(x: number) {
     return limitNumber(x, 0, 1, 1);
   },
+  n(x: number) {
+    return limitNumber(x, 1, 10, 1);
+  },
+  quality(x: string) {
+    return ["hd"].includes(x) ? x : "hd";
+  },
+  size(x: string) {
+    const validSizes = ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"];
+    return validSizes.includes(x) ? x : "1024x1024";
+  },
+  style(x: string) {
+    const validStyles = ["vivid", "natural"];
+    return validStyles.includes(x) ? x : "vivid";
+  },
+  system_fingerprint(x: string) {
+    // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit
+    const regex = /^fp_[0-9a-fA-F]{10}$/;
+    return regex.test(x) ? x : "";
+  },
 };
 
 export const useAppConfig = createPersistStore(
