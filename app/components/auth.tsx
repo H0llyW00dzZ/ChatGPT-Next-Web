@@ -11,12 +11,14 @@ import { getClientConfig } from "../config/client";
 
 export function AuthPage() {
   const navigate = useNavigate();
-  const access = useAccessStore();
+  const accessStore = useAccessStore();
 
   const goHome = () => navigate(Path.Home);
-  const resetAccessCode = () => { // refactor this for better readability of code
-    access.updateCode("");
-    access.updateToken("");
+  const resetAccessCode = () => {
+    accessStore.update((access) => {
+      access.openaiApiKey = "";
+      access.accessCode = "";
+    });
   }; // Reset access code to empty string
   const goPrivacy = () => navigate(Path.PrivacyPage);
   const isApp = getClientConfig()?.isApp;
@@ -39,9 +41,11 @@ export function AuthPage() {
                 className={styles["auth-input"]}
                 type="password"
                 placeholder={Locale.Auth.Input}
-                value={access.accessCode}
+                value={accessStore.accessCode}
                 onChange={(e) => {
-                  access.updateCode(e.currentTarget.value);
+                  accessStore.update(
+                    (access) => (access.accessCode = e.currentTarget.value),
+                  );
                 }}
               />
               <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
@@ -49,9 +53,11 @@ export function AuthPage() {
               className={styles["auth-input"]}
               type="password"
               placeholder={Locale.Settings.Token.Placeholder}
-              value={access.token}
+              value={accessStore.openaiApiKey}
               onChange={(e) => {
-                access.updateToken(e.currentTarget.value);
+                accessStore.update(
+                  (access) => (access.openaiApiKey = e.currentTarget.value),
+                );
               }}
             />
             </>
@@ -62,9 +68,11 @@ export function AuthPage() {
                 className={styles["auth-input"]}
                 type="password"
                 placeholder={Locale.Settings.Token.Placeholder}
-                value={access.token}
+                value={accessStore.openaiApiKey}
                 onChange={(e) => {
-                  access.updateToken(e.currentTarget.value);
+                  accessStore.update(
+                    (access) => (access.openaiApiKey = e.currentTarget.value),
+                  );
                 }}
               />
             </>
@@ -78,10 +86,12 @@ export function AuthPage() {
           <input
             className={styles["auth-input"]}
             type="password"
-            placeholder={Locale.Settings.Token.Placeholder}
-            value={access.token}
+            placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
+            value={accessStore.openaiApiKey}
             onChange={(e) => {
-              access.updateToken(e.currentTarget.value);
+              accessStore.update(
+                (access) => (access.openaiApiKey = e.currentTarget.value),
+              );
             }}
           />
         </>
