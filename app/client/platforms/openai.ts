@@ -62,11 +62,12 @@ export class ChatGPTApi implements LLMApi {
    * This method should be a member of the ChatGPTApi class, not nested inside another method
    **/
   private getNewStuff(
-    // Logic for determining `system_fingerprint` based on the model
+    // Logic for determining `max_tokens` and `system_fingerprint` based on the model
     // note : codebase still looks bad hahaha, might refactor this later for list models name.
     model: string,
+    max_tokens: number | undefined,
     system_fingerprint: string | undefined
-  ): { system_fingerprint?: string } {
+  ): { max_tokens?: number; system_fingerprint?: string } {
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
@@ -74,6 +75,7 @@ export class ChatGPTApi implements LLMApi {
     const isNewModel = model.startsWith("gpt-4-") && model.endsWith("-preview");
     if (isNewModel) {
       return {
+        max_tokens: max_tokens !== undefined ? max_tokens : modelConfig.max_tokens,
         system_fingerprint: system_fingerprint !== undefined ? system_fingerprint : modelConfig.system_fingerprint,
       };
     }
@@ -172,9 +174,10 @@ export class ChatGPTApi implements LLMApi {
       return modelMap[inputModel] || inputModel;
     }
     const actualModel = getModelForInstructVersion(modelConfig.model);
-    const { system_fingerprint } = this.getNewStuff(
+    const { max_tokens, system_fingerprint } = this.getNewStuff(
       modelConfig.model,
-      modelConfig.system_fingerprint,
+      modelConfig.max_tokens,
+      modelConfig.system_fingerprint
     );
 
     const requestPayloads = {
@@ -186,8 +189,10 @@ export class ChatGPTApi implements LLMApi {
         presence_penalty: modelConfig.presence_penalty,
         frequency_penalty: modelConfig.frequency_penalty,
         top_p: modelConfig.top_p,
-        max_tokens: Math.max(modelConfig.max_tokens, 1024),
-        // not yet
+        // beta test for new model's since it consumed much tokens
+        // max is 4096
+        ...{ max_tokens }, // Spread the max_tokens value
+        // not yet ready
         //...{ system_fingerprint }, // Spread the system_fingerprint value
       },
       image: {
