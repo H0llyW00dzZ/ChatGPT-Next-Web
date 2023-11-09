@@ -63,7 +63,7 @@ export function ModelConfigList(props: {
               value={props.modelConfig.quality}
               onChange={(e) =>
                 props.updateConfig(
-                  (config) => (config.quality = e.currentTarget.value)
+                  (config) => (config.quality = ModalConfigValidator.quality(e.currentTarget.value))
                 )
               }
             >
@@ -78,7 +78,7 @@ export function ModelConfigList(props: {
               value={props.modelConfig.size}
               onChange={(e) =>
                 props.updateConfig(
-                  (config) => (config.size = e.currentTarget.value)
+                  (config) => (config.size = ModalConfigValidator.size(e.currentTarget.value))
                 )
               }
             >
@@ -97,7 +97,7 @@ export function ModelConfigList(props: {
               value={props.modelConfig.style}
               onChange={(e) =>
                 props.updateConfig(
-                  (config) => (config.style = e.currentTarget.value)
+                  (config) => (config.style = ModalConfigValidator.style(e.currentTarget.value))
                 )
               }
             >
