@@ -72,7 +72,6 @@ export enum ServiceProvider {
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
   // text moderation
-  TextModeration: true,
   ModerationPath: "v1/moderations",
   TextModerationModels: {
     latest: "text-moderation-latest",
@@ -183,6 +182,7 @@ export const DEFAULT_MODELS = [
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
   },
+
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
