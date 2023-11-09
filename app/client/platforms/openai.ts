@@ -300,7 +300,7 @@ export class ChatGPTApi implements LLMApi {
               const revised_prompt = jsonResponse.data?.[0]?.revised_prompt;
               const index = requestPayloads.image.n - 1;
               const size = requestPayloads.image.size;
-              const InstrucModel = defaultModel.startsWith("dall-e") && defaultModel.endsWith("-vision");
+              const InstrucModel = defaultModel.endsWith("-vision");
 
               if (defaultModel.includes("dall-e-3")) {
                 const imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🎩 🪄 Revised Prompt (${index + 1}): ${revised_prompt} |\n| 🤖 AI Models: ${defaultModel} |`;
