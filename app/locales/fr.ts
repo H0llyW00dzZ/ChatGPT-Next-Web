@@ -173,11 +173,7 @@ const fr: PartialLocaleType = {
       SubTitle:
         "Comprimera si la longueur des messages non compressés dépasse cette valeur",
     },
-    Token: {
-      Title: "Clé API",
-      SubTitle: "Utilisez votre clé pour ignorer la limite du code d'accès",
-      Placeholder: "Clé OpenAI API",
-    },
+
     Usage: {
       Title: "Solde du compte",
       SubTitle(used: any, total: any) {
@@ -190,11 +186,7 @@ const fr: PartialLocaleType = {
       Check: "Vérifier",
       NoAccess: `Entrez la clé de session dans la clé API en commençant par le préfixe "sess-" pour vérifier le solde.`,
     },
-    AccessCode: {
-      Title: "Code d'accès",
-      SubTitle: "Contrôle d'accès activé",
-      Placeholder: "Code d'accès requis",
-    },
+
     Model: "Modèle",
     Temperature: {
       Title: "Température",

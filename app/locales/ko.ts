@@ -124,11 +124,7 @@ const ko: PartialLocaleType = {
       Title: "기록 압축 임계값",
       SubTitle: "미압축 메시지 길이가 임계값을 초과하면 압축됨",
     },
-    Token: {
-      Title: "API 키",
-      SubTitle: "액세스 코드 제한을 무시하기 위해 키 사용",
-      Placeholder: "OpenAI API 키",
-    },
+
     Usage: {
       Title: "계정 잔액",
       SubTitle(used: any, total: any) {
@@ -141,11 +137,7 @@ const ko: PartialLocaleType = {
       Check: "확인",
       NoAccess: `잔액을 확인하려면, API 키에 "sess-" 접두사로 시작하는 세션 키를 입력하세요.`,
     },
-    AccessCode: {
-      Title: "액세스 코드",
-      SubTitle: "액세스 제어가 활성화됨",
-      Placeholder: "액세스 코드 입력",
-    },
+
     Model: "모델",
     Temperature: {
       Title: "온도 (temperature)",

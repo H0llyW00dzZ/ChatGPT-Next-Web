@@ -124,12 +124,7 @@ const it: PartialLocaleType = {
       SubTitle:
         "Comprimerà se la lunghezza dei messaggi non compressi supera il valore",
     },
-    Token: {
-      Title: "API Key",
-      SubTitle:
-        "Utilizzare la chiave per ignorare il limite del codice di accesso",
-      Placeholder: "OpenAI API Key",
-    },
+
     Usage: {
       Title: "Bilancio Account",
       SubTitle(used: any, total: any) {
@@ -142,11 +137,7 @@ const it: PartialLocaleType = {
       Check: "Controlla ancora",
       NoAccess: `Inserisci la chiave di sessione nella chiave API che inizia con il prefisso "sess-" per verificare il saldo.`,
     },
-    AccessCode: {
-      Title: "Codice d'accesso",
-      SubTitle: "Controllo d'accesso abilitato",
-      Placeholder: "Inserisci il codice d'accesso",
-    },
+
     Model: "Modello GPT",
     Temperature: {
       Title: "Temperature",
