@@ -163,7 +163,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.2, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -207,6 +207,8 @@ export const useAppConfig = createPersistStore(
           style: "vivid",
         };
       }
+
+      // In the wilds 🚀
 
       if (version < 4.2) {
         state.modelConfig = {
