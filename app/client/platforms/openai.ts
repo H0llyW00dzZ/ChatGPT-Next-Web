@@ -62,24 +62,29 @@ export class ChatGPTApi implements LLMApi {
    * This method should be a member of the ChatGPTApi class, not nested inside another method
    **/
   private getNewStuff(
-    // Logic for determining `max_tokens` and `system_fingerprint` based on the model
-    // note : codebase still looks bad hahaha, might refactor this later for list models name.
     model: string,
-    max_tokens: number | undefined,
-    system_fingerprint: string | undefined
-  ): { max_tokens?: number; system_fingerprint?: string } {
+    max_tokens?: number,
+    system_fingerprint?: string
+  ): { max_tokens?: number; system_fingerprint?: string; isNewModel: boolean } {
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
     };
-    const isNewModel = model.startsWith("gpt-4-") && model.endsWith("-preview");
+    const isNewModel = model.endsWith("-preview");
     if (isNewModel) {
       return {
         max_tokens: max_tokens !== undefined ? max_tokens : modelConfig.max_tokens,
-        system_fingerprint: system_fingerprint !== undefined ? system_fingerprint : modelConfig.system_fingerprint,
+        system_fingerprint:
+          system_fingerprint !== undefined
+            ? system_fingerprint
+            : modelConfig.system_fingerprint,
+            isNewModel: true,
+      };
+    } else {
+      return {
+        isNewModel: false,
       };
     }
-    return {}; // Return an empty object if the condition doesn't match
   }
 
   async chat(options: ChatOptions) {
@@ -164,16 +169,7 @@ export class ChatGPTApi implements LLMApi {
      * Usage in this chat: prompt
      * Example: A Best Picture of Andromeda Galaxy
      **/
-
-    // this instruct still wip
-    function getModelForInstructVersion(inputModel: string): string {
-      const modelMap: Record<string, string> = {
-        "dall-e-2-beta-instruct-vision": "dall-e-2",
-        "dall-e-3-beta-instruct-vision": "dall-e-3",
-      };
-      return modelMap[inputModel] || inputModel;
-    }
-    const actualModel = getModelForInstructVersion(modelConfig.model);
+    const actualModel = this.getModelForInstructVersion(modelConfig.model);
     const { max_tokens, system_fingerprint } = this.getNewStuff(
       modelConfig.model,
       modelConfig.max_tokens,
@@ -205,13 +201,23 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
+    /** Magic TypeScript payload parameter 🎩 🪄
+     * Author : @H0llyW00dzZ
+     **/
+    const magicPayload = this.getNewStuff(defaultModel);
+
     if (defaultModel.startsWith("dall-e")) {
       console.log("[Request] openai payload: ", {
         image: requestPayloads.image,
       });
-    } else {
+    } else if (magicPayload.isNewModel) {
       console.log("[Request] openai payload: ", {
         chat: requestPayloads.chat,
+      });
+    } else {
+      const { max_tokens, ...oldChatPayload } = requestPayloads.chat;
+      console.log("[Request] openai payload: ", {
+        chat: oldChatPayload,
       });
     }
 
@@ -293,7 +299,6 @@ export class ChatGPTApi implements LLMApi {
               const prompt = requestPayloads.image.prompt;
               const index = requestPayloads.image.n - 1;
               const size = requestPayloads.image.size;
-              const defaultModel = modelConfig.model;
               const InstrucModel = defaultModel.startsWith("dall-e") && defaultModel.endsWith("-vision");
 
               if (defaultModel.startsWith("dall-e")) {
@@ -609,7 +614,19 @@ export class ChatGPTApi implements LLMApi {
       return {} as ModerationResponse;
     }
   }
+  /**
+   * DALL·E Instruct
+   * Author : @H0llyW00dzZ
+   * Still WIP
+   */
 
+  private getModelForInstructVersion(inputModel: string): string {
+    const modelMap: Record<string, string> = {
+      "dall-e-2-beta-instruct-vision": "dall-e-2",
+      "dall-e-3-beta-instruct-vision": "dall-e-3",
+    };
+    return modelMap[inputModel] || inputModel;
+  }
   /**
    * DALL·E Models
    * Author : @H0llyW00dzZ
