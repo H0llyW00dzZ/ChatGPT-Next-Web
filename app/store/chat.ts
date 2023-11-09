@@ -500,6 +500,7 @@ export const useChatStore = createPersistStore(
               messages: topicMessages,
               config: {
                 model: "gpt-4-vision-preview",
+                stream: false,
               },
               whitelist: true,
               onFinish(message) {
@@ -524,6 +525,7 @@ export const useChatStore = createPersistStore(
               messages: topicMessages,
               config: {
                 model: topicModel,
+                stream: false,
               },
               whitelist: true,
               onFinish(message) {
@@ -580,6 +582,7 @@ export const useChatStore = createPersistStore(
           modelConfig.sendMemory
         ) {
           const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
+          const { max_tokens, ...modelcfg } = modelConfig;
 
           if (summarizeModel.startsWith("dall-e")) {
             api.llm.chat({
@@ -590,14 +593,20 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, model: "gpt-4-vision-preview", stream: true },
+              config: { ...modelcfg, model: "gpt-4-vision-preview", stream: true },
               whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeSuccess,
+                );
               },
               onError(err) {
                 console.error("[Summarize] ", err);
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeFail,
+                );
               },
             });
           } else {
@@ -610,7 +619,7 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, stream: true },
+              config: { ...modelcfg, stream: true },
               onUpdate(message) {
                 session.memoryPrompt = message;
               },
@@ -618,9 +627,15 @@ export const useChatStore = createPersistStore(
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeSuccess,
+                );
               },
               onError(err) {
                 console.error("[Summarize] ", err);
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeFail,
+                );
               },
             });
           }
