@@ -291,10 +291,6 @@ const hi: PartialLocaleType = {
       Title: "अंतरबिंदु",
       SubTitle: "स्वच्छ अंतरबिंदु केवल http(s):// से शुरू होना चाहिए",
     },
-    CustomModel: {
-      Title: "कस्टम मॉडल",
-      SubTitle: "अतिरिक्त मॉडल विकल्प जोड़ें, कॉमा से अलग करें",
-    },
     Model: "मॉडल",
     Temperature: {
       Title: "तापमान",
