@@ -80,9 +80,9 @@ function createEmptySession(): ChatSession {
   };
 }
 
-// fix known issue where summarize is not using the current model selected
-function getSummarizeModel(currentModel: string, modelConfig: ModelConfig) {
+function getSummarizeModel(currentModel: string) {
   // should be depends of user selected
+  const modelConfig = useAppConfig.getState().modelConfig;
   return currentModel.startsWith("gpt") ? modelConfig.model : currentModel;
 }
 
@@ -493,15 +493,14 @@ export const useChatStore = createPersistStore(
             }),
           );
       
-          const sessionModelConfig = this.currentSession().mask.modelConfig;
-          const topicModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model);
       
-          if (topicModel === "dall-e-2-beta-instruct-vision" || topicModel === "dall-e-3-beta-instruct-vision" || topicModel === "dall-e-2" || topicModel === "dall-e-3") {
-            // Summarize topic using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
+          if (topicModel.startsWith("dall-e")) {
             api.llm.chat({
               messages: topicMessages,
               config: {
                 model: "gpt-4-vision-preview",
+                stream: false,
               },
               whitelist: true,
               onFinish(message) {
@@ -510,12 +509,11 @@ export const useChatStore = createPersistStore(
                     session.topic =
                       message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
                     // Add system message after summarizing the topic
-                    // which is powerful based of fine-tuning
                     const systemMessage: ChatMessage = {
-                      date: new Date().toLocaleString(),
-                      id: nanoid(),
                       role: "system",
                       content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
+                      date: new Date().toLocaleString(),
+                      id: nanoid(),
                     };
                     session.messages = [systemMessage, ...session.messages];
                   });
@@ -527,6 +525,7 @@ export const useChatStore = createPersistStore(
               messages: topicMessages,
               config: {
                 model: topicModel,
+                stream: false,
               },
               whitelist: true,
               onFinish(message) {
@@ -535,12 +534,11 @@ export const useChatStore = createPersistStore(
                   session.topic =
                     message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC;
                   // Add system message after summarizing the topic
-                  // which is powerful based of fine-tuning
                   const systemMessage: ChatMessage = {
-                    date: new Date().toLocaleString(),
-                    id: nanoid(),
                     role: "system",
                     content: `${Locale.FineTuned.Sysmessage} ${session.topic}`,
+                    date: new Date().toLocaleString(),
+                    id: nanoid(),
                   };
                   session.messages = [systemMessage, ...session.messages];
                 });
@@ -584,11 +582,10 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
-          const sessionModelConfig = this.currentSession().mask.modelConfig;
-          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
+          const { max_tokens, ...modelcfg } = modelConfig;
 
-          if (summarizeModel === "dall-e-2-beta-instruct-vision" || summarizeModel === "dall-e-3-beta-instruct-vision" || summarizeModel === "dall-e-2" || summarizeModel === "dall-e-3") {
-            // Summarize using gpt-3.5-turbo-0613 which is compatible with DALL-E-2 model
+          if (summarizeModel.startsWith("dall-e")) {
             api.llm.chat({
               messages: toBeSummarizedMsgs.concat(
                 createMessage({
@@ -597,14 +594,20 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, model: "gpt-4-vision-preview", stream: true },
+              config: { ...modelcfg, model: "gpt-4-vision-preview", stream: true },
               whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeSuccess,
+                );
               },
               onError(err) {
                 console.error("[Summarize] ", err);
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeFail,
+                );
               },
             });
           } else {
@@ -617,7 +620,7 @@ export const useChatStore = createPersistStore(
                   date: "",
                 }),
               ),
-              config: { ...modelConfig, stream: true },
+              config: { ...modelcfg, stream: true },
               onUpdate(message) {
                 session.memoryPrompt = message;
               },
@@ -625,11 +628,15 @@ export const useChatStore = createPersistStore(
               onFinish(message) {
                 console.log("[Memory] ", message);
                 session.lastSummarizeIndex = lastSummarizeIndex;
-                showToast(Locale.Chat.Commands.UI.SummarizeSuccess);
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeSuccess,
+                );
               },
               onError(err) {
                 console.error("[Summarize] ", err);
-                showToast(Locale.Chat.Commands.UI.SummarizeFail);
+                showToast(
+                  Locale.Chat.Commands.UI.SummarizeFail,
+                );
               },
             });
           }
