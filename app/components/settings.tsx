@@ -569,6 +569,118 @@ function SyncConfigModal(props: { onClose?: () => void }) {
     </div>
   );
 }
+/** 
+ * Manage Local Data
+ * Author : @H0llyW00dzZ
+ * WIP
+ **/
+
+function LocalDataModal(props: { onClose?: () => void }) {
+  const syncStore = useSyncStore();
+  const [showLocalData, setShowLocalData] = useState(false);
+  const chatStore = useChatStore();
+  const promptStore = usePromptStore();
+  const maskStore = useMaskStore();
+  const stateOverview = useMemo(() => {
+    const sessions = chatStore.sessions;
+    const messageCount = sessions.reduce((p, c) => p + c.messages.length, 0);
+
+    return {
+      chat: sessions.length,
+      message: messageCount,
+      prompt: Object.keys(promptStore.prompts).length,
+      mask: Object.keys(maskStore.masks).length,
+    };
+  }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
+
+  return (
+    <div className="modal-mask">
+      <Modal
+        title={Locale.Settings.Sync.LocalState}
+        onClose={() => props.onClose?.()}
+        actions={[
+          <CheckButton key="check" />,
+          <IconButton
+            key="confirm"
+            onClick={props.onClose}
+            icon={<ConfirmIcon />}
+            bordered
+            text={Locale.UI.Confirm}
+          />,
+        ]}
+      >
+        <List>
+          <ListItem
+            title={Locale.Settings.Sync.Description.Chat(stateOverview).title}
+            subTitle={Locale.Settings.Sync.Description.Chat(stateOverview).description}
+          >
+            <div style={{ display: "flex" }}>
+              <IconButton
+                icon={<UploadIcon />}
+                text={Locale.UI.Export}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+              <IconButton
+                icon={<DownloadIcon />}
+                text={Locale.UI.Import}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+            </div>
+          </ListItem>
+          <ListItem
+            title={Locale.Settings.Sync.Description.Masks(stateOverview).title}
+            subTitle={Locale.Settings.Sync.Description.Masks(stateOverview).description}
+          >
+            <div style={{ display: "flex" }}>
+              <IconButton
+                icon={<UploadIcon />}
+                text={Locale.UI.Export}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+              <IconButton
+                icon={<DownloadIcon />}
+                text={Locale.UI.Import}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+            </div>
+          </ListItem>
+          <ListItem
+            title={Locale.Settings.Sync.Description.Prompt(stateOverview).title}
+            subTitle={Locale.Settings.Sync.Description.Prompt(stateOverview).description}
+          >
+            <div style={{ display: "flex" }}>
+              <IconButton
+                icon={<UploadIcon />}
+                text={Locale.UI.Export}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+              <IconButton
+                icon={<DownloadIcon />}
+                text={Locale.UI.Import}
+                onClick={() => {
+                  showToast(Locale.WIP);
+                }}
+              />
+            </div>
+          </ListItem>
+        </List>
+        {showLocalData && (
+          <LocalDataModal onClose={() => setShowLocalData(false)} />
+        )}
+      </Modal>
+    </div>
+  );
+}
 
 function SyncItems() {
   const syncStore = useSyncStore();
@@ -580,6 +692,7 @@ function SyncItems() {
   }, [syncStore]);
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
+  const [showLocalData, setShowLocalData] = useState(false);
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -638,6 +751,13 @@ function SyncItems() {
         >
           <div style={{ display: "flex" }}>
             <IconButton
+              icon={<EditIcon />}
+              text={Locale.UI.Manage}
+              onClick={() => {
+                setShowLocalData(true);
+              }}
+            />
+            <IconButton
               icon={<UploadIcon />}
               text={Locale.UI.Export}
               onClick={() => {
@@ -657,6 +777,10 @@ function SyncItems() {
 
       {showSyncConfigModal && (
         <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
+      )}
+
+      {showLocalData && (
+        <LocalDataModal onClose={() => setShowLocalData(false)} />
       )}
     </>
   );
