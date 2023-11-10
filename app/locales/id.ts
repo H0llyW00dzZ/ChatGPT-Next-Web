@@ -263,6 +263,22 @@ const id: PartialLocaleType = {
           },
         },
       },
+      LocalState: "Data Lokal",
+      Overview: (overview: any) => {
+        return `${overview.chat} percakapan, ${overview.message} pesan, ${overview.prompt} prompt, ${overview.mask} masks`;
+      },
+      Description: {
+        Chat: (overview: any) => {
+          return `${overview.chat} percakapan, ${overview.message} pesan`;
+        },
+        Prompt: (overview: any) => {
+          return `${overview.prompt} prompt`;
+        },
+        Masks: (overview: any) => {
+          return `${overview.mask} masks`;
+        },
+      },
+      ImportFailed: "Gagal mengimpor dari file",
     },
     SendKey: "Kirim",
     Theme: "Tema",

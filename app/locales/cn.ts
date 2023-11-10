@@ -287,6 +287,17 @@ const cn = {
       Overview: (overview: any) => {
         return `${overview.chat} 次对话，${overview.message} 条消息，${overview.prompt} 条提示词，${overview.mask} 个面具`;
       },
+      Description: {
+        Chat: (overview: any) => {
+          return `${overview.chat} 次对话，${overview.message} 条消息`;
+        },
+        Prompt: (overview: any) => {
+          return `${overview.prompt} 条提示词`;
+        },
+        Masks: (overview: any) => {
+          return `${overview.mask} 个面具`;
+        },
+      },
       ImportFailed: "导入失败",
     },
     Mask: {

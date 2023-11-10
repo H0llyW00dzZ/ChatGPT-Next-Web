@@ -292,6 +292,17 @@ const en: LocaleType = {
       Overview: (overview: any) => {
         return `${overview.chat} chats，${overview.message} messages，${overview.prompt} prompts，${overview.mask} masks`;
       },
+      Description: {
+        Chat: (overview: any) => {
+          return `${overview.chat} chats，${overview.message} messages`;
+        },
+        Prompt: (overview: any) => {
+          return `${overview.prompt} prompts`;
+        },
+        Masks: (overview: any) => {
+          return `${overview.mask} masks`;
+        },
+      },
       ImportFailed: "Failed to import from file",
     },
     Mask: {
