@@ -294,13 +294,19 @@ const en: LocaleType = {
       },
       Description: {
         Chat: (overview: any) => {
-          return `${overview.chat} chats，${overview.message} messages`;
+          const title = "Chats";
+          const description = `${overview.chat} chats, ${overview.message} messages`;
+          return { title, description };
         },
         Prompt: (overview: any) => {
-          return `${overview.prompt} prompts`;
+          const title = "Prompts";
+          const description = `${overview.prompt} prompts`;
+          return { title, description };
         },
         Masks: (overview: any) => {
-          return `${overview.mask} masks`;
+          const title = "Masks";
+          const description = `${overview.mask} masks`;
+          return { title, description };
         },
       },
       ImportFailed: "Failed to import from file",
@@ -544,6 +550,7 @@ const en: LocaleType = {
     Import: "Import",
     Sync: "Sync",
     Config: "Config",
+    Manage: "Manage",
   },
   Exporter: {
     Model: "Model",

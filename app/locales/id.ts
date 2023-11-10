@@ -269,13 +269,19 @@ const id: PartialLocaleType = {
       },
       Description: {
         Chat: (overview: any) => {
-          return `${overview.chat} percakapan, ${overview.message} pesan`;
+          const title = "Percakapan";
+          const description = `${overview.chat} percakapan, ${overview.message} pesan`;
+          return { title, description };
         },
         Prompt: (overview: any) => {
-          return `${overview.prompt} prompt`;
+          const title = "Prompts";
+          const description = `${overview.prompt} Prompts`;
+          return { title, description };
         },
         Masks: (overview: any) => {
-          return `${overview.mask} masks`;
+          const title = "Masks";
+          const description = `${overview.mask} masks`;
+          return { title, description };
         },
       },
       ImportFailed: "Gagal mengimpor dari file",
@@ -472,6 +478,7 @@ const id: PartialLocaleType = {
     Close: "Tutup",
     Create: "Buat",
     Edit: "Edit",
+    Manage: "Kelola",
   },
   Exporter: {
     Model: "Model",
