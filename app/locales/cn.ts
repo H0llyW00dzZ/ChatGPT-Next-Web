@@ -305,6 +305,7 @@ const cn = {
         },
       },
       ImportFailed: "导入失败",
+      ImportChatSuccess: "聊天数据导入成功。",
     },
     Mask: {
       Splash: {

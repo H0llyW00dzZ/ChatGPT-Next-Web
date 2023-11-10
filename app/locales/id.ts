@@ -285,6 +285,7 @@ const id: PartialLocaleType = {
         },
       },
       ImportFailed: "Gagal mengimpor dari file",
+      ImportChatSuccess: "Data chat berhasil diimpor.",
     },
     SendKey: "Kirim",
     Theme: "Tema",

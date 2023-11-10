@@ -310,6 +310,7 @@ const en: LocaleType = {
         },
       },
       ImportFailed: "Failed to import from file",
+      ImportChatSuccess: "Chat data imported successfully.",
     },
     Mask: {
       Splash: {

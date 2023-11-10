@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import styles from "./settings.module.scss";
 
@@ -40,6 +40,7 @@ import {
   useUpdateStore,
   useAccessStore,
   useAppConfig,
+  ChatSession,
 } from "../store";
 
 import Locale, {
@@ -612,21 +613,28 @@ function LocalDataModal(props: { onClose?: () => void }) {
     await downloadAs(sessions, fileName);
     setExporting(false);
   };
-  const handleImportChat = async () => {
-    if (exporting) return;
-    setExporting(true);
-    try {
-      const rawContent = await readFromFile(); // Read the file content using the appropriate function
-  
-      const importedData = JSON.parse(rawContent);
-      // Process the imported chat data and update the chat store
-      chatStore.newSession(importedData.sessions);
-    } catch (e) {
-      showToast(Locale.Settings.Sync.ImportFailed);
-      console.error(e);
-    }
-    setExporting(false);
-  };
+
+  const chatStoreRef = useRef(chatStore);
+
+  const handleImportChat = useMemo(
+    () => async () => {
+      await readFromFile().then((content) => {
+        try {
+          const importedData = JSON.parse(content);
+          const sessions = importedData.map((sessionData: ChatSession) => ({
+            ...sessionData,
+            id: nanoid(),
+          }));
+          chatStoreRef.current.sessions = sessions; // Update the sessions using the ref
+          showToast(Locale.Settings.Sync.ImportChatSuccess);
+        } catch (e) {
+          showToast(Locale.Settings.Sync.ImportFailed);
+          console.error(e);
+        }
+      });
+    },
+    [chatStoreRef]
+  );
 
   return (
     <div className="modal-mask">
