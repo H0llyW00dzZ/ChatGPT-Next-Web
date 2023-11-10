@@ -80,9 +80,9 @@ function createEmptySession(): ChatSession {
   };
 }
 
-function getSummarizeModel(currentModel: string) {
+// fix known issue where summarize is not using the current model selected
+function getSummarizeModel(currentModel: string, modelConfig: ModelConfig) {
   // should be depends of user selected
-  const modelConfig = useAppConfig.getState().modelConfig;
   return currentModel.startsWith("gpt") ? modelConfig.model : currentModel;
 }
 
@@ -493,7 +493,8 @@ export const useChatStore = createPersistStore(
             }),
           );
       
-          const topicModel = getSummarizeModel(session.mask.modelConfig.model);
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const topicModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
       
           if (topicModel.startsWith("dall-e")) {
             api.llm.chat({
@@ -568,6 +569,7 @@ export const useChatStore = createPersistStore(
 
         // add memory prompt
         toBeSummarizedMsgs.unshift(get().getMemoryPrompt());
+        let isToastShown = false;
 
         const lastSummarizeIndex = session.messages.length;
 
@@ -582,7 +584,8 @@ export const useChatStore = createPersistStore(
           historyMsgLength > modelConfig.compressMessageLengthThreshold &&
           modelConfig.sendMemory
         ) {
-          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model);
+          const sessionModelConfig = this.currentSession().mask.modelConfig;
+          const summarizeModel = getSummarizeModel(session.mask.modelConfig.model, sessionModelConfig);
           const { max_tokens, ...modelcfg } = modelConfig;
 
           if (summarizeModel.startsWith("dall-e")) {
@@ -595,6 +598,15 @@ export const useChatStore = createPersistStore(
                 }),
               ),
               config: { ...modelcfg, model: "gpt-4-vision-preview", stream: true },
+              onUpdate(message) {
+                session.memoryPrompt = message;
+                if (!isToastShown) {
+                  showToast(
+                    Locale.Chat.Commands.UI.Summarizing,
+                  );
+                  isToastShown = true;
+                }
+              },
               whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
@@ -623,6 +635,12 @@ export const useChatStore = createPersistStore(
               config: { ...modelcfg, stream: true },
               onUpdate(message) {
                 session.memoryPrompt = message;
+                if (!isToastShown) {
+                  showToast(
+                    Locale.Chat.Commands.UI.Summarizing,
+                  );
+                  isToastShown = true;
+                }
               },
               whitelist: true,
               onFinish(message) {

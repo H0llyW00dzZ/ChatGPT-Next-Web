@@ -68,6 +68,7 @@ const id: PartialLocaleType = {
       UI: {
         MasksSuccess: "Berhasil memperbarui sesi Masks",
         MasksFail: "Gagal memperbarui sesi Masks",
+        Summarizing: "Meringkas sesi percakapan ini",
         SummarizeSuccess: "Berhasil merangkum sesi obrolan ini",
         SummarizeFail: "Gagal merangkum sesi obrolan ini",
       },

@@ -79,6 +79,7 @@ const cn = {
       UI: {
         MasksSuccess: "成功更新了掩码会话",
         MasksFail: "无法更新掩码会话",
+        Summarizing: "正在总结当前会话的内容",
         SummarizeSuccess: "成功总结此次聊天的会话内容",
         SummarizeFail: "无法总结此次聊天的会话内容",
       },

@@ -81,6 +81,7 @@ const en: LocaleType = {
       UI: {
         MasksSuccess: "Successfully updated session of masks",
         MasksFail: "Failed to update session of masks",
+        Summarizing: "正在总结当前会话的内容",
         SummarizeSuccess: "Successfully summarize session of this chat",
         SummarizeFail: "Failed to summarize session of this chat",
       },      
