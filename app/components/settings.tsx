@@ -51,6 +51,7 @@ import Locale, {
 import { 
   copyToClipboard,
   downloadAs,
+  readFromFile,
 } from "../utils";
 import Link from "next/link";
 import {
@@ -611,6 +612,21 @@ function LocalDataModal(props: { onClose?: () => void }) {
     await downloadAs(sessions, fileName);
     setExporting(false);
   };
+  const handleImportChat = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const rawContent = await readFromFile(); // Read the file content using the appropriate function
+  
+      const importedData = JSON.parse(rawContent);
+      // Process the imported chat data and update the chat store
+      chatStore.newSession(importedData.sessions);
+    } catch (e) {
+      showToast(Locale.Settings.Sync.ImportFailed);
+      console.error(e);
+    }
+    setExporting(false);
+  };
 
   return (
     <div className="modal-mask">
@@ -642,9 +658,7 @@ function LocalDataModal(props: { onClose?: () => void }) {
               <IconButton
                 icon={<DownloadIcon />}
                 text={Locale.UI.Import}
-                onClick={() => {
-                  showToast(Locale.WIP);
-                }}
+                onClick={handleImportChat}
               />
               <IconButton
                 icon={<ClearIcon />}
@@ -718,7 +732,6 @@ function SyncItems() {
   }, [syncStore]);
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
-  const [showLocalData, setShowLocalData] = useState(false);
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -777,13 +790,6 @@ function SyncItems() {
         >
           <div style={{ display: "flex" }}>
             <IconButton
-              icon={<EditIcon />}
-              text={Locale.UI.Manage}
-              onClick={() => {
-                setShowLocalData(true);
-              }}
-            />
-            <IconButton
               icon={<UploadIcon />}
               text={Locale.UI.Export}
               onClick={() => {
@@ -803,10 +809,6 @@ function SyncItems() {
 
       {showSyncConfigModal && (
         <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
-      )}
-
-      {showLocalData && (
-        <LocalDataModal onClose={() => setShowLocalData(false)} />
       )}
     </>
   );
