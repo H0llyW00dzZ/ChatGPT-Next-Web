@@ -565,6 +565,11 @@ function SyncConfigModal(props: { onClose?: () => void }) {
             </List>
           </>
         )}
+        {syncStore.provider === ProviderType.GoSync && (
+          <List>
+            <ListItem title={Locale.WIP}></ListItem>
+          </List>
+        )}
       </Modal>
     </div>
   );
@@ -748,7 +753,7 @@ export function Settings() {
   }, []);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
-  const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
+  const showAccessCode = clientConfig?.isSysHasOpenaiApiKey && !clientConfig?.isApp;
 
   return (
     <ErrorBoundary>
@@ -1209,6 +1214,21 @@ export function Settings() {
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
+          <ListItem
+            title={Locale.Settings.TextModeration.Title}
+            subTitle={Locale.Settings.TextModeration.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={config.textmoderation}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.textmoderation = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         {shouldShowPromptModal && (

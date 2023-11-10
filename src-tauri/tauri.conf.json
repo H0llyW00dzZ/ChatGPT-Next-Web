@@ -15,8 +15,7 @@
     "allowlist": {
       "all": false,
       "shell": {
-        "all": false,
-        "open": true
+        "all": true
       },
       "dialog": {
         "all": true,
@@ -53,6 +52,9 @@
       },
       "process": {
         "relaunch": true
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {

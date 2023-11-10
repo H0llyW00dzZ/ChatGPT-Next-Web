@@ -1,4 +1,4 @@
-import md5 from "spark-md5";
+import binary from "spark-md5";
 import { DEFAULT_MODELS } from "../constant";
 
 declare global {
@@ -18,6 +18,7 @@ declare global {
       VERCEL_ANALYTICS?: string; // vercel web analytics
       HIDE_USER_API_KEY?: string; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
+      DISABLE_CUSTOMMODELS?: boolean; // allow user to use custom models or not
       ENABLE_BALANCE_QUERY?: string; // allow user to query balance or not
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
@@ -36,7 +37,7 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   try {
     const codes = (code?.split(",") ?? [])
       .filter((v) => !!v)
-      .map((v) => md5.hash(v.trim()));
+      .map((v) => binary.hash(v.trim()));
     return new Set(codes);
   } catch (e) {
     return new Set();
@@ -49,6 +50,19 @@ export const getServerSideConfig = () => {
       "[Server Config] you are importing a nodejs-only module outside of nodejs",
     );
   }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  const accessCodes = process.env.CODE?.split(",") ?? [];
+  const codes = new Set(accessCodes.map((code) => binary.hash(code.trim())));
+  const needCode = codes.size > 0;
+
+  const apiKeys = new Map<string, string>();
+  accessCodes.forEach((code, index) => {
+    const apiKeyIndex = index < (apiKey?.split(",")?.length ?? 0) ? index : 0;
+    const hashedCode = binary.hash(code.trim());
+    const apiKeyValue = (apiKey?.split(",")?.[apiKeyIndex]?.trim() ?? "")!;
+    apiKeys.set(hashedCode, apiKeyValue);
+  });
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
   let customModels = process.env.CUSTOM_MODELS ?? "";
@@ -64,7 +78,7 @@ export const getServerSideConfig = () => {
 
   return {
     baseUrl: process.env.BASE_URL,
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey,
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
     isAzure,
@@ -72,18 +86,16 @@ export const getServerSideConfig = () => {
     azureApiKey: process.env.AZURE_API_KEY,
     azureApiVersion: process.env.AZURE_API_VERSION,
 
-    needCode: ACCESS_CODES.size > 0,
-    code: process.env.CODE,
-    codes: ACCESS_CODES,
-
+    codes,
+    needCode,
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,
     isVercelWebAnalytics: !!process.env.VERCEL_ANALYTICS,
-
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     disableGPT4,
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+    apiKeys,
   };
 };

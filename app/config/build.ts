@@ -4,6 +4,7 @@ export const getBuildConfig = () => {
   const buildMode = process.env.BUILD_MODE ?? "standalone";
   const isApp = !!process.env.BUILD_APP;
   const version = "v" + tauriConfig.package.version;
+  const isSysHasOpenaiApiKey = !!process.env.OPENAI_API_KEY
 
   const commitInfo = (() => {
     try {
@@ -53,13 +54,15 @@ export const getBuildConfig = () => {
         .split("\n")
         .map((line) => line.trim())
         .filter((line) => line.startsWith("Signed-off-by:"))
-        .map((line) => line.substring("Signed-off-by:".length).trim().split(" <")[0]);
+        .map((line) => line.substring("Signed-off-by:".length).trim().split(" <")[0])
+        .filter((author, index, self) => self.indexOf(author) === index);
 
       const coAuthoredBy: string[] = commitMessage
         .split("\n")
         .map((line) => line.trim())
         .filter((line) => line.startsWith("Co-Authored-By:") || line.startsWith("Co-authored-by:"))
-        .map((line) => line.substring("Co-Authored-By:".length).trim().split(" <")[0]);
+        .map((line) => line.substring("Co-Authored-By:".length).trim().split(" <")[0])
+        .filter((author, index, self) => self.indexOf(author) === index);
 
       const commitMessageObj = {
         summary: title || "No title",
@@ -97,6 +100,7 @@ export const getBuildConfig = () => {
     ...commitInfo,
     buildMode,
     isApp,
+    isSysHasOpenaiApiKey,
   };
 };
 

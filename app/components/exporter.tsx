@@ -447,8 +447,13 @@ export function ImagePreviewer(props: {
   
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
+          /**
+           * Fixed Tauri client app
+           * Resolved the issue where files couldn't be saved when there was a `:` in the dialog.
+           */
+          const fileName = props.topic.replace(/:/g, '');
           const result = await window.__TAURI__.dialog.save({
-            defaultPath: `${props.topic}.png`,
+            defaultPath: `${fileName}.png`,
             filters: [
               {
                 name: "PNG Files",
@@ -560,14 +565,9 @@ export function ImagePreviewer(props: {
           }`;
 
           return (
-            <div
-              className={styles["message"] + " " + styles["message-" + m.role]}
-              key={i}
-            >
+            <div className={messageClass} key={i}>
               <div className={styles["avatar"]}>
-                <ExportAvatar
-                  avatar={m.role === "user" ? config.avatar : mask.avatar}
-                />
+                <ExportAvatar avatar={avatar} />
               </div>
 
               <div className={styles["body"]}>
@@ -612,8 +612,13 @@ export function MarkdownPreviewer(props: {
   
     if (isApp && window.__TAURI__) {
       try {
+        const fileName = props.topic.replace(/:/g, '');
         const result = await window.__TAURI__.dialog.save({
-          defaultPath: `${props.topic}.md`,
+        /**
+         * Fixed Tauri client app
+         * Resolved the issue where files couldn't be saved when there was a `:` in the dialog.
+         */
+          defaultPath: `${fileName}.md`,
           filters: [
             {
               name: "MD Files",
@@ -667,10 +672,6 @@ export function JsonPreviewer(props: {
 }) {
   const msgs = {
     messages: [
-      {
-        role: "system",
-        content: `${Locale.FineTuned.Sysmessage} ${props.topic}`,
-      },
       ...props.messages.map((m) => ({
         role: m.role,
         content: m.content,
