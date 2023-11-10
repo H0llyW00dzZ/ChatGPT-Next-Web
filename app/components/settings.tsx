@@ -732,6 +732,7 @@ function SyncItems() {
   }, [syncStore]);
 
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
+  const [showLocalData, setShowLocalData] = useState(false);
 
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
@@ -790,6 +791,13 @@ function SyncItems() {
         >
           <div style={{ display: "flex" }}>
             <IconButton
+              icon={<EditIcon />}
+              text={Locale.UI.Manage}
+              onClick={() => {
+                setShowLocalData(true);
+              }}
+            />
+            <IconButton
               icon={<UploadIcon />}
               text={Locale.UI.Export}
               onClick={() => {
@@ -809,6 +817,10 @@ function SyncItems() {
 
       {showSyncConfigModal && (
         <SyncConfigModal onClose={() => setShowSyncConfigModal(false)} />
+      )}
+
+      {showLocalData && (
+        <LocalDataModal onClose={() => setShowLocalData(false)} />
       )}
     </>
   );
