@@ -48,7 +48,10 @@ import Locale, {
   changeLang,
   getLang,
 } from "../locales";
-import { copyToClipboard } from "../utils";
+import { 
+  copyToClipboard,
+  downloadAs,
+} from "../utils";
 import Link from "next/link";
 import {
   Azure,
@@ -578,6 +581,7 @@ function SyncConfigModal(props: { onClose?: () => void }) {
 function LocalDataModal(props: { onClose?: () => void }) {
   const syncStore = useSyncStore();
   const [showLocalData, setShowLocalData] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const maskStore = useMaskStore();
@@ -592,6 +596,21 @@ function LocalDataModal(props: { onClose?: () => void }) {
       mask: Object.keys(maskStore.masks).length,
     };
   }, [chatStore.sessions, maskStore.masks, promptStore.prompts]);
+
+  const handleExportChat = async () => {
+    if (exporting) return;
+    setExporting(true);
+    const currentDate = new Date();
+    const sessions = chatStore.sessions;
+    const totalMessageCount = sessions.reduce((count, session) => count + session.messages.length, 0);
+    const datePart = getClientConfig()?.isApp
+      ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
+      : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
+    const formattedMessageCount = Locale.ChatItem.ChatItemCount(totalMessageCount);
+    const fileName = `(${formattedMessageCount})-${datePart}.json`;
+    await downloadAs(sessions, fileName);
+    setExporting(false);
+  };
 
   return (
     <div className="modal-mask">
@@ -618,9 +637,7 @@ function LocalDataModal(props: { onClose?: () => void }) {
               <IconButton
                 icon={<UploadIcon />}
                 text={Locale.UI.Export}
-                onClick={() => {
-                  showToast(Locale.WIP);
-                }}
+                onClick={handleExportChat}
               />
               <IconButton
                 icon={<DownloadIcon />}
