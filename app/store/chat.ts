@@ -583,6 +583,13 @@ export const useChatStore = createPersistStore(
         set(() => ({ sessions }));
       },
 
+      clearChatData() {
+        set(() => ({
+          sessions: [createEmptySession()],
+          currentSessionIndex: 0,
+        }));
+      },
+
       clearAllData() {
         localStorage.clear();
         location.reload();

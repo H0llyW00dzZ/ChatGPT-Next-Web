@@ -629,6 +629,15 @@ function LocalDataModal(props: { onClose?: () => void }) {
                   showToast(Locale.WIP);
                 }}
               />
+              <IconButton
+                icon={<ClearIcon />}
+                text={Locale.Settings.Danger.Clear.Action}
+                onClick={async () => {
+                  if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+                    chatStore.clearChatData();
+                  }
+                }}
+              />
             </div>
           </ListItem>
           <ListItem
