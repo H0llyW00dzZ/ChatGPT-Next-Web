@@ -51,6 +51,7 @@
     overflow: auto; /* Enable scrolling */
     width: 95%; /* Set the desired width */
     margin-top: auto; /* Add margin for spacing */
+    user-select: text; /* Copyable */
   }
 
   .privacy-actions {
