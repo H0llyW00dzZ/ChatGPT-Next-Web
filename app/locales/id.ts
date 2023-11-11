@@ -522,6 +522,9 @@ const id: PartialLocaleType = {
     Manage: "Kelola",
   },
   Exporter: {
+    Description: {
+      Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
+    },  
     Model: "Model",
     Messages: "Pesan",
     Topic: "Topik",
