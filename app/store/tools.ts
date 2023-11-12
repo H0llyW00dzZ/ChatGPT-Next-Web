@@ -18,8 +18,6 @@ export interface ToolFunction {
 export interface Tool {
   id: string;
   isUser?: boolean;
-  title: string;
-  content: string;
   createdAt: number;
   function: ToolFunction;
 }
@@ -101,9 +99,8 @@ export const useToolStore = createPersistStore(
       const tool = get().tools[id] ?? {
         id: "",
         isUser: false,
-        title: "",
-        content: "",
         createdAt: Date.now(),
+        type: "function",
         function: {
           name: "",
           description: "",
@@ -178,7 +175,7 @@ export const useToolStore = createPersistStore(
 
           const userTools = useToolStore.getState().getUserTools() ?? [];
 
-          const allToolsForSearch = [...builtinTools, ...userTools].filter((v) => !!v.title && !!v.content);
+          const allToolsForSearch = [...builtinTools, ...userTools].filter((v) => !!v.function.name && !!v.function.description);
           ToolSearchService.count.builtin = fetchTools.length;
           ToolSearchService.init(allToolsForSearch, userTools);
         });
