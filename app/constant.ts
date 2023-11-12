@@ -32,20 +32,22 @@ export enum SlotID {
   AppBody = "app-body",
   CustomModel = "custom-model",
 }
-// This will automatically generate JSON files without the need to include the ".json" extension.
+
 export enum FileName {
   Masks = "masks.json",
   Prompts = "prompts.json",
+  Tool = "tools.json",
 }
 
 export enum StoreKey {
-  Chat = "chat-next-web-store",
-  Access = "access-control",
-  Config = "app-config",
-  Mask = "mask-store",
-  Prompt = "prompt-store",
-  Update = "chat-update",
-  Sync = "sync",
+    Chat = "chat-next-web-store",
+    Access = "access-control",
+    Config = "app-config",
+    Mask = "mask-store",
+    Prompt = "prompt-store",
+    Update = "chat-update",
+    Sync = "sync",
+    Tool = "tool-store",
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;
