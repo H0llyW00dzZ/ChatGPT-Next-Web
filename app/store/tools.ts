@@ -16,10 +16,13 @@ export interface ToolFunction {
 }
 
 export interface Tool {
-    [x: string]: string | ToolFunction;
-    type: string;
-    function: ToolFunction;
-}  
+  id: string;
+  isUser?: boolean;
+  title: string;
+  content: string;
+  createdAt: number;
+  function: ToolFunction;
+}
 
 export const ToolSearchService = {
   ready: false,
@@ -42,8 +45,8 @@ export const ToolSearchService = {
     this.ready = true;
   },
 
-  remove(id: string) {
-    this.userEngine.remove((doc) => doc.function.name === id);
+  remove(name: string) {
+    this.userEngine.remove((doc) => doc.function.name === name);
   },
 
   add(tool: Tool) {
@@ -66,24 +69,23 @@ export const useToolStore = createPersistStore(
   (set, get) => ({
     add(tool: Tool) {
       const tools = get().tools;
-      tool.function.name = nanoid();
-      tools[tool.function.name] = tool;
+      tool.id = nanoid();
+      tools[tool.id] = tool;
 
       set(() => ({
         tools: tools,
       }));
 
-      return tool.function.name!;
+      return tool.id!;
     },
 
-    get(name: string) {
-      const targetTool = get().tools[name];
-      return targetTool;
+    get(id: string) {
+      return get().tools[id];
     },
 
-    remove(name: string) {
+    remove(id: string) {
       const tools = get().tools;
-      delete tools[name];
+      delete tools[id];
 
       set(() => ({
         tools,
@@ -95,9 +97,13 @@ export const useToolStore = createPersistStore(
       return Object.values(get().tools ?? {});
     },
 
-    updateTool(name: string, updater: (tool: Tool) => void) {
-      const tool = get().tools[name] ?? {
-        type: "function",
+    updateTool(id: string, updater: (tool: Tool) => void) {
+      const tool = get().tools[id] ?? {
+        id: "",
+        isUser: false,
+        title: "",
+        content: "",
+        createdAt: Date.now(),
         function: {
           name: "",
           description: "",
@@ -105,22 +111,23 @@ export const useToolStore = createPersistStore(
         },
       };
 
-      ToolSearchService.remove(name);
+      ToolSearchService.remove(id);
       updater(tool);
       const tools = get().tools;
-      tools[name] = tool;
+      tools[id] = tool;
       set(() => ({ tools }));
       ToolSearchService.add(tool);
     },
 
     search(text: string) {
       if (text.length === 0) {
-        // return all tools
+        // Return all tools
         return this.getUserTools().concat(ToolSearchService.builtinTools);
       }
       return ToolSearchService.search(text) as Tool[];
     },
   }),
+
   {
     name: StoreKey.Tool,
     version: 1.1,
@@ -165,12 +172,13 @@ export const useToolStore = createPersistStore(
 
           const builtinTools = fetchTools.map((tool) => ({
             ...tool,
-            type: "function",
+            id: nanoid(),
+            isUser: false,
           }));
 
           const userTools = useToolStore.getState().getUserTools() ?? [];
 
-          const allToolsForSearch: Tool[] = builtinTools.concat(userTools);
+          const allToolsForSearch = [...builtinTools, ...userTools].filter((v) => !!v.title && !!v.content);
           ToolSearchService.count.builtin = fetchTools.length;
           ToolSearchService.init(allToolsForSearch, userTools);
         });
