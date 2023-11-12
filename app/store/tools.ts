@@ -21,7 +21,7 @@ export interface Tool {
     function: ToolFunction;
 }  
 
-export const SearchServicez = {
+export const ToolSearchService = {
   ready: false,
   builtinEngine: new Fuse<Tool>([], { keys: ["function.name"] }),
   userEngine: new Fuse<Tool>([], { keys: ["function.name"] }),
@@ -105,20 +105,20 @@ export const useToolStore = createPersistStore(
         },
       };
 
-      SearchServicez.remove(name);
+      ToolSearchService.remove(name);
       updater(tool);
       const tools = get().tools;
       tools[name] = tool;
       set(() => ({ tools }));
-      SearchServicez.add(tool);
+      ToolSearchService.add(tool);
     },
 
     search(text: string) {
       if (text.length === 0) {
         // return all tools
-        return this.getUserTools().concat(SearchServicez.builtinTools);
+        return this.getUserTools().concat(ToolSearchService.builtinTools);
       }
-      return SearchServicez.search(text) as Tool[];
+      return ToolSearchService.search(text) as Tool[];
     },
   }),
   {
@@ -171,8 +171,8 @@ export const useToolStore = createPersistStore(
           const userTools = useToolStore.getState().getUserTools() ?? [];
 
           const allToolsForSearch: Tool[] = builtinTools.concat(userTools);
-          SearchServicez.count.builtin = fetchTools.length;
-          SearchServicez.init(allToolsForSearch, userTools);
+          ToolSearchService.count.builtin = fetchTools.length;
+          ToolSearchService.init(allToolsForSearch, userTools);
         });
     },
   },
