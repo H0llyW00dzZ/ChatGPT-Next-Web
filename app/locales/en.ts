@@ -487,6 +487,24 @@ const en: LocaleType = {
       SubTitle:
         "A style of the generated images\nMust be one of vivid or natural\nThis Configuration is only supported for dall-e-3",
     },
+    FunctionCall: {
+      Title: "Tools aka Function Calling",
+      Subtitle: "A tools aka function calling that connect large language models to external tools.",
+      PropsContent: {
+        List: "Tools List",
+        ListCount: (builtin: number, custom: number) =>
+          `${builtin} built-in, ${custom} user-defined`,
+        Edit: "Edit",
+        Modal: {
+          Title: "Tools List",
+          Add: "Add One",
+          Search: "Search Tools",
+        },
+        EditModal: {
+          Title: "Edit Tools",
+        },
+      },
+    },
   },
   Store: {
     DefaultTopic: "New Conversation",
