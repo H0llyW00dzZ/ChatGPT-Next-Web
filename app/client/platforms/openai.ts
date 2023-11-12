@@ -104,6 +104,49 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
+  /** Function Calling
+   * Author : @H0llyW00dzZ
+   * Todo : Function Calling which user can customize it easily
+   * This method should be a member of the ChatGPTApi class, not nested inside another method
+   **/
+  private getFunctionCalling(
+    model: string,
+    istools: boolean,
+    tools?: any
+  ): { isGPTModel: boolean; tools?: any } {
+    const isGPTModel = model.includes("-1106") && istools === true;
+    if (isGPTModel) {
+      return {
+        /** 
+         * Note : This just Sample Payload
+         **/
+        tools: tools || {
+          type: "function",
+          function: {
+            name: "get_current_weather",
+            description: "Get the current weather in a given location",
+            parameters: {
+              type: "object",
+              properties: {
+                location: {
+                  type: "string",
+                  description: "The state and country, e.g. Bali, Indonesia",
+                },
+                unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+              },
+              required: ["location"],
+            },
+          },
+        },
+        isGPTModel: true,
+      };
+    } else {
+      return {
+        isGPTModel: false,
+      };
+    }
+  }
+
   async chat(options: ChatOptions) {
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
@@ -193,6 +236,11 @@ export class ChatGPTApi implements LLMApi {
       modelConfig.system_fingerprint
     );
 
+    const { tools } = this.getFunctionCalling(
+      modelConfig.model,
+      modelConfig.istools ?? false,
+      );
+
     const requestPayloads = {
       chat: {
         messages,
@@ -207,6 +255,7 @@ export class ChatGPTApi implements LLMApi {
         ...{ max_tokens }, // Spread the max_tokens value
         // not yet ready
         //...{ system_fingerprint }, // Spread the system_fingerprint value
+        //...{ tools }, // Spread the tools payload
       },
       image: {
         model: actualModel,
@@ -420,7 +469,7 @@ export class ChatGPTApi implements LLMApi {
               try {
                 const resJson = await res.clone().json();
                 extraInfo = prettyObject(resJson);
-              } catch {}
+              } catch { }
 
               if (res.status === 401) {
                 responseTexts.push(Locale.Error.Unauthorized);

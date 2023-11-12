@@ -78,6 +78,10 @@ export const DEFAULT_CONFIG = {
      */
     style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
     system_fingerprint: "",
+    /** Tools Aka Function Call OpenAI
+     * Author: @H0llyW00dzZ
+     **/
+    istools: false,
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
@@ -182,7 +186,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.2, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.3, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -233,6 +237,13 @@ export const useAppConfig = createPersistStore(
         state.modelConfig = {
           ...state.modelConfig,
           system_fingerprint: "",
+        };
+      }
+
+      if (version < 4.3) {
+        state.modelConfig = {
+          ...state.modelConfig,
+          istools: false,
         };
       }
 
