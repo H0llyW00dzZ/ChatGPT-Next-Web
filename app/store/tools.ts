@@ -6,7 +6,10 @@ import { createPersistStore } from "../utils/store";
 
 export interface ToolParameter {
   type: string;
-  description: string;
+  description?: string;
+  properties?: Record<string, ToolParameter>;
+  enum?: string[];
+  required?: string[];
 }
 
 export interface ToolFunction {
@@ -100,11 +103,14 @@ export const useToolStore = createPersistStore(
         id: "",
         isUser: false,
         createdAt: Date.now(),
-        type: "function",
         function: {
           name: "",
           description: "",
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+          },
         },
       };
 
@@ -168,10 +174,15 @@ export const useToolStore = createPersistStore(
           }
 
           const builtinTools = fetchTools.map((tool) => ({
-            ...tool,
             id: nanoid(),
             isUser: false,
-          }));
+            createdAt: Date.now(),
+            function: {
+              name: tool.function.name,
+              description: tool.function.description,
+              parameters: tool.function.parameters,
+            },
+          }));          
 
           const userTools = useToolStore.getState().getUserTools() ?? [];
 
