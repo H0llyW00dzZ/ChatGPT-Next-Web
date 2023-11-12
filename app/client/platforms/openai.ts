@@ -120,24 +120,26 @@ export class ChatGPTApi implements LLMApi {
         /** 
          * Note : This just Sample Payload
          **/
-        tools: tools || {
-          type: "function",
-          function: {
-            name: "get_current_weather",
-            description: "Get the current weather in a given location",
-            parameters: {
-              type: "object",
-              properties: {
-                location: {
-                  type: "string",
-                  description: "The state and country, e.g. Bali, Indonesia",
+        tools: tools || [
+          {
+            type: "function",
+            function: {
+              name: "get_current_weather",
+              description: "Get the current weather in a given location",
+              parameters: {
+                type: "object",
+                properties: {
+                  location: {
+                    type: "string",
+                    description: "The state and country, e.g. Bali, Indonesia",
+                  },
+                  unit: { type: "string", enum: ["celsius", "fahrenheit"] },
                 },
-                unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+                required: ["location"],
               },
-              required: ["location"],
             },
           },
-        },
+        ],
         isGPTModel: true,
       };
     } else {
@@ -236,10 +238,10 @@ export class ChatGPTApi implements LLMApi {
       modelConfig.system_fingerprint
     );
 
-    const { tools } = this.getFunctionCalling(
-      modelConfig.model,
+    const { isGPTModel, tools } = this.getFunctionCalling(
+      defaultModel,
       modelConfig.istools ?? false,
-      );
+    );
 
     const requestPayloads = {
       chat: {
@@ -255,6 +257,9 @@ export class ChatGPTApi implements LLMApi {
         ...{ max_tokens }, // Spread the max_tokens value
         // not yet ready
         //...{ system_fingerprint }, // Spread the system_fingerprint value
+        // bug there is no response in text/event-stream from assistant after answer 
+        // "Could you please provide me with the specific state and country for which you would like to get the current weather information?"
+        // might cause still beta
         //...{ tools }, // Spread the tools payload
       },
       image: {
@@ -271,6 +276,7 @@ export class ChatGPTApi implements LLMApi {
      * Author : @H0llyW00dzZ
      **/
     const magicPayload = this.getNewStuff(defaultModel);
+    const toolsPayload = this.getFunctionCalling(defaultModel, tools);
 
     if (defaultModel.startsWith("dall-e")) {
       console.log("[Request] openai payload: ", {

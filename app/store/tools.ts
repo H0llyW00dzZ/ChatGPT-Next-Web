@@ -172,7 +172,8 @@ export const useToolStore = createPersistStore(
             ...tool,
             id: nanoid(),
             isUser: false,
-          }));
+          }) as Tool,
+          );
 
           const userTools = useToolStore.getState().getUserTools() ?? [];
 
