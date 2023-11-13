@@ -298,6 +298,17 @@ docker run -d -p 3000:3000 \
    ghcr.io/h0llyw00dzz/chatgpt-next-web
 ```
 
+You can run with a custom base path (New)
+
+Example :
+
+```sh
+docker run -e BASE_PATH=/web -p 3000:3000 ghcr.io/h0llyw00dzz/chatgpt-next-web
+```
+After running the container, your application should be accessible at `http://localhost:3000/web`.
+
+Note : Custom base path, currently only work with Hub `ghcr.io/h0llyw00dzz/chatgpt-next-web`
+
 If your proxy needs password, use:
 
 ```shell

@@ -32,6 +32,7 @@ RUN apk add proxychains-ng
 ENV PROXY_URL=""
 ENV OPENAI_API_KEY=""
 ENV CODE=""
+ENV BASE_PATH="/"
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
@@ -56,7 +57,7 @@ CMD if [ -n "$PROXY_URL" ]; then \
         echo "[ProxyList]" >> $conf; \
         echo "$protocol $host $port" >> $conf; \
         cat /etc/proxychains.conf; \
-        proxychains -f $conf node server.js; \
+        proxychains -f $conf node server.js $BASE_PATH; \
     else \
-        node server.js; \
+        node server.js $BASE_PATH; \
     fi
