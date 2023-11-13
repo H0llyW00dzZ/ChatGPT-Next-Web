@@ -5,7 +5,6 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { requestOpenai } from "../../common";
-import { DEFAULT_CORS_HOST } from "@/app/constant";
 
 const ALLOWED_PATH = new Set(Object.values(OpenaiPath));
 
@@ -28,32 +27,7 @@ async function handle(
   console.log("[OpenAI Route] params ", params);
 
   if (req.method === "OPTIONS") {
-    // Set CORS headers for preflight requests
-    const origin = req.headers.get("Origin");
-    if (origin && origin === DEFAULT_CORS_HOST) {
-      return NextResponse.json(
-        { body: "OK" },
-        {
-          status: 200,
-          headers: {
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Max-Age": "86400",
-          },
-        },
-      );
-    } else {
-      return NextResponse.json(
-        {
-          error: true,
-          msg: "Access Forbidden",
-        },
-        {
-          status: 403,
-        },
-      );
-    }
+    return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
   const subpath = params.path.join("/");
@@ -71,9 +45,22 @@ async function handle(
     );
   }
 
-  const origin = req.headers.get("Origin");
-  const referrer = req.headers.get("Referer");
-  if (origin !== DEFAULT_CORS_HOST || (referrer && !referrer.includes(DEFAULT_CORS_HOST))) {
+  function isRealDevicez(userAgent: string | null): boolean {
+    // Author : @H0llyW00dzZ
+    // Note : This just an experiment for a prevent suspicious bot
+    // Modify this function to define your logic for determining if the user-agent belongs to a real device
+    // For example, you can check if the user-agent contains certain keywords or patterns that indicate a real device
+    if (userAgent) {
+      return userAgent.includes("AppleWebKit") && !userAgent.includes("Headless");
+    }
+    return false;
+  }
+  
+
+  const userAgent = req.headers.get("User-Agent");
+  const isRealDevice = isRealDevicez(userAgent);
+
+  if (!isRealDevice) {
     return NextResponse.json(
       {
         error: true,
