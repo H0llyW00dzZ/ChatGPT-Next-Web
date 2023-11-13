@@ -106,18 +106,10 @@ export function PrivacyPage() {
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
-              text={Locale.PrivacyPage.Confirm}
+              text={Locale.UI.Close}
               icon={<ConfirmIcon />}
               onClick={goChat}
               bordered
-            />
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              text={Locale.UI.Cancel}
-              icon={<CloseIcon />}
-              bordered
-              onClick={() => navigate(-1)}
             />
           </div>
         </div>

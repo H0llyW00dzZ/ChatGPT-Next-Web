@@ -69,8 +69,8 @@ export function ChangeLog() {
     fetchData();
   }, []);
 
-  const goHome = () => {
-    navigate(Path.Home);
+  const goChat = () => {
+    navigate(Path.Chat);
   };
 
   return (
@@ -88,7 +88,7 @@ export function ChangeLog() {
           <IconButton
             text={Locale.UI.Close}
             icon={<ConfirmIcon />}
-            onClick={goHome}
+            onClick={goChat}
             bordered
           />
         </div>
