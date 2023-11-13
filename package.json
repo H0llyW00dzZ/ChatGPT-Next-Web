@@ -25,7 +25,7 @@
     "fuse.js": "^6.6.2",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
-    "mermaid": "^10.3.1",
+    "mermaid": "^10.6.1",
     "nanoid": "^4.0.2",
     "next": "^13.5.4",
     "node-fetch": "^3.3.1",
