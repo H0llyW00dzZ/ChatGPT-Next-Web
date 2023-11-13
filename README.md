@@ -256,7 +256,7 @@ yarn dev
 
 > [简体中文 > 如何部署到私人服务器](./README_CN.md#部署)
 
-### Docker (Recommended)
+### Docker (Recommended) (Edge & Nodejs Runtime)
 
 ```shell
 docker pull yidadaa/chatgpt-next-web
@@ -275,6 +275,27 @@ docker run -d -p 3000:3000 \
    -e CODE=your-password \
    -e PROXY_URL=http://localhost:7890 \
    yidadaa/chatgpt-next-web
+```
+
+### Docker (Recommended) (Edge Only Runtime)
+
+```shell
+docker pull ghcr.io/h0llyw00dzz/chatgpt-next-web
+
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   ghcr.io/h0llyw00dzz/chatgpt-next-web
+```
+
+You can start service behind a proxy:
+
+```shell
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   -e PROXY_URL=http://localhost:7890 \
+   ghcr.io/h0llyw00dzz/chatgpt-next-web
 ```
 
 If your proxy needs password, use:
