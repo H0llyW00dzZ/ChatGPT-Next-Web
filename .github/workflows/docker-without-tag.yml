@@ -1,7 +1,7 @@
 #################################################
 # Author : @H0llyW00dzZ                         #
 # Note : This Using Github Container            #
-# Which Pretty usefull for github pro plans     #
+# Which Pretty useful for GitHub pro plans      #
 #################################################
 name: Publish Docker image (Without Tag Released)
 
@@ -14,8 +14,13 @@ on:
       description:
         description: 'Enter the description for the Docker image'
         required: true
-  release:
-    types: [published]
+      build_reverse_proxy:
+        description: 'Build Go reverse proxy? (yes/no)'
+        default: 'no'
+        required: true
+      go_reverse_proxy_tag:
+        description: 'Enter the tag for the go-reverse-proxy repository (optional)'
+        required: false
 
 jobs:
   push_to_registry:
@@ -23,9 +28,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      -
-        name: Check out the repo
+      - # This CI / CD Docker Builder with multi-repo
+        name: Check out ChatGPT-Next-Web repo
         uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/ChatGPT-Next-Web
+          ref: main
+          path: ChatGPT-Next-Web
+
+      -
+        name: Check out go-reverse-proxy repo
+        if: ${{ github.event.inputs.build_reverse_proxy == 'yes' }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/go-reverse-proxy
+          ref: master
+          path: go-reverse-proxy
+          
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.3'
+        env:
+          NODE_VERSION: 18
       -
         name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -33,18 +59,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - 
-        name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: yidadaa/chatgpt-next-web
-          tags: |
-            type=raw,value=latest
-            type=ref,event=tag
-      
-      - 
+
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -54,14 +70,15 @@ jobs:
       
       - 
         name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ghcr.io/h0llyw00dzz/chatgpt-next-web:${{ github.event.inputs.tag_version }}
-          labels: |
-            ${{ steps.meta.outputs.labels }}
-            org.opencontainers.image.description="${{ github.event.inputs.description }}"
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        run: |
+          docker buildx create --use
+          docker buildx build -t ghcr.io/h0llyw00dzz/chatgpt-next-web:${{ github.event.inputs.tag_version }} \
+            --build-arg BUILD_REVERSE_PROXY=${{ github.event.inputs.build_reverse_proxy }} \
+            --build-arg GO_REVERSE_PROXY_TAG=${{ github.event.inputs.go_reverse_proxy_tag }} \
+            --label "version=${{ github.event.inputs.tag_version }}" \
+            --label "description=${{ github.event.inputs.description }}" \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
+            --platform linux/amd64,linux/arm64 \
+            ./ChatGPT-Next-Web
+          docker push ghcr.io/h0llyw00dzz/chatgpt-next-web:${{ github.event.inputs.tag_version }}
