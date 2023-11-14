@@ -69,7 +69,7 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   // #1815 try to refuse gpt4 request
-  if (serverConfig.customModels && req.body) {
+  if (serverConfig.customModels.startsWith("gpt-4") && req.body) {
     try {
       const modelTable = collectModelTable(
         DEFAULT_MODELS,
