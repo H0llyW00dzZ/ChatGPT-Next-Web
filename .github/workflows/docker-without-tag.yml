@@ -50,7 +50,7 @@ jobs:
           name: Copy go sum
           if: ${{ github.event.inputs.build_reverse_proxy == 'yes' }}
           run: |
-              cp ${{ runner.workspace }}/ChatGPT-Next-Web/go-reverse-proxy/go.sum ${{ runner.workspace }}
+              cp ${{ runner.workspace }}/ChatGPT-Next-Web/go-reverse-proxy/go.sum ${{ runner.workspace }}/ChatGPT-Next-Web
       -
         name: Set up Go
         if: ${{ github.event.inputs.build_reverse_proxy == 'yes' }}
@@ -88,7 +88,7 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      - 
+      - # not ready
         name: Build and push Docker image with reverse proxy
         if: ${{ github.event.inputs.build_reverse_proxy == 'yes' }}
         uses: docker/build-push-action@v4
