@@ -684,8 +684,13 @@ export function JsonPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
 }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const memoryPrompt = session.memoryPrompt;
+  const systemMessage = memoryPrompt || "";
   const msgs = {
     messages: [
+      ...(systemMessage ? [{ role: "system", content: systemMessage }] : []),
       ...props.messages.map((m) => ({
         role: m.role,
         content: m.content,
@@ -699,7 +704,7 @@ export function JsonPreviewer(props: {
     copyToClipboard(minifiedJson);
   };
   const download = () => {
-    downloadAs((msgs), `${props.topic}.json`);
+    downloadAs(msgs, `${props.topic}.json`); // Pass msgs instead of (msgs) to the downloadAs function
   };
 
   return (
@@ -711,7 +716,7 @@ export function JsonPreviewer(props: {
         messages={props.messages}
       />
       <div className="markdown-body" onClick={copy}>
-      <Markdown content={mdText} />
+        <Markdown content={mdText} />
       </div>
     </>
   );
