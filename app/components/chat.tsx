@@ -737,6 +737,7 @@ function _Chat() {
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
   const { pinApp, togglePinApp } = usePinApp();
+  const isApp = getClientConfig()?.isApp;
 
   // prompt hints
   const promptStore = usePromptStore();
@@ -1271,7 +1272,7 @@ function _Chat() {
               }}
             />
             </div>
-          {!showMaxIcon && (
+          {!showMaxIcon && isApp ? (
             <div className="window-action-button">
               <IconButton
                 icon={<PinIcon />}
@@ -1280,7 +1281,7 @@ function _Chat() {
                 onClick={togglePinApp} // Call the enablePinApp function
               />
             </div>
-          )}
+          ) : null}
           {showMaxIcon && (
             <div className="window-action-button">
               <IconButton
