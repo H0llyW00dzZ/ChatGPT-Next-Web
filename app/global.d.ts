@@ -33,5 +33,12 @@ declare interface Window {
       installUpdate(): Promise<void>;
       onUpdaterEvent(handler: (status: UpdateStatusResult) => void): Promise<UnlistenFn>;
     };
+    globalShortcut: {
+      isRegistered(shortcut: string): Promise<boolean>;
+      register(shortcut: string, handler: ShortcutHandler): Promise<void>;
+      registerAll(shortcuts: string[], handler: ShortcutHandler): Promise<void>;
+      unregister(shortcut: string): Promise<void>;
+      unregisterAll(): Promise<void>;
+    };
   };
 }
