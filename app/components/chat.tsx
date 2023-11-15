@@ -98,6 +98,7 @@ import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { appWindow } from '@tauri-apps/api/window';
+import { sendDesktopNotification } from "../utils/taurinotification";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -692,21 +693,11 @@ function usePinApp() {
   const togglePinApp = async () => {
     if (pinApp) {
       await appWindow.setAlwaysOnTop(false);
-       window.__TAURI__?.notification.sendNotification({
-        title: "ChatGPT Next Web",
-        body: Locale.Chat.Actions.PinAppContent.UnPinned,
-        icon: `${ChatGptIcon.src}`,
-        sound: "Default"
-      });
+      sendDesktopNotification(Locale.Chat.Actions.PinAppContent.UnPinned);
       showToast(Locale.Chat.Actions.PinAppContent.UnPinned);
     } else {
       await appWindow.setAlwaysOnTop(true);
-      window.__TAURI__?.notification.sendNotification({
-        title: "ChatGPT Next Web",
-        body: Locale.Chat.Actions.PinAppContent.Pinned,
-        icon: `${ChatGptIcon.src}`,
-        sound: "Default"
-      });
+      sendDesktopNotification(Locale.Chat.Actions.PinAppContent.Pinned);
       showToast(Locale.Chat.Actions.PinAppContent.Pinned);
     }
     setPinApp(!pinApp);
