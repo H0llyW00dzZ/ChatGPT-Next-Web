@@ -157,6 +157,8 @@ jobs:
           if [ -f "${{ runner.workspace }}/results/javascript.sarif.gpg" ]; then
             echo "codeql_status=done" >> $GITHUB_STATE
             echo "codeql_status=done" >> $GITHUB_OUTPUT
+            echo "pull_request_number=${{ github.event.pull_request.number }}" >> $GITHUB_STATE
+            echo "pull_request_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           else
             echo "codeql_status=pending" >> $GITHUB_STATE
             echo "codeql_status=pending" >> $GITHUB_OUTPUT
@@ -166,5 +168,5 @@ jobs:
         if: ${{ steps.check-status.outputs.codeql_status == 'done' && github.event_name == 'pull_request' }}
         uses: NejcZdovc/comment-pr@v2
         with:
-          message: "CodeQL analysis is complete for PR `${{ github.event.issue.number }}`"
+          message: "CodeQL analysis is complete for PR #${{ steps.check-status.outputs.pull_request_number }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
