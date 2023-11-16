@@ -697,7 +697,9 @@ export function EditMessageModal(props: { onClose: () => void }) {
 
 function usePinApp() {
   const [pinApp, setPinApp] = useState(false);
-  const isApp = getClientConfig()?.isApp; // hide tauri console warning in browser
+  const isApp = getClientConfig()?.isApp;
+  const config = useAppConfig();
+  const TauriShortcut = config.desktopShortcut;
 
   const togglePinApp = async () => {
     if (!isApp) {
@@ -715,6 +717,20 @@ function usePinApp() {
     }
     setPinApp(!pinApp);
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === TauriShortcut) {
+        togglePinApp();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [TauriShortcut, togglePinApp]);
 
   return {
     pinApp: isApp ? pinApp : false,
