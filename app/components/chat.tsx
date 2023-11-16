@@ -697,8 +697,13 @@ export function EditMessageModal(props: { onClose: () => void }) {
 
 function usePinApp() {
   const [pinApp, setPinApp] = useState(false);
+  const isApp = getClientConfig()?.isApp; // hide tauri console warning in browser
 
   const togglePinApp = async () => {
+    if (!isApp) {
+      return;
+    }
+
     if (pinApp) {
       await appWindow.setAlwaysOnTop(false);
       sendDesktopNotification(Locale.Chat.Actions.PinAppContent.UnPinned);
@@ -712,8 +717,8 @@ function usePinApp() {
   };
 
   return {
-    pinApp,
-    togglePinApp,
+    pinApp: isApp ? pinApp : false,
+    togglePinApp: isApp ? togglePinApp : () => {},
   };
 }
 
