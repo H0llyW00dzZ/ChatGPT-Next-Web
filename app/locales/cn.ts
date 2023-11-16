@@ -209,6 +209,7 @@ const cn = {
       UpdateFailed: "更新失败",
     },
     SendKey: "发送键",
+    PinAppKey: "固定应用快捷键",
     Theme: "主题",
     TightBorder: "无边框模式",
     SendPreviewBubble: {

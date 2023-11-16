@@ -211,6 +211,7 @@ const en: LocaleType = {
       UpdateFailed: "Update Failed",
     },
     SendKey: "Send Key",
+    PinAppKey: "Pin App Shortcut Key",
     Theme: "Theme",
     TightBorder: "Tight Border",
     SendPreviewBubble: {

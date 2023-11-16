@@ -306,6 +306,7 @@ const id: PartialLocaleType = {
       ImportChatSuccess: "Data chat berhasil diimpor.",
     },
     SendKey: "Kirim",
+    PinAppKey: "Tombol pintas Aplikasi",
     Theme: "Tema",
     TightBorder: "Batas Ketat",
     SendPreviewBubble: {
