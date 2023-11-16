@@ -89,6 +89,8 @@ export const DEFAULT_CONFIG = {
    * Author: @H0llyW00dzZ
    **/
   textmoderation: true, // text moderation default is enabled
+
+  desktopShortcut: "",
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -144,6 +146,22 @@ export const ModalConfigValidator = {
   system_fingerprint(x: string) {
     // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit
     const regex = /^fp_[0-9a-fA-F]{10}$/;
+    return regex.test(x) ? x : "";
+  },
+};
+
+/** Shortcut Regex Validator
+ * Author: @H0llyW00dzZ
+ * Regular expression `^(?:[a-zA-Z]+|\d+)(?:\+(?:[a-zA-Z]+|\d+))*$` is used to validate the shortcut format. Here's a breakdown of the regular expression:
+  - `^` - Start of the string
+  - `(?:[a-zA-Z]+|\d+)` - Matches one or more alphabetic characters or digits (e.g., `Ctrl`, `Alt`, `Shift`, `CmdOrControl`, `F12`, `Q`, etc.)
+  - `(?:\+(?:[a-zA-Z]+|\d+))*` - Matches zero or more occurrences of a `+` followed by one or more alphabetic characters or digits (e.g., `+Ctrl`, `+Alt`, `+Shift`, `+CmdOrControl`, `+F12`, `+Q`, etc.)
+  - `$` - End of the string
+ **/
+
+export const ShortcutValidator = {
+  desktopShortcut(x: string) {
+    const regex = /^(?:[a-zA-Z]+|\d+)(?:\+(?:[a-zA-Z]+|\d+))*$/;
     return regex.test(x) ? x : "";
   },
 };
