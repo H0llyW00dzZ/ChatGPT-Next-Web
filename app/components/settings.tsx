@@ -41,6 +41,7 @@ import {
   useAccessStore,
   useAppConfig,
   ChatSession,
+  ShortcutValidator,
 } from "../store";
 
 import Locale, {
@@ -851,6 +852,7 @@ export function Settings() {
   const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
   const hasNewVersion = currentVersion !== remoteId;
   const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
+  const isApp = getClientConfig();
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
@@ -1016,7 +1018,24 @@ export function Settings() {
               ))}
             </Select>
           </ListItem>
+          {isApp ? (
+            <ListItem
+              title={Locale.Settings.PinAppKey}
+            >
+              <input
+                type="text"
+                value={config.desktopShortcut}
+                placeholder="eg ALT+F4"
+                onChange={(e) =>
+                  config.update((config) => {
+                    const shortcut = e.currentTarget.value;
+                    config.desktopShortcut = ShortcutValidator.desktopShortcut(shortcut);
+                  })
+                }
+              ></input>
 
+            </ListItem>
+          ) : null}
           <ListItem title={Locale.Settings.Theme}>
             <Select
               value={config.theme}
