@@ -112,6 +112,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
 
   const [exporting, setExporting] = useState(false);
   const isApp = !!getClientConfig()?.isApp;
+  const isMobileScreen = useMobileScreen();
 
   const handleExport = async () => {
     if (exporting) return;
@@ -149,21 +150,28 @@ export function SessionConfigModel(props: { onClose: () => void }) {
         title={Locale.Context.Edit}
         onClose={() => props.onClose()}
         actions={[
-          <IconButton
-            key="export"
-            icon={<DownloadIcon />}
-            bordered
-            text={Locale.UI.Export}
-            onClick={handleExport}
-            disabled={exporting}
-          />,
-          <IconButton
-            key="import"
-            icon={<UploadIcon />}
-            bordered
-            text={Locale.UI.Import}
-            onClick={importchat}
-          />,
+          /**
+           * Currently disabled in mobile for export/import
+           **/
+          !isMobileScreen && (
+            <IconButton
+              key="export"
+              icon={<DownloadIcon />}
+              bordered
+              text={Locale.UI.Export}
+              onClick={handleExport}
+              disabled={exporting}
+            />
+          ),
+          !isMobileScreen && (
+            <IconButton
+              key="import"
+              icon={<UploadIcon />}
+              bordered
+              text={Locale.UI.Import}
+              onClick={importchat}
+            />
+          ),
           <IconButton
             key="reset"
             icon={<ResetIcon />}
