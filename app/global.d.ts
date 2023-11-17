@@ -33,6 +33,7 @@ declare interface Window {
       installUpdate(): Promise<void>;
       onUpdaterEvent(handler: (status: UpdateStatusResult) => void): Promise<UnlistenFn>;
     };
+    // no longer needed now, because tauri app basically it's build own browser
     globalShortcut: {
       isRegistered(shortcut: string): Promise<boolean>;
       register(shortcut: string, handler: ShortcutHandler): Promise<void>;

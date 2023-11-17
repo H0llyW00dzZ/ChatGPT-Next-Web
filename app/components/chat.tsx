@@ -724,11 +724,20 @@ function usePinApp() {
         togglePinApp();
       }
     };
+    //Usage : Mouse+5,Mouse+4,Mouse+1(Middle Click)
+    //You need copy paste (e.g., "Mouse+5" paste in settings) instead of typing manually in settings
+    const handleMouseClick = (event: MouseEvent) => {
+      if (event.button === 1 || event.button === 4 || event.button === 5) {
+        togglePinApp();
+      }
+    };
 
     document.addEventListener("keydown", handleKeyPress);
+    document.addEventListener("mousedown", handleMouseClick);
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
+      document.removeEventListener("mousedown", handleMouseClick);
     };
   }, [TauriShortcut, togglePinApp]);
 

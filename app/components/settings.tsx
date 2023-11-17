@@ -1025,7 +1025,7 @@ export function Settings() {
               <input
                 type="text"
                 value={config.desktopShortcut}
-                placeholder="eg ALT+F4"
+                placeholder="e.g., ALT+F4"
                 onChange={(e) =>
                   config.update((config) => {
                     const shortcut = e.currentTarget.value;
