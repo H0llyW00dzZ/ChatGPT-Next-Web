@@ -127,13 +127,15 @@ export class ChatGPTApi implements LLMApi {
   async chat(options: ChatOptions) {
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
+    const accessStore = useAccessStore.getState();
     if (textmoderation
       /**
        * This A Text Moderation OpenAI, default is enabled
        * you can disabled it in settings
        **/
       && DEFAULT_MODELS
-      && options.whitelist !== true) {
+      && options.whitelist !== true
+      && accessStore.provider !== ServiceProvider.Azure) { // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
       const messages = options.messages.map((v) => ({
         role: v.role,
         content: v.content,
