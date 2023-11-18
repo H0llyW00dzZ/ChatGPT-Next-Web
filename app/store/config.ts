@@ -137,11 +137,11 @@ export const ModalConfigValidator = {
   },
   size(x: string) {
     const validSizes = ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"];
-    return validSizes.includes(x) ? x : "1024x1024";
+    return validSizes.includes(x) ? x : ""; // default its already in model config settings
   },
   style(x: string) {
     const validStyles = ["vivid", "natural"];
-    return validStyles.includes(x) ? x : "";
+    return validStyles.includes(x) ? x : ""; // default its already in model config settings
   },
   system_fingerprint(x: string) {
     // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit
@@ -157,6 +157,7 @@ export const ModalConfigValidator = {
   - `(?:[a-zA-Z]+|\d+)` - Matches one or more alphabetic characters or digits (e.g., `Ctrl`, `Alt`, `Shift`, `CmdOrControl`, `F12`, `Q`, etc.)
   - `(?:\+(?:[a-zA-Z]+|\d+))*` - Matches zero or more occurrences of a `+` followed by one or more alphabetic characters or digits (e.g., `+Ctrl`, `+Alt`, `+Shift`, `+CmdOrControl`, `+F12`, `+Q`, etc.)
   - `$` - End of the string
+  Note: This Regex Validator for made types are safe, (e.g if there is package have CVE or something, it wont affected because sometimes when there is package got a CVE, and the patch still not available then it fucked up your project 🏴‍☠️.)
  **/
 
 export const ShortcutValidator = {
