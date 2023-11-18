@@ -109,6 +109,7 @@ export class ChatGPTApi implements LLMApi {
    * Author :
    * @H0llyW00dzZ 
    * this function will be great for static types, so we don't have to put lots of function just for check service provider
+   * Note: This a subject to changes in future, have to made function for this because default its enum not a string, so must made a function for convert it to a string.
    **/
 
   private getServiceProvider(): string {
@@ -116,9 +117,9 @@ export class ChatGPTApi implements LLMApi {
     let provider = "";
   
     if (accessStore.provider === ServiceProvider.Azure) {
-      provider = "Azure";
+      provider = ServiceProvider.Azure;
     } else if (accessStore.provider === ServiceProvider.OpenAI) {
-      provider = "OpenAI";
+      provider = ServiceProvider.OpenAI;
     }
   
     return provider;
