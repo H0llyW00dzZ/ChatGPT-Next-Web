@@ -104,6 +104,26 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
+  
+  /** get service provider stuff
+   * Author :
+   * @H0llyW00dzZ 
+   * this function will be great for static types, so we don't have to put lots of function just for check service provider
+   **/
+
+  private getServiceProvider(): string {
+    const accessStore = useAccessStore.getState();
+    let provider = "";
+  
+    if (accessStore.provider === ServiceProvider.Azure) {
+      provider = "Azure";
+    } else if (accessStore.provider === ServiceProvider.OpenAI) {
+      provider = "OpenAI";
+    }
+  
+    return provider;
+  }
+
   async chat(options: ChatOptions) {
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
@@ -227,18 +247,19 @@ export class ChatGPTApi implements LLMApi {
      * Author : @H0llyW00dzZ
      **/
     const magicPayload = this.getNewStuff(defaultModel);
+    const provider = this.getServiceProvider();
 
     if (defaultModel.startsWith("dall-e")) {
-      console.log("[Request] openai payload: ", {
+      console.log(`[Request] ${provider} payload: `, {
         image: requestPayloads.image,
       });
     } else if (magicPayload.isNewModel) {
-      console.log("[Request] openai payload: ", {
+      console.log(`[Request] ${provider} payload: `, {
         chat: requestPayloads.chat,
       });
     } else {
       const { max_tokens, ...oldChatPayload } = requestPayloads.chat;
-      console.log("[Request] openai payload: ", {
+      console.log(`[Request] ${provider} payload: `, {
         chat: oldChatPayload,
       });
     }
@@ -311,13 +332,6 @@ export class ChatGPTApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            const accessStore = useAccessStore.getState();
-            let provider = "";
-            if (accessStore.provider === ServiceProvider.Azure) {
-              provider = "Azure";
-            } else if (accessStore.provider === ServiceProvider.OpenAI) {
-              provider = "OpenAI";
-            }
             console.log(`[ServiceProvider] [${provider}] request response content type: `, contentType);
 
             if (contentType?.startsWith("text/plain")) {
