@@ -479,6 +479,14 @@ export class ChatGPTApi implements LLMApi {
               }
             } catch (e) {
               console.error("[Request] parse error", text, msg);
+
+              // Handle text moderation azure (WIP)
+              const errorResponse = JSON.parse(text);
+              const promptFilterResults = errorResponse.prompt_filter_results;
+              if (promptFilterResults && promptFilterResults.length > 0) {
+                const contentFilterResults = promptFilterResults[0].content_filter_results;
+                console.log(`[${provider}] [Text Moderation] flagged categories:`, contentFilterResults);
+              }
             }
           },
           onclose() {
