@@ -423,6 +423,24 @@ const id: PartialLocaleType = {
       SubTitle:
         "Gaya gambar yang dihasilkan\nHarus menjadi salah satu dari cerah atau alami\nKonfigurasi ini hanya didukung untuk dall-e-3",
     },
+    FunctionCall: {
+      Title: "Pemanggilan Fungsi Alat",
+      Subtitle: "Sebuah alat pemanggilan fungsi yang menghubungkan model bahasa besar ke alat eksternal.",
+      PropsContent: {
+        List: "Daftar Alat",
+        ListCount: (builtin: number, custom: number) =>
+          `${builtin} bawaan, ${custom} buatan pengguna`,
+        Edit: "Edit",
+        Modal: {
+          Title: "Daftar Alat",
+          Add: "Tambah Satu",
+          Search: "Cari Alat",
+        },
+        EditModal: {
+          Title: "Edit Alat",
+        },
+      },
+    },
   },
   Store: {
     DefaultTopic: "Percakapan Baru",

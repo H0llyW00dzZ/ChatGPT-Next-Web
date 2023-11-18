@@ -484,6 +484,24 @@ const cn = {
       SubTitle:
         "生成图像的风格\n必须是生动或自然之一\n此配置仅适用于dall-e-3",
     },
+    FunctionCall: {
+      Title: "工具，又称函数调用",
+      Subtitle: "一种将大型语言模型与外部工具连接的工具，也称为函数调用。",
+      PropsContent: {
+        List: "工具列表",
+        ListCount: (builtin: number, custom: number) =>
+          `内置${builtin}个，自定义${custom}个`,
+        Edit: "编辑",
+        Modal: {
+          Title: "工具列表",
+          Add: "添加一个",
+          Search: "搜索工具",
+        },
+        EditModal: {
+          Title: "编辑工具",
+        },
+      },
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",

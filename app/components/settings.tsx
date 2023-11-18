@@ -67,6 +67,7 @@ import {
   UPDATE_URL,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
+import { Tool, useToolStore, ToolSearchService } from "../store/tools";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
 import { useNavigate } from "react-router-dom";
