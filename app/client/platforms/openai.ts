@@ -253,16 +253,16 @@ export class ChatGPTApi implements LLMApi {
     const provider = this.getServiceProvider();
 
     if (defaultModel.startsWith("dall-e")) {
-      console.log(`[Request] ${provider} payload: `, {
+      console.log(`[Request] [${provider}] payload: `, {
         image: requestPayloads.image,
       });
     } else if (magicPayload.isNewModel) {
-      console.log(`[Request] ${provider} payload: `, {
+      console.log(`[Request] [${provider}] payload: `, {
         chat: requestPayloads.chat,
       });
     } else {
       const { max_tokens, ...oldChatPayload } = requestPayloads.chat;
-      console.log(`[Request] ${provider} payload: `, {
+      console.log(`[Request] [${provider}] payload: `, {
         chat: oldChatPayload,
       });
     }
@@ -622,6 +622,7 @@ export class ChatGPTApi implements LLMApi {
       });
 
       const moderationJson = await moderationResponse.json();
+      const provider = this.getServiceProvider();
 
       if (moderationJson.results && moderationJson.results.length > 0) {
         let moderationResult = moderationJson.results[0]; // Access the first element of the array
@@ -646,20 +647,20 @@ export class ChatGPTApi implements LLMApi {
           }
         }
 
-        console.log("[Text Moderation] flagged:", moderationResult.flagged); // Log the flagged result
+        console.log(`[${provider}] [Text Moderation] flagged:`, moderationResult.flagged); // Log the flagged result
 
         if (moderationResult.flagged) {
           const flaggedCategories = Object.entries(moderationResult.categories)
             .filter(([category, flagged]) => flagged)
             .map(([category]) => category);
 
-          console.log("[Text Moderation] flagged categories:", flaggedCategories); // Log the flagged categories
+          console.log(`[${provider}] [Text Moderation] flagged categories:`, flaggedCategories); // Log the flagged categories
         }
 
         return moderationResult as ModerationResponse;
       } else {
-        console.error("Moderation response is empty");
-        throw new Error("Failed to get moderation response");
+        console.error(`[${provider}] [Text Moderation] Moderation response is empty`);
+        throw new Error(`[${provider}] [Text Moderation] Failed to get moderation response`);
       }
     } catch (e) {
       console.error("[Request] failed to make a moderation request", e);
