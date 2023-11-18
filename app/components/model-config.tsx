@@ -12,7 +12,7 @@ export function ModelConfigList(props: {
   const allModels = useAllModels();
 
   const sizeOptions = ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"];
-  const styleOptions = ["Vivid", "Natural"];
+  const styleOptions = ["vivid", "natural"];
 
   const isDalleModel = props.modelConfig.model.startsWith("dall-e");
 

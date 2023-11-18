@@ -141,7 +141,7 @@ export const ModalConfigValidator = {
   },
   style(x: string) {
     const validStyles = ["vivid", "natural"];
-    return validStyles.includes(x) ? x : "vivid";
+    return validStyles.includes(x) ? x : "";
   },
   system_fingerprint(x: string) {
     // Example: Ensure the fingerprint matches the format "fp_XXXXXXXXXX" where X represents a hexadecimal digit

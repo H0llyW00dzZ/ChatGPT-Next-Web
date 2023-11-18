@@ -501,7 +501,7 @@ export const useChatStore = createPersistStore(
               messages: topicMessages,
               config: {
                 model: "gpt-4-vision-preview",
-                stream: false,
+                stream: true, // how if we stream this ? hahaha
               },
               whitelist: true,
               onFinish(message) {
@@ -526,7 +526,7 @@ export const useChatStore = createPersistStore(
               messages: topicMessages,
               config: {
                 model: topicModel,
-                stream: false,
+                stream: true, // how if we stream this ? hahaha
               },
               whitelist: true,
               onFinish(message) {
