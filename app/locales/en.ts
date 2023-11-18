@@ -604,6 +604,7 @@ const en: LocaleType = {
       Title: "Only messages after clearing the context will be displayed"
     },  
     Model: "Model",
+    ServiceProvider: "Service Provider",
     Messages: "Messages",
     Topic: "Topic",
     Time: "Date & Time",

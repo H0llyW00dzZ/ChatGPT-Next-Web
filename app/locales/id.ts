@@ -531,6 +531,7 @@ const id: PartialLocaleType = {
       Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
     },  
     Model: "Model",
+    ServiceProvider: "Penyedia Layanan",
     Messages: "Pesan",
     Topic: "Topik",
     Time: "Tanggal & Waktu",

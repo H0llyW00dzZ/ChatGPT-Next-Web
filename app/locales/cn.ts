@@ -600,6 +600,7 @@ const cn = {
       Title: "只有清除上下文之后的消息会被展示"
     },  
     Model: "模型",
+    ServiceProvider: "服务提供商",
     Messages: "消息",
     Topic: "主题",
     Time: "时间",

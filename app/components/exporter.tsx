@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { ChatMessage, ModelType, useAppConfig, useChatStore } from "../store";
+import { ChatMessage, ModelType, useAccessStore, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import {
@@ -513,6 +513,8 @@ export function ImagePreviewer(props: {
     }
   };
 
+  const accessStore = useAccessStore.getState();
+
   return (
     <div className={styles["image-previewer"]}>
       <PreviewActions
@@ -552,6 +554,9 @@ export function ImagePreviewer(props: {
             </div>
             <div className={styles["chat-info-item"]}>
             {"🤖"} {Locale.Exporter.Model}: {mask.modelConfig.model}
+            </div>
+            <div className={styles["chat-info-item"]}>
+            {"🚀"} {Locale.Exporter.ServiceProvider}: {accessStore.provider}
             </div>
             <div className={styles["chat-info-item"]}>
             {"💭"} {Locale.Exporter.Messages}: {props.messages.length}
