@@ -182,7 +182,7 @@ const pt: LocaleType = {
       },
     },
     Lang: {
-      Name: "Idioma",
+      Name: "Language",
       All: "Todos os Idiomas",
     },
     Avatar: "Avatar",
