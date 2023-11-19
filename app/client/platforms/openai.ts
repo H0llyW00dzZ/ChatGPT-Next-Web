@@ -473,7 +473,7 @@ export class ChatGPTApi implements LLMApi {
             try {
               const json = JSON.parse(text);
               const delta = json.choices?.[0]?.delta?.content;
-              const textmoderation = json.prompt_filter_results;
+              const textmoderation = json?.prompt_filter_results;
 
               if (delta) {
                 responseText += delta;
@@ -483,7 +483,7 @@ export class ChatGPTApi implements LLMApi {
               if (textmoderation 
                   && textmoderation.length > 0 
                   && provider === ServiceProvider.Azure) {
-                const contentFilterResults = textmoderation[0].content_filter_results;
+                const contentFilterResults = textmoderation?.[0]?.content_filter_results;
                 console.log(`[${provider}] [Text Moderation] flagged categories result:`, contentFilterResults);
               }
             } catch (e) {
