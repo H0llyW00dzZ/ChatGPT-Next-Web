@@ -8,8 +8,28 @@ const pt: LocaleType = {
   WIP: "Em breve...",
   Error: {
     Unauthorized: isApp
-      ? "Chave API inválida, por favor verifique em [Configurações](/#/settings)."
-      : "Acesso não autorizado, por favor insira o código de acesso em [auth](/#/auth) ou insira sua Chave API OpenAI.",
+    ? "Chave API inválida, por favor verifique em [Configurações](/#/settings)."
+    : "Acesso não autorizado, por favor insira o código de acesso em [auth](/#/auth) ou insira sua Chave API OpenAI.",
+    Content_Policy: {
+      Title:
+        "Sua solicitação foi marcada devido a uma violação da Política de Conteúdo.",
+      SubTitle: 
+        "Leia Aqui: https://platform.openai.com/docs/guides/moderation/overview",
+      Reason: {
+        Title: "Motivo",
+        sexual: "Sexual",
+        hate: "Ódio",
+        harassment: "Assédio",
+        "self-harm": "Autolesão",
+        "sexual/minors": "Sexual/menores",
+        "hate/threatening": "Ódio/ameaças",
+        "violence/graphic": "Violência/gráfico",
+        "self-harm/intent": "Autolesão/intenção",
+        "self-harm/instructions": "Autolesão/instruções",
+        "harassment/threatening": "Assédio/ameaças",
+        violence: "Violência",
+      },
+    },
   },
   Auth: {
     Title: "Necessário Código de Acesso",
@@ -41,6 +61,10 @@ const pt: LocaleType = {
       Pin: "Fixar",
       PinToastContent: "Fixada 1 mensagem para prompts contextuais",
       PinToastAction: "Visualizar",
+      PinAppContent: {
+        Pinned : "O aplicativo de desktop está fixado",
+        UnPinned: "O aplicativo de desktop não está mais fixado",
+      },
       Delete: "Deletar",
       Edit: "Editar",
     },
@@ -49,8 +73,21 @@ const pt: LocaleType = {
       newm: "Iniciar um novo chat com máscara",
       next: "Próximo Chat",
       prev: "Chat Anterior",
+      restart: "Reiniciar um cliente",
       clear: "Limpar Contexto",
       del: "Deletar Chat",
+      save: "Salvar uma conversa da sessão atual",
+      load: "Carregar uma conversa da sessão",
+      copymemoryai: "Copiar uma sessão de memória de prompt de IA",
+      updatemasks: "Atualizar uma sessão de memória de prompt para uma máscara",
+      summarize: "Resumir a sessão atual desta conversa",
+      UI: {
+        MasksSuccess: "Sessão de máscaras atualizadas com sucesso",
+        MasksFail: "Falha ao atualizar sessão de máscaras",
+        Summarizing: "Resumindo a sessão atual desta conversa",
+        SummarizeSuccess: "Sessão desta conversa resumida com sucesso",
+        SummarizeFail: "Falha ao resumir a sessão desta conversa",
+      },      
     },
     InputActions: {
       Stop: "Parar",
@@ -169,8 +206,12 @@ const pt: LocaleType = {
       IsChecking: "Verificando atualização...",
       FoundUpdate: (x: string) => `Nova versão encontrada: ${x}`,
       GoToUpdate: "Atualizar",
+      IsUpdating: "Atualizando...",
+      UpdateSuccessful: "Uma versão foi atualizada para a versão mais recente",
+      UpdateFailed: "Falha na atualização",
     },
     SendKey: "Tecla de Envio",
+    PinAppKey: "Fixar Tecla de Atalho do Aplicativo",
     Theme: "Tema",
     TightBorder: "Borda Ajustada",
     SendPreviewBubble: {
@@ -204,11 +245,50 @@ const pt: LocaleType = {
           Title: "Endpoint de Proxy",
           SubTitle: "Apenas aplicável ao proxy CORS embutido para este projeto",
         },
-
+        AccessControl: {
+          Title: "Ativar Controle de Acesso de Sobrescrita",
+          SubTitle:
+            "Aplicável apenas à configuração de controle de acesso de sobrescrita, como um código de acesso",
+        },
+        LockClient: {
+          Title: "Ativar Não Sincronizar Dados Atuais",
+          SubTitle: "Sincronizar apenas dados de outras fontes, não os dados atuais",
+        },
         WebDav: {
-          Endpoint: "Endpoint WebDAV",
-          UserName: "Nome de Usuário",
-          Password: "Senha",
+          Endpoint: {
+            Name: "Endpoint WebDav",
+            SubTitle: "Configure o Endpoint WebDav",
+          },
+          UserName: {
+            Name: "Nome de Usuário",
+            SubTitle: "Configure o Nome de Usuário",
+          },
+          Password: {
+            Name: "Senha",
+            SubTitle: "Configure a Senha",
+          },
+          FileName: {
+            Name: "Nome do Arquivo",
+            SubTitle:
+              "Nome do Arquivo, por exemplo: backtrackz.json (deve ser um arquivo JSON)",
+          },
+        },
+        GithubGist: {
+          GistID: {
+            Name: "ID do Gist do Github",
+            SubTitle:
+              "Localização do seu ID do Gist, por exemplo: gist.github.com/H0llyW00dzZ/<gistid>/etc. copie e cole o <gistid> aqui.",
+          },
+          FileName: {
+            Name: "Nome do Arquivo",
+            SubTitle:
+              "Nome do Arquivo, por exemplo: backtrackz.json (deve ser um arquivo JSON)",
+          },
+          AccessToken: {
+            Name: "Token de Acesso",
+            SubTitle:
+              "Certifique-se de ter permissão para sincronizar. Habilite Privado e Público lá.",
+          },
         },
 
         UpStash: {
@@ -216,13 +296,39 @@ const pt: LocaleType = {
           UserName: "Nome do Backup",
           Password: "Token REST Redis UpStash",
         },
+
+        GoSync: {
+          Endpoint: "URL REST GoSync",
+          UserName: "Nome do Backup",
+          Password: "Token REST Gosync",
+          FileName: "Nome do Arquivo",
+        },
+
       },
 
       LocalState: "Dados Locais",
       Overview: (overview: any) => {
-        return `${overview.chat} chats，${overview.message} mensagens，${overview.prompt} prompts，${overview.mask} máscaras`;
+        return `${overview.chat} chats，, ${overview.message} mensagens, ${overview.prompt} prompts, ${overview.mask} máscaras`;
+      },
+      Description: {
+        Chat: (overview: any) => {
+          const title = "Chats，";
+          const description = `${overview.chat} chats，, ${overview.message} mensagens`;
+          return { title, description };
+        },
+        Prompt: (overview: any) => {
+          const title = "Prompts";
+          const description = `${overview.prompt} prompts`;
+          return { title, description };
+        },
+        Masks: (overview: any) => {
+          const title = "Máscaras";
+          const description = `${overview.mask} máscaras`;
+          return { title, description };
+        },
       },
       ImportFailed: "Falha ao importar do arquivo",
+      ImportChatSuccess: "Dados do chat importados com sucesso.",
     },
     Mask: {
       Splash: {
@@ -262,15 +368,32 @@ const pt: LocaleType = {
       SubTitle:
         "Irá comprimir se o comprimento das mensagens não comprimidas exceder o valor",
     },
+    Token: {
+      Title: "Chave da API",
+      SubTitle: "Use sua chave para ignorar o limite de código de acesso",
+      Placeholder: "Chave da API do OpenAI",
+    },
 
     Usage: {
       Title: "Saldo da Conta",
       SubTitle(used: any, total: any) {
-        return `Usado este mês ${used}, assinatura ${total}`;
+        const hardLimitusd = total.hard_limit_usd !== undefined ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total.hard_limit_usd) : "desconhecido";
+        const hardLimit = total.system_hard_limit_usd !== undefined ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total.system_hard_limit_usd) : "desconhecido";
+        const usedFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(used);
+        return `Usado neste mês ${usedFormatted}, Limite máximo ${hardLimitusd}, Limite de uso aprovado ${hardLimit}`;
       },
       IsChecking: "Verificando...",
       Check: "Verificar",
-      NoAccess: "Insira a Chave API para verificar o saldo",
+      NoAccess: `Insira a Chave da Sessão na Chave da API iniciando com o prefixo "sess-" para verificar o saldo.`,
+    },
+    AccessCode: {
+      Title: "Código de Acesso",
+      SubTitle: "Controle de acesso ativado",
+      Placeholder: "Código de Acesso Necessário",
+    },
+    Endpoint: {
+      Title: "Endpoint",
+      SubTitle: "O endpoint personalizado deve começar com http(s)://",
     },
     Access: {
       AccessCode: {
@@ -345,6 +468,31 @@ const pt: LocaleType = {
       SubTitle:
         "Um valor maior diminui a probabilidade de repetir a mesma linha",
     },
+    TextModeration: {
+      Title: "Moderação de Texto",
+      SubTitle:
+        "Uma moderação de texto para verificar se o conteúdo está em conformidade com as políticas de uso da OpenAI.",
+    },
+    NumberOfImages: {
+      Title: "Número de Imagens a Criar",
+      SubTitle:
+        "Um número de imagens a serem geradas\nDeve estar entre 1 e 10. Para o modelo dall-e-3, apenas 1 é suportado.",
+    },
+    QualityOfImages: {
+      Title: "Qualidade da Imagem a Criar",
+      SubTitle:
+        "A qualidade da imagem que será gerada\nEssa configuração é suportada apenas para o modelo dall-e-3.",
+    },
+    SizeOfImages: {
+      Title: "Tamanho da Imagem",
+      SubTitle:
+        "O tamanho das imagens geradas\nDALL·E-2: Deve ser um dos seguintes: `256x256`, `512x512` ou `1024x1024`.\nDALL-E-3: Deve ser um dos seguintes: `1024x1024`, `1792x1024` ou `1024x1792`.",
+    },
+    StyleOfImages: {
+      Title: "Estilo da Imagem",
+      SubTitle:
+        "O estilo das imagens geradas\nDeve ser um dos seguintes: vívido ou natural\nEssa configuração é suportada apenas para o modelo dall-e-3",
+    },
   },
   Store: {
     DefaultTopic: "Nova Conversa",
@@ -382,6 +530,13 @@ const pt: LocaleType = {
   FineTuned: {
     Sysmessage: "Você é um assistente que",
   },
+  Changelog: {
+    Name: "Registro de Alterações",
+  },
+  PrivacyPage: {
+    Name: "Privacidade",
+    Confirm: "Concordar",
+  },
   Mask: {
     Name: "Máscara",
     Page: {
@@ -416,6 +571,8 @@ const pt: LocaleType = {
       HideContext: {
         Title: "Esconder Prompts de Contexto",
         SubTitle: "Não mostrar prompts de contexto no chat",
+        UnHide: "Mostrar prompts de contexto no chat",
+        Hide: "Ocultar prompts de contexto no chat",
       },
       Share: {
         Title: "Compartilhar Esta Máscara",
@@ -445,12 +602,14 @@ const pt: LocaleType = {
     Import: "Importar",
     Sync: "Sincronizar",
     Config: "Configurar",
+    Manage: "Gerenciar",
   },
   Exporter: {
     Description: {
       Title: "Apenas mensagens após a limpeza do contexto serão exibidas",
     },
     Model: "Modelo",
+    ServiceProvider: "Provedor de Serviço",
     Messages: "Mensagens",
     Topic: "Tópico",
     Time: "Tempo",
