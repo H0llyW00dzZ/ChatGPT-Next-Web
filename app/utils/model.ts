@@ -26,7 +26,13 @@ export function collectModelTable(
       const available = !m.startsWith("-");
       const nameConfig =
         m.startsWith("+") || m.startsWith("-") ? m.slice(1) : m;
-      const [name, displayName] = nameConfig.split(":") && nameConfig.split("|"); // `|` is aliases for fine-tuning model OpenAI (E.g Usage : ft:gpt-3.5-turbo-1106:github-developer-program::88ufxjNg|Fine-Tuning-1)
+      const [name, displayName] = nameConfig.split(":");
+
+      // enable or disable all models
+      if (name === "all") {
+        Object.values(modelTable).forEach((m) => (m.available = available));
+      }
+
       modelTable[name] = {
         name,
         displayName: displayName || name,

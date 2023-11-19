@@ -48,12 +48,6 @@
 
 你可以 star/watch 本项目或者 follow 作者来及时获得新功能更新通知。
 
-## 手动禁用工作流程
-
-如果您使用了此分支的分支，请确保禁用此工作流程；否则，您可以启用它，但需要启用 GPG 密钥 [GitHub 文档](https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account)
-
-![手动禁用工作流程](./docs/images/workflows/disable_workflow.png)
-
 ## 配置页面访问密码
 
 > 配置密码后，用户需要在设置页手动填写访问码才可以正常聊天，否则会通过消息提示未授权状态。
@@ -118,21 +112,20 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 
 如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
 
-### `HIDE_BALANCE_QUERY` （可选）
+### `ENABLE_BALANCE_QUERY` （可选）
 
-如果你不想让用户查询余额，将此环境变量设置为 1 即可。
+如果你想启用余额查询功能，将此环境变量设置为 1 即可。
 
-### `MODEL_LIST` （可选）
-如果你想要在模型列表中不出现那么多选项,你可以设置为自定义列表,比如: gpt3.5,gpt4
-在使用azure 部署的 chatgpt 时,非常有用
+### `DISABLE_FAST_LINK` （可选）
+
+如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
 
 ### `CUSTOM_MODELS` （可选）
 
-> 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo,gpt-4-1106-preview:gpt-4-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`，并将 `gpt-4-1106-preview` 模型名字展示为 `gpt-4-turbo`。
+> 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`，并将 `gpt-4-1106-preview` 模型名字展示为 `gpt-4-turbo`。
+> 如果你想先禁用所有模型，再启用指定模型，可以使用 `-all,+gpt-3.5-turbo`，则表示仅启用 `gpt-3.5-turbo`
 
-> OpenAI 微调模型示例：`ft:gpt-3.5-turbo-1106:github-developer-program::88ufxjNg|Fine-Tuning-1` 将 `ft:gpt-3.5-turbo-1106:github-developer-program::88ufxjNg` 显示为 `Fine-Tuning-1`。
-
-用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名:展示名` 来自定义模型的展示名，用英文逗号隔开。
+用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
 ## 开发
 
@@ -146,7 +139,7 @@ Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.micro
 OPENAI_API_KEY=<your api key here>
 
 # 中国大陆用户，可以使用本项目自带的代理进行开发，你也可以自由选择其他代理地址
-BASE_URL=https://ab.nextweb.fun/api/proxy
+BASE_URL=https://a.nextweb.fun/api/proxy
 ```
 
 ### 本地开发
@@ -183,38 +176,6 @@ docker run -d -p 3000:3000 \
    yidadaa/chatgpt-next-web
 ```
 
-### Docker（推荐）（仅限 Edge 运行时）
-
-```shell
-docker pull ghcr.io/h0llyw00dzz/chatgpt-next-web
-
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY=sk-xxxx \
-   -e CODE=your-password \
-   ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-
-您可以在代理后面启动服务：
-
-```shell
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY=sk-xxxx \
-   -e CODE=your-password \
-   -e PROXY_URL=http://localhost:7890 \
-   ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-
-您可以使用自定义基本路径运行（新）
-
-示例：
-
-```sh
-docker run -e BASE_PATH=/web -p 3000:3000 ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-运行容器后，您的应用程序应该可以通过 `http://localhost:3000/web` 访问。
-
-注意：自定义基本路径目前仅适用于 Hub `ghcr.io/h0llyw00dzz/chatgpt-next-web`。
-
 如果你的本地代理需要账号密码，可以使用：
 
 ```shell
@@ -244,6 +205,7 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 [见项目贡献者列表](https://github.com/Yidadaa/ChatGPT-Next-Web/graphs/contributors)
 
 ### 相关项目
+
 - [one-api](https://github.com/songquanpeng/one-api): 一站式大模型额度管理平台，支持市面上所有主流大语言模型
 
 ## 开源协议

@@ -5,7 +5,7 @@
 
 English / [简体中文](./README_CN.md)
 
-One click to get a well-designed cross-platform ChatGPT web UI.
+One-Click to get well-designed cross-platform ChatGPT web UI.
 
 一键免费部署你的跨平台私人 ChatGPT 应用。
 
@@ -13,9 +13,6 @@ One click to get a well-designed cross-platform ChatGPT web UI.
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
-
-[![CI: CodeQL Unit Testing Advanced](https://github.com/H0llyW00dzZ/ChatGPT-Next-Web/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/H0llyW00dzZ/ChatGPT-Next-Web/actions/workflows/codeql.yml)
-
 
 [Web App](https://chatgpt.nextweb.fun/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Discord](https://discord.gg/YCkeafCafC) / [Twitter](https://twitter.com/mortiest_ricky) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
 
@@ -40,32 +37,32 @@ One click to get a well-designed cross-platform ChatGPT web UI.
 
 - **Deploy for free with one-click** on Vercel in under 1 minute
 - Compact client (~5MB) on Linux/Windows/MacOS, [download it now](https://github.com/Yidadaa/ChatGPT-Next-Web/releases)
-- Fully compatible with self-deployed LLMS, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
-- Privacy first, all data is stored locally in the browser
-- Markdown support includes LaTex, mermaid, code highlight, etc.
+- Fully compatible with self-deployed llms, recommended for use with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner) or [LocalAI](https://github.com/go-skynet/LocalAI)
+- Privacy first, all data stored locally in the browser
+- Markdown support: LaTex, mermaid, code highlight, etc.
 - Responsive design, dark mode and PWA
 - Fast first screen loading speed (~100kb), support streaming response
-- New in v2: create, share, and debug your chat tools with prompt templates (mask)
+- New in v2: create, share and debug your chat tools with prompt templates (mask)
 - Awesome prompts powered by [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh) and [awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
 - Automatically compresses chat history to support long conversations while also saving your tokens
 - I18n: English, 简体中文, 繁体中文, 日本語, Français, Español, Italiano, Türkçe, Deutsch, Tiếng Việt, Русский, Čeština, 한국어, Indonesia
 
 ## Roadmap
 
-- [x] System Prompt: pin a user-defined prompt as system prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
-- [x] User Prompt: The user can edit and save custom prompts to the prompt list
+- [x] System Prompt: pin a user defined prompt as system prompt [#138](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/138)
+- [x] User Prompt: user can edit and save custom prompts to prompt list
 - [x] Prompt Template: create a new chat with pre-defined in-context prompts [#993](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/993)
 - [x] Share as image, share to ShareGPT [#1741](https://github.com/Yidadaa/ChatGPT-Next-Web/pull/1741)
-- [x] Desktop App with Tauri
+- [x] Desktop App with tauri
 - [x] Self-host Model: Fully compatible with [RWKV-Runner](https://github.com/josStorer/RWKV-Runner), as well as server deployment of [LocalAI](https://github.com/go-skynet/LocalAI): llama/gpt4all/rwkv/vicuna/koala/gpt4all-j/cerebras/falcon/dolly etc.
-- [ ] Plugins: support network search, calculator, any other APIs etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
+- [ ] Plugins: support network search, calculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165)
 
 ## What's New
 
-- 🚀 v2.0 is released, now you can create prompt templates, and turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
-- 🚀 v2.7 let's share conversations as images, or share to ShareGPT!
-- 🚀 v2.8 Now we have a client that runs across all platforms!
-- 🚀 v2.9.11 you can use Azure endpoint now.
+- 🚀 v2.0 is released, now you can create prompt templates, turn your ideas into reality! Read this: [ChatGPT Prompt Engineering Tips: Zero, One and Few Shot Prompting](https://www.allabtai.com/prompt-engineering-tips-zero-one-and-few-shot-prompting/).
+- 🚀 v2.7 let's share conversations as image, or share to ShareGPT!
+- 🚀 v2.8 now we have a client that runs across all platforms!
+- 🚀 v2.9.11 you can use azure endpoint now.
 
 ## 主要功能
 
@@ -128,7 +125,7 @@ We recommend that you follow the steps below to re-deploy:
 
 ### Enable Automatic Updates
 
-> If you encounter a failure of Upstream Sync execution, please manually sync the fork once.
+> If you encounter a failure of Upstream Sync execution, please manually sync fork once.
 
 After forking the project, due to the limitations imposed by GitHub, you need to manually enable Workflows and Upstream Sync Action on the Actions page of the forked project. Once enabled, automatic updates will be scheduled every hour:
 
@@ -140,14 +137,7 @@ After forking the project, due to the limitations imposed by GitHub, you need to
 
 If you want to update instantly, you can check out the [GitHub documentation](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) to learn how to synchronize a forked project with upstream code.
 
-You can star or watch this project or follow the author to get release notifications in time.
-
-## Manually Disabling Workflows
-
-If you subs fork's this fork make sure your disable this workflows, otherwise you can enabled it but required GPG Key enabled [GitHub documentation](https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account)
-
-![Manually Disabling Workflows](./docs/images/workflows/disable_workflow.png)
-
+You can star or watch this project or follow author to get release notifications in time.
 
 ## Access Password
 
@@ -226,11 +216,11 @@ If you want to disable parse settings from url, set this to 1.
 ### `CUSTOM_MODELS` (optional)
 
 > Default: Empty
-> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview:gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
+> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
 
-> Example Fine-Tuning Model OpenAI: `ft:gpt-3.5-turbo-1106:github-developer-program::88ufxjNg|Fine-Tuning-1` display `ft:gpt-3.5-turbo-1106:github-developer-program::88ufxjNg` as `Fine-Tuning-1`.
+To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
 
-To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name:displayName` to customize model name, separated by comma.
+User `-all` to disable all default models, `+all` to enable all default models.
 
 ## Requirements
 
@@ -265,7 +255,7 @@ yarn dev
 
 > [简体中文 > 如何部署到私人服务器](./README_CN.md#部署)
 
-### Docker (Recommended) (Edge & Nodejs Runtime)
+### Docker (Recommended)
 
 ```shell
 docker pull yidadaa/chatgpt-next-web
@@ -285,38 +275,6 @@ docker run -d -p 3000:3000 \
    -e PROXY_URL=http://localhost:7890 \
    yidadaa/chatgpt-next-web
 ```
-
-### Docker (Recommended) (Edge Only Runtime)
-
-```shell
-docker pull ghcr.io/h0llyw00dzz/chatgpt-next-web
-
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY=sk-xxxx \
-   -e CODE=your-password \
-   ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-
-You can start service behind a proxy:
-
-```shell
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY=sk-xxxx \
-   -e CODE=your-password \
-   -e PROXY_URL=http://localhost:7890 \
-   ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-
-You can run with a custom base path (New)
-
-Example :
-
-```sh
-docker run -e BASE_PATH=/web -p 3000:3000 ghcr.io/h0llyw00dzz/chatgpt-next-web
-```
-After running the container, your application should be accessible at `http://localhost:3000/web`.
-
-Note : Custom base path, currently only work with Hub `ghcr.io/h0llyw00dzz/chatgpt-next-web`
 
 If your proxy needs password, use:
 
