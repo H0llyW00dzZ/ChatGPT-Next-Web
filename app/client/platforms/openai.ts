@@ -495,7 +495,8 @@ export class ChatGPTApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const delta = json.choices?.[0]?.delta?.content;
+              const choices = json.choices as Array<{ delta: { content: string } }>;
+              const delta = choices[0]?.delta?.content;
               const textmoderation = json?.prompt_filter_results;
 
               if (delta) {
