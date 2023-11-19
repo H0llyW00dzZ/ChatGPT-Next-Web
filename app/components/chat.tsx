@@ -700,6 +700,8 @@ function usePinApp() {
   const isApp = getClientConfig()?.isApp;
   const config = useAppConfig();
   const TauriShortcut = config.desktopShortcut;
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
 
   const togglePinApp = useCallback(async () => {
     if (!isApp) {
@@ -740,6 +742,12 @@ function usePinApp() {
       document.removeEventListener("mousedown", handleMouseClick);
     };
   }, [TauriShortcut, togglePinApp]);
+  // Fix known issue where switching chats a `pinApp` state should be set to `false`, indicating that the app should be unpinned because not stored it into localstorage.
+  useEffect(() => {
+    if (session.id !== undefined) {
+      setPinApp(false);
+    }
+  }, [session.id]);
 
   return {
     pinApp: isApp ? pinApp : false,
