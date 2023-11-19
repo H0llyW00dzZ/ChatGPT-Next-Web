@@ -82,12 +82,21 @@ export class ChatGPTApi implements LLMApi {
     model: string,
     max_tokens?: number,
     system_fingerprint?: string
-  ): { max_tokens?: number; system_fingerprint?: string; isNewModel: boolean } {
+  ): {
+    max_tokens?: number;
+    system_fingerprint?: string;
+    isNewModel: boolean;
+    payloadType: 'chat' | 'image';
+    isDalle: boolean;
+  } {
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
     };
     const isNewModel = model.endsWith("-preview");
+    const isDalle = model.startsWith("dall-e");
+    let payloadType: 'chat' | 'image' = 'chat';
+
     if (isNewModel) {
       return {
         max_tokens: max_tokens !== undefined ? max_tokens : modelConfig.max_tokens,
@@ -95,16 +104,21 @@ export class ChatGPTApi implements LLMApi {
           system_fingerprint !== undefined
             ? system_fingerprint
             : modelConfig.system_fingerprint,
-            isNewModel: true,
+        isNewModel: true,
+        payloadType,
+        isDalle,
       };
-    } else {
-      return {
-        isNewModel: false,
-      };
+    } else if (isDalle) {
+      payloadType = 'image';
     }
+
+    return {
+      isNewModel: false,
+      payloadType,
+      isDalle,
+    };
   }
 
-  
   /** get service provider stuff
    * Author :
    * @H0llyW00dzZ 
@@ -252,28 +266,29 @@ export class ChatGPTApi implements LLMApi {
     const magicPayload = this.getNewStuff(defaultModel);
     const provider = this.getServiceProvider();
 
-    if (defaultModel.startsWith("dall-e")) {
-      console.log(`[Request] [${provider}] payload: `, {
-        image: requestPayloads.image,
-      });
+    let payload;
+    if (magicPayload.isDalle) {
+      if (defaultModel.includes("dall-e-2")) {
+        const { quality, style, ...imagePayload } = requestPayloads.image;
+        payload = { image: imagePayload };
+      } else {
+        payload = { image: requestPayloads.image };
+      }
     } else if (magicPayload.isNewModel) {
-      console.log(`[Request] [${provider}] payload: `, {
-        chat: requestPayloads.chat,
-      });
+      payload = { chat: requestPayloads.chat };
     } else {
       const { max_tokens, ...oldChatPayload } = requestPayloads.chat;
-      console.log(`[Request] [${provider}] payload: `, {
-        chat: oldChatPayload,
-      });
+      payload = { chat: oldChatPayload };
     }
+
+    console.log(`[Request] [${provider}] payload: `, payload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const dallemodels =
-        defaultModel.startsWith("dall-e");
+      const dallemodels = magicPayload.isDalle;
 
       let chatPath = dallemodels
         ? this.path(OpenaiPath.ImageCreationPath)
@@ -363,7 +378,7 @@ export class ChatGPTApi implements LLMApi {
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
             } else if (contentType?.startsWith("application/json") 
-              && defaultModel.startsWith("dall-e")) { // only dall-e
+              && magicPayload.isDalle) { // only dall-e
               const jsonResponse = await res.clone().json();
               const imageUrl = jsonResponse.data?.[0]?.url;
               const prompt = requestPayloads.image.prompt;
