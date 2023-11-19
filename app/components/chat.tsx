@@ -701,7 +701,7 @@ function usePinApp() {
   const config = useAppConfig();
   const TauriShortcut = config.desktopShortcut;
 
-  const togglePinApp = async () => {
+  const togglePinApp = useCallback(async () => {
     if (!isApp) {
       return;
     }
@@ -715,8 +715,8 @@ function usePinApp() {
       sendDesktopNotification(Locale.Chat.Actions.PinAppContent.Pinned);
       showToast(Locale.Chat.Actions.PinAppContent.Pinned);
     }
-    setPinApp(!pinApp);
-  };
+    setPinApp((prevPinApp) => !prevPinApp);
+  }, [isApp, pinApp]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -724,8 +724,8 @@ function usePinApp() {
         togglePinApp();
       }
     };
-    //Usage : Mouse+5,Mouse+4,Mouse+1(Middle Click)
-    //You need copy paste (e.g., "Mouse+5" paste in settings) instead of typing manually in settings
+    // Usage : Mouse+5,Mouse+4,Mouse+1(Middle Click)
+    // You need to copy-paste (e.g., Mouse+5 paste in settings) instead of typing manually in settings
     const handleMouseClick = (event: MouseEvent) => {
       if (event.button === 1 || event.button === 4 || event.button === 5) {
         togglePinApp();
