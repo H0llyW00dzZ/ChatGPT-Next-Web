@@ -116,11 +116,37 @@ function escapeDollarNumber(text: string) {
   return escapedText;
 }
 
+function escapeDollarMathNumber(text: string) {
+  let escapedText = "";
+  let isInMathExpression = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    let char = text[i];
+    const nextChar = text[i + 1] || " ";
+
+    if (char === "$") {
+      isInMathExpression = !isInMathExpression;
+    }
+
+    if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
+      char = " $" + nextChar;
+    }
+
+    escapedText += char;
+  }
+
+  return escapedText;
+}
+
 function _MarkDownContent(props: { content: string }) {
-  const escapedContent = useMemo(
-    () => escapeDollarNumber(props.content),
-    [props.content],
-  );
+  const escapedContent = useMemo(() => {
+    let processedContent = props.content;
+    if (processedContent.includes("$")) {
+      processedContent = escapeDollarMathNumber(processedContent);
+    }
+    processedContent = escapeDollarNumber(processedContent);
+    return processedContent;
+  }, [props.content]);
 
   return (
     <ReactMarkdown
