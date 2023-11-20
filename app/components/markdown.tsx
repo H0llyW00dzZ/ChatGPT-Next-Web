@@ -128,8 +128,8 @@ function escapeDollarMathNumber(text: string) {
       isInMathExpression = !isInMathExpression;
     }
 
-    if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = " $" + nextChar;
+    if (char === "$" && nextChar >= "\\0" && nextChar <= "\\9" && !isInMathExpression) {
+      char = " " + nextChar;
     }
 
     escapedText += char;
@@ -141,7 +141,7 @@ function escapeDollarMathNumber(text: string) {
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
     let processedContent = props.content;
-    if (processedContent.includes("$")) {
+    if (processedContent.includes("$$")) {
       processedContent = escapeDollarMathNumber(processedContent);
     }
     processedContent = escapeDollarNumber(processedContent);
