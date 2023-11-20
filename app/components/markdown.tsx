@@ -115,7 +115,7 @@ function escapeDollarNumber(text: string) {
 
   return escapedText;
 }
-// used to be $ any still wip
+// used to be $ any
 function escapeDollarMathNumber(text: string) {
   let escapedText = "";
   let isInMathExpression = false;
@@ -129,7 +129,8 @@ function escapeDollarMathNumber(text: string) {
     }
 
     if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = " " + nextChar;
+      char = "&#36;" + nextChar; // "&#36;" <--- this magic
+      i += 1; // Skip the next character since we have already included it
     }
 
     escapedText += char;
