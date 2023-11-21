@@ -106,10 +106,13 @@ function escapeDollarNumber(text: string) {
     let char = text[i];
     const nextChar = text[i + 1] || " ";
 
-    if (char === " $ " && nextChar >= "0" && nextChar <= "9") {
-      char = " $ ";
+    if (char === "$" && nextChar >= "0" && nextChar <= "9") {
+      char = "$ ";
+    } else if (char === "$" && nextChar === "$") {
+      char = "$$"; // fix LaTex \frac
+      i += 1; // Skip the next dollar sign since we have already included it
     } else if (char === "$" && nextChar !== " " && !/\s/.test(nextChar)) {
-      char = " $ ";
+      char = " $";
     }
 
     escapedText += char;
