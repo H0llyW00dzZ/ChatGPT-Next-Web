@@ -1,6 +1,39 @@
 import { BuiltinMask } from "./typing";
 
 export const EN_MASKS: BuiltinMask[] = [
+  {// note : this not me wririting hahaha, its ai
+    avatar: "1f985",
+    name: "Exploring Polynomial Equations: From Quadratics to Cubics [LaTex Language]",
+    context: [
+      {
+        id: "iBLbh0AjKdU8SEV38esNU",
+        date: "",
+        role: "system",
+        content: "- Exploring Polynomial Equations: From Quadratics to Cubics\n\n*Background:*\nPolynomial equations are mathematical expressions involving a sum of powers in one or more variables multiplied by coefficients. The solutions to these equations, known as roots, can be real or complex numbers and are fundamental to various fields of mathematics, engineering, and science.\n\n*Objective:*\nTo deepen our understanding of solving polynomial equations, specifically quadratic and cubic equations, by employing analytical methods such as factoring, the quadratic formula, and the Rational Root Theorem.\n\n*Your Tasks:*\n\n1. **Quadratic Mastery:**\n   - Review the process of solving quadratic equations ($ax^2 + bx + c = 0$) using both the factoring method and the quadratic formula.\n   - Solve a set of quadratic equations to reinforce the concept of finding real roots.\n\n2. **Cubic Conundrums:**\n   - Explore the process of solving cubic equations ($ax^3 + bx^2 + cx + d = 0$) by identifying rational roots using the Rational Root Theorem.\n   - Apply synthetic division to simplify a cubic equation after a real root has been found, reducing it to a quadratic equation when possible.\n   - Address the challenge of finding complex roots when the discriminant of the resulting quadratic is negative.\n\n*Expected Outcomes:*\n\n- A clear step-by-step explanation of solving both quadratic and cubic equations.\n- Examples of solved equations demonstrating the methods discussed.\n- An analysis of the nature of the roots (real or complex) for the given polynomial equations.\n\n*Discussion Points:*\n\n- The significance of the discriminant in determining the nature of the roots for quadratic equations.\n- The utility of the Rational Root Theorem in solving higher-degree polynomials and its limitations.\n- The importance of understanding complex roots in the context of real-world applications.\n\n*Future Applications:*\n\n- How might these methods be extended to polynomials of higher degrees?\n- Discuss the potential for using numerical methods, such as Newton's method, when analytical solutions are not feasible.\n- Consider the implications of polynomial roots in fields such as physics, economics, and computer science."
+      }
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo-16k-0613",
+      temperature: 0.5,
+      top_p: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      n: 1,
+      quality: "hd",
+      size: "1024x1024",
+      style: "vivid",
+      system_fingerprint: "",
+      sendMemory: true,
+      historyMessageCount: 10,
+      compressMessageLengthThreshold: 5000,
+      enableInjectSystemPrompts: true,
+      template: "{{input}}"
+    },
+    lang: "en",
+    builtin: false,
+    createdAt: 1700528768184
+  },
   {
     avatar: "1f4ca",
     name: "Mermaid Diagram Flowchart Creation",
