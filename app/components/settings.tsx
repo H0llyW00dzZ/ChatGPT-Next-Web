@@ -1118,6 +1118,26 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+
+          <ListItem
+            title={Locale.Settings.SpeedAnimation.Title}
+            subTitle={Locale.Settings.SpeedAnimation.SubTitle}
+          >
+            <InputRange
+              title={`${config.speed_animation ?? 30}m/s`}
+              value={config.speed_animation}
+              min="30"
+              max="60"
+              step="1"
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.speed_animation = Number.parseInt(e.currentTarget.value)),
+                )
+              }
+            ></InputRange>
+          </ListItem>
+
         </List>
 
         <SyncItems />
