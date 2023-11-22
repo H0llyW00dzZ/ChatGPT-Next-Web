@@ -220,6 +220,10 @@ const cn = {
       Title: "自动生成标题",
       SubTitle: "根据对话内容生成合适的标题",
     },
+    SpeedAnimation: {
+      Title: "动画速度响应",
+      SubTitle: "通过控制动画期间响应文本的显示速度，您可以控制动画速度响应",
+    },
     Sync: {
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",

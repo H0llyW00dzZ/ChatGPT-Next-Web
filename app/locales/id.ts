@@ -201,6 +201,10 @@ const id: PartialLocaleType = {
       Title: "Hasilkan Judul Otomatis",
       SubTitle: "Hasilkan judul yang sesuai berdasarkan konten percakapan",
     },
+    SpeedAnimation: {
+      Title: "Kecepatan Respon Animasi",
+      SubTitle: "Kecepatan Respon Animasi memungkinkan Anda mengontrol seberapa cepat teks respon ditampilkan selama animasi",
+    },
     Sync: {
       CloudState: "Pembaruan Terakhir",
       NotSyncYet: "Belum disinkronkan",
