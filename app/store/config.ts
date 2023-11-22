@@ -91,6 +91,7 @@ export const DEFAULT_CONFIG = {
   textmoderation: true, // text moderation default is enabled
 
   desktopShortcut: "",
+  speed_animation: 30, // Higher values will result in faster animation
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -167,6 +168,12 @@ export const ShortcutValidator = {
   },
 };
 
+export const speed_animationValidator = {
+  speed_animation(x: number) {
+    return limitNumber(x, 1, 60, 1); // Set the range of 1 to 60 for the speed animation
+  },
+};
+
 export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
   (set, get) => ({
@@ -201,7 +208,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.2, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.3, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -246,13 +253,19 @@ export const useAppConfig = createPersistStore(
         };
       }
 
-      // In the wilds 🚀
+      // In the wilds 🚀 (still wip because it confusing for LLM + Generative AI Method)
 
       if (version < 4.2) {
         state.modelConfig = {
           ...state.modelConfig,
           system_fingerprint: "",
         };
+      }
+
+      // Speed Animation default is 30, Higher values will result in faster animation
+
+      if (version < 4.3) {
+        state.speed_animation = 30;
       }
 
       return state as any;
