@@ -222,6 +222,10 @@ const pt: LocaleType = {
       Title: "Gerar Título Automaticamente",
       SubTitle: "Gerar um título adequado baseado no conteúdo da conversa",
     },
+    SpeedAnimation: {
+      Title: "Velocidade de Animação da Resposta",
+      SubTitle: "Uma resposta de animação de velocidade na qual você pode controlar a rapidez com que o texto da resposta é exibido durante a animação",
+    },
     Sync: {
       CloudState: "Última Atualização",
       NotSyncYet: "Ainda não sincronizado",
