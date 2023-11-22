@@ -97,9 +97,9 @@ You are ChatGPT, a large language model trained by OpenAI.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
-Latex inline: $x^2$ 
-Latex block: $$e=mc^2$$
-`;
+LaTex inline: $x^2$ 
+LaTex block: $e=mc^2$
+`; // Testing LaTex for research purpose
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 
