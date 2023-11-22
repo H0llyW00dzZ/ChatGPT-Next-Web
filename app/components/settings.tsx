@@ -1127,7 +1127,7 @@ export function Settings() {
               title={`${config.speed_animation ?? 60}m/s`}
               value={(config.speed_animation ?? 60).toFixed(60)}
               min="1"
-              max="100"
+              max="200" // average max to made it very slowly like while a server lag hahaha
               step="1"
               onChange={(e) =>
                 updateConfig(
