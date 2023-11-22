@@ -111,7 +111,10 @@ function escapeDollarNumber(text: string) {
       isInMathExpression = !isInMathExpression;
     }
 
-    if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
+    if (char === "$" && nextChar === "$") {
+      char = "$$"; // Preserve the double dollar sign
+      i += 1; // Skip the next dollar sign since we have already included it
+    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
       char = "&#36;" + nextChar;
       i += 1; // Skip the next character since we have already included it
     }
@@ -134,7 +137,10 @@ function escapeDollarMathNumber(text: string) {
       isInMathExpression = !isInMathExpression;
     }
 
-    if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
+    if (char === "$" && nextChar === "$") {
+      char = "$$"; // Preserve the double dollar sign
+      i += 1; // Skip the next dollar sign since we have already included it
+    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
       char = "&#36;" + nextChar;
       i += 1; // Skip the next character since we have already included it
     }
