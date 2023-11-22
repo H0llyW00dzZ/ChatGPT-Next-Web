@@ -1124,10 +1124,10 @@ export function Settings() {
             subTitle={Locale.Settings.SpeedAnimation.SubTitle}
           >
             <InputRange
-              title={`${config.speed_animation ?? 30}m/s`}
-              value={config.speed_animation}
-              min="30"
-              max="60"
+              title={`${config.speed_animation ?? 60}m/s`}
+              value={(config.speed_animation ?? 60).toFixed(60)}
+              min="1"
+              max="100"
               step="1"
               onChange={(e) =>
                 updateConfig(

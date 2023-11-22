@@ -91,7 +91,7 @@ export const DEFAULT_CONFIG = {
   textmoderation: true, // text moderation default is enabled
 
   desktopShortcut: "",
-  speed_animation: 30, // Higher values will result in faster animation
+  speed_animation: 60, // Lower values will result in faster animation
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -170,7 +170,7 @@ export const ShortcutValidator = {
 
 export const speed_animationValidator = {
   speed_animation(x: number) {
-    return limitNumber(x, 1, 60, 1); // Set the range of 1 to 60 for the speed animation
+    return limitNumber(x, 1, 100, 1); // Set the range of 1 to 100 for the speed animation
   },
 };
 
@@ -262,10 +262,10 @@ export const useAppConfig = createPersistStore(
         };
       }
 
-      // Speed Animation default is 30, Higher values will result in faster animation
+      // Speed Animation default is 30, Lower values will result in faster animation
 
       if (version < 4.3) {
-        state.speed_animation = 30;
+        state.speed_animation = 60;
       }
 
       return state as any;

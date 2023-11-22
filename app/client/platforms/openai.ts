@@ -218,6 +218,8 @@ export class ChatGPTApi implements LLMApi {
       },
     };
 
+    const cfgspeed_animation = useAppConfig.getState().speed_animation;       
+
     const defaultModel = modelConfig.model;
 
     const userMessages = messages.filter((msg) => msg.role === "user");
@@ -343,7 +345,7 @@ export class ChatGPTApi implements LLMApi {
           }
 
           if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+            const fetchCount = Math.max(1, Math.round(remainText.length / cfgspeed_animation)); // Lower values will result in faster animation
             const fetchText = remainText.slice(0, fetchCount);
             responseText += fetchText;
             remainText = remainText.slice(fetchCount);
