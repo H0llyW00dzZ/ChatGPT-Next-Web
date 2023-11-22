@@ -170,7 +170,7 @@ export const ShortcutValidator = {
 
 export const speed_animationValidator = {
   speed_animation(x: number) {
-    return limitNumber(x, 1, 100, 1); // Set the range of 1 to 100 for the speed animation
+    return limitNumber(x, 1, 200, 1); // Set the range of 1 to 100 for the speed animation
   },
 };
 
