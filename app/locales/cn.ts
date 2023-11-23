@@ -329,6 +329,7 @@ const cn = {
       },
       ImportFailed: "导入失败",
       ImportChatSuccess: "聊天数据导入成功。",
+      ImportPromptsSuccess: "成功导入 Prompts 数据。",
     },
     Mask: {
       Splash: {

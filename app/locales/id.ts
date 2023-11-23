@@ -308,6 +308,7 @@ const id: PartialLocaleType = {
       },
       ImportFailed: "Gagal mengimpor dari file",
       ImportChatSuccess: "Data chat berhasil diimpor.",
+      ImportPromptsSuccess: "Impor data Prompts berhasil.",
     },
     SendKey: "Kirim",
     PinAppKey: "Tombol pintas Aplikasi",
