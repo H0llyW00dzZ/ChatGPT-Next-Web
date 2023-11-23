@@ -98,24 +98,42 @@ export function PreCode(props: { children: any }) {
     </>
   );
 }
-// used to be for math / latex (fix done)
+// Function to escape dollar signs in LaTeX and any code blocks format, including single backticks
 function escapeDollarNumber(text: string) {
   let escapedText = "";
   let isInMathExpression = false;
+  let isInCodeBlock = false;
+
+  const codeBlockStartRegex = /^`{1,3}|`$/;
 
   for (let i = 0; i < text.length; i += 1) {
     let char = text[i];
     const nextChar = text[i + 1] || " ";
 
+    // Toggle the isInMathExpression flag when encountering a dollar sign
     if (char === "$") {
       isInMathExpression = !isInMathExpression;
     }
 
+    // Toggle the isInCodeBlock flag when encountering a code block start indicator
+    if (codeBlockStartRegex.test(char)) {
+      isInCodeBlock = !isInCodeBlock;
+    }
+
+    // If inside a code block, preserve the character as is
+    if (isInCodeBlock) {
+      escapedText += char;
+      continue;
+    }
+
+    // Preserve the double dollar sign in math expressions
     if (char === "$" && nextChar === "$") {
       char = "$$"; // Preserve the double dollar sign
       i += 1; // Skip the next dollar sign since we have already included it
-    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = "&#36;" + nextChar;
+    }
+    // Escape a single dollar sign followed by a number outside of math expressions
+    else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
+      char = "&#36;" + nextChar; // Use HTML entity &#36; to represent the dollar sign
       i += 1; // Skip the next character since we have already included it
     }
 
@@ -124,24 +142,44 @@ function escapeDollarNumber(text: string) {
 
   return escapedText;
 }
-// used to be $ any (will refactor this later)
+// With this combination, the maximum number of `$` signs in one line is 4 (without single backtick or any codeblocks) for example: $0000 $1000 $0001 $0000.
+// Also the maximum number of `$` signs in single backticks or any codeblock is infinite
+// For AI, this is sufficient and won't cause any formatting errors while escaping it from LaTeX.
 function escapeDollarMathNumber(text: string) {
   let escapedText = "";
   let isInMathExpression = false;
+  let isInCodeBlock = false;
+
+  const codeBlockStartRegex = /^`{1,3}|`$/;
 
   for (let i = 0; i < text.length; i += 1) {
     let char = text[i];
     const nextChar = text[i + 1] || " ";
 
+    // Toggle the isInMathExpression flag when encountering a dollar sign
     if (char === "$") {
       isInMathExpression = !isInMathExpression;
     }
 
+    // Toggle the isInCodeBlock flag when encountering a code block start indicator
+    if (codeBlockStartRegex.test(char)) {
+      isInCodeBlock = !isInCodeBlock;
+    }
+
+    // If inside a code block, preserve the character as is
+    if (isInCodeBlock) {
+      escapedText += char;
+      continue;
+    }
+
+    // Preserve the double dollar sign in math expressions
     if (char === "$" && nextChar === "$") {
       char = "$$"; // Preserve the double dollar sign
       i += 1; // Skip the next dollar sign since we have already included it
-    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = "&#36;" + nextChar;
+    }
+    // Escape a single dollar sign followed by a number outside of math expressions
+    else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
+      char = "&#36;" + nextChar; // Use HTML entity &#36; to represent the dollar sign
       i += 1; // Skip the next character since we have already included it
     }
 
