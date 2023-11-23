@@ -107,44 +107,26 @@ function escapeDollarNumber(text: string) {
     let char = text[i];
     const nextChar = text[i + 1] || " ";
 
+    // Check for double dollar signs and preserve them without changing.
+    if (char === "$" && nextChar === "$") {
+      escapedText += "$$"; // Add both dollar signs to the escaped text.
+      i += 1; // Skip the next dollar sign since we have already processed it.
+      continue; // Continue to the next character.
+    }
+
+    // If it's a single dollar sign followed by a number, escape it.
+    if (char === "$" && !isInMathExpression && nextChar >= "0" && nextChar <= "9") {
+      escapedText += "\\$" + nextChar;
+      i += 1; // Skip the next character since we have already included it.
+      continue; // Continue to the next character.
+    }
+
+    // Toggle the math expression state with a single dollar sign.
     if (char === "$") {
       isInMathExpression = !isInMathExpression;
     }
 
-    if (char === "$" && nextChar === "$") {
-      char = "$$"; // Preserve the double dollar sign
-      i += 1; // Skip the next dollar sign since we have already included it
-    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = "&#36;" + nextChar;
-      i += 1; // Skip the next character since we have already included it
-    }
-
-    escapedText += char;
-  }
-
-  return escapedText;
-}
-// used to be $ any (will refactor this later)
-function escapeDollarMathNumber(text: string) {
-  let escapedText = "";
-  let isInMathExpression = false;
-
-  for (let i = 0; i < text.length; i += 1) {
-    let char = text[i];
-    const nextChar = text[i + 1] || " ";
-
-    if (char === "$") {
-      isInMathExpression = !isInMathExpression;
-    }
-
-    if (char === "$" && nextChar === "$") {
-      char = "$$"; // Preserve the double dollar sign
-      i += 1; // Skip the next dollar sign since we have already included it
-    } else if (char === "$" && nextChar >= "0" && nextChar <= "9" && !isInMathExpression) {
-      char = "&#36;" + nextChar;
-      i += 1; // Skip the next character since we have already included it
-    }
-
+    // Add the current character to the escaped text.
     escapedText += char;
   }
 
@@ -154,9 +136,6 @@ function escapeDollarMathNumber(text: string) {
 function _MarkDownContent(props: { content: string }) {
   const escapedContent = useMemo(() => {
     let processedContent = props.content;
-    if (processedContent.includes("$")) {
-      processedContent = escapeDollarMathNumber(processedContent);
-    }
     processedContent = escapeDollarNumber(processedContent);
     return processedContent;
   }, [props.content]);
