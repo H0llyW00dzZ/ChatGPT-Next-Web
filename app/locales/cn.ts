@@ -312,17 +312,17 @@ const cn = {
       },
       Description: {
         Chat: (overview: any) => {
-          const title = "次对话";
-          const description = `${overview.chat} 次对话，, ${overview.message} 条消息`;
+          const title = "对话";
+          const description = `${overview.chat} 次对话，${overview.message} 条消息`;
           return { title, description };
         },
         Prompt: (overview: any) => {
-          const title = "条提示词";
+          const title = "提示词";
           const description = `${overview.prompt} 条提示词`;
           return { title, description };
         },
         Masks: (overview: any) => {
-          const title = "个面具";
+          const title = "面具";
           const description = `${overview.mask} 个面具`;
           return { title, description };
         },
