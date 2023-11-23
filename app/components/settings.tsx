@@ -1426,21 +1426,23 @@ export function Settings() {
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
-          <ListItem
-            title={Locale.Settings.TextModeration.Title}
-            subTitle={Locale.Settings.TextModeration.SubTitle}
-          >
-            <input
-              type="checkbox"
-              checked={config.textmoderation}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.textmoderation = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </ListItem>
+          {accessStore.provider !== ServiceProvider.Azure && (
+            <ListItem
+              title={Locale.Settings.TextModeration.Title}
+              subTitle={Locale.Settings.TextModeration.SubTitle}
+            >
+              <input
+                type="checkbox"
+                checked={config.textmoderation}
+                onChange={(e) =>
+                  updateConfig(
+                    (config) =>
+                      (config.textmoderation = e.currentTarget.checked),
+                  )
+                }
+              ></input>
+            </ListItem>
+          )}
         </List>
 
         {shouldShowPromptModal && (
