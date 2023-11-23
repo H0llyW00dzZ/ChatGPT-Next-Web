@@ -666,7 +666,7 @@ function LocalDataModal(props: { onClose?: () => void }) {
         try {
           const importedData = JSON.parse(content);
           promptStore.prompts = importedData; // Update the prompts in the store
-          showToast(Locale.Settings.Sync.Success);
+          showToast(Locale.Settings.Sync.ImportPromptsSuccess);
         } catch (e) {
           showToast(Locale.Settings.Sync.ImportFailed);
           console.error(e);
