@@ -116,7 +116,7 @@ function escapeDollarNumber(text: string) {
 
     // If it's a single dollar sign followed by a number, escape it.
     if (char === "$" && !isInMathExpression && nextChar >= "0" && nextChar <= "9") {
-      escapedText += "$" + nextChar;
+      escapedText += "\\$" + nextChar;
       i += 1; // Skip the next character since we have already included it.
       continue; // Continue to the next character.
     }
@@ -126,6 +126,7 @@ function escapeDollarNumber(text: string) {
       isInMathExpression = !isInMathExpression;
     }
 
+    // Add the current character to the escaped text.
     escapedText += char;
   }
 
