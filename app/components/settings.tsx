@@ -588,12 +588,13 @@ function SyncConfigModal(props: { onClose?: () => void }) {
  **/
 
 function LocalDataModal(props: { onClose?: () => void }) {
-  const syncStore = useSyncStore();
   const [showLocalData, setShowLocalData] = useState(false);
   const [exporting, setExporting] = useState(false);
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const maskStore = useMaskStore();
+  const builtinCount = SearchService.count.builtin;
+  const customCount = promptStore.getUserPrompts().length ?? 0;
   const stateOverview = useMemo(() => {
     const sessions = chatStore.sessions;
     const messageCount = sessions.reduce((p, c) => p + c.messages.length, 0);
@@ -641,6 +642,38 @@ function LocalDataModal(props: { onClose?: () => void }) {
       });
     },
     [chatStoreRef]
+  );
+
+  const handleExportPrompts = async () => {
+    if (exporting) return;
+    setExporting(true);
+    const currentDate = new Date();
+    const prompts = promptStore.prompts;
+    const promptCount = Object.keys(prompts).length;
+    const datePart = getClientConfig()?.isApp
+      ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
+      : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
+    const fileName = `prompts_${promptCount}_${datePart}.json`;
+    await downloadAs(prompts, fileName);
+    setExporting(false);
+  };
+
+  const promptStoreRef = useRef(promptStore);
+
+  const handleImportPrompts = useMemo(
+    () => async () => {
+      await readFromFile().then((content) => {
+        try {
+          const importedData = JSON.parse(content);
+          promptStore.prompts = importedData; // Update the prompts in the store
+          showToast(Locale.Settings.Sync.Success);
+        } catch (e) {
+          showToast(Locale.Settings.Sync.ImportFailed);
+          console.error(e);
+        }
+      });
+    },
+    [promptStoreRef]
   );
 
   return (
@@ -709,21 +742,29 @@ function LocalDataModal(props: { onClose?: () => void }) {
           </ListItem>
           <ListItem
             title={Locale.Settings.Sync.Description.Prompt(stateOverview).title}
-            subTitle={Locale.Settings.Sync.Description.Prompt(stateOverview).description}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount,
+            )}
           >
             <div style={{ display: "flex" }}>
               <IconButton
                 icon={<UploadIcon />}
                 text={Locale.UI.Export}
-                onClick={() => {
-                  showToast(Locale.WIP);
-                }}
+                onClick={handleExportPrompts}
               />
               <IconButton
                 icon={<DownloadIcon />}
                 text={Locale.UI.Import}
-                onClick={() => {
-                  showToast(Locale.WIP);
+                onClick={handleImportPrompts}
+              />
+              <IconButton
+                icon={<ClearIcon />}
+                text={Locale.Settings.Danger.Clear.Action}
+                onClick={async () => {
+                  if (await showConfirm(Locale.Settings.Danger.Clear.Confirm)) {
+                    promptStore.clearUserPrompts();
+                  }
                 }}
               />
             </div>
