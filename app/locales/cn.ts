@@ -313,7 +313,7 @@ const cn = {
       Description: {
         Chat: (overview: any) => {
           const title = "对话";
-          const description = `${overview.chat} 次对话，${overview.message} 条消息`;
+          const description = `${overview.chat} 次对话，, ${overview.message} 条消息`;
           return { title, description };
         },
         Prompt: (overview: any) => {
