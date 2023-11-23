@@ -122,6 +122,23 @@ export const usePromptStore = createPersistStore(
       SearchService.add(prompt);
     },
 
+    clearUserPrompts() {
+      const prompts = get().prompts;
+      const userPromptIds = Object.values(prompts)
+        .filter((prompt) => prompt.isUser)
+        .map((prompt) => prompt.id);
+
+      userPromptIds.forEach((id) => {
+        delete prompts[id];
+        SearchService.remove(id);
+      });
+
+      set(() => ({
+        prompts,
+        counter: get().counter + 1,
+      }));
+    },
+
     search(text: string) {
       if (text.length === 0) {
         // return all prompts
