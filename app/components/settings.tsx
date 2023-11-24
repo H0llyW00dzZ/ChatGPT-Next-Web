@@ -657,9 +657,7 @@ function LocalDataModal(props: { onClose?: () => void }) {
     await downloadAs(prompts, fileName);
     setExporting(false);
   };
-
-  const promptStoreRef = useRef(promptStore);
-
+// Fix Warning while building into a binary (desktop app known as tauri)
   const handleImportPrompts = useMemo(
     () => async () => {
       await readFromFile().then((content) => {
@@ -673,7 +671,8 @@ function LocalDataModal(props: { onClose?: () => void }) {
         }
       });
     },
-    [promptStoreRef]
+    // promptStore should be included in the dependency array
+    [promptStore]
   );
 
   return (
