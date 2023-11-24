@@ -165,14 +165,18 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
+    if (exportConfig.includeSysMemoryPrompt && session.memoryPrompt) {
+      // this a nothing only bypassing that warning react component while compiling it into binary (desktop app aka tauri)
+    }
     ret.push(...session.messages.filter((m) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
-    exportConfig.includeSysMemoryPrompt,
+    exportConfig.includeSysMemoryPrompt, // Now it's being used
     session.messages,
     session.mask.context,
     selection,
+    session.memoryPrompt, // Hypothetical dependency
   ]);
   function preview() {
     if (exportConfig.format === "text") {
