@@ -132,6 +132,10 @@ const cn = {
       Title: "包含面具上下文",
       SubTitle: "是否在消息中展示面具上下文",
     },
+    IncludeSysMemoryPrompt: {
+      Title: "包含系统记忆提示",
+      SubTitle: "在掩码中是否包含系统记忆提示",
+    },
     Steps: {
       Select: "选取",
       Preview: "预览",

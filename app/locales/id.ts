@@ -122,6 +122,10 @@ const id: PartialLocaleType = {
       Title: "Sertakan Konteks",
       SubTitle: "Apakah akan menyertakan masks",
     },
+    IncludeSysMemoryPrompt: {
+      Title: "Termasuk Prompt Memori Sistem",
+      SubTitle: "Ekspor prompt memori sistem dalam mask atau tidak",
+    },
     Steps: {
       Select: "Pilih",
       Preview: "Pratinjau",

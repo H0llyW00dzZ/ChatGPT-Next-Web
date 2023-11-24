@@ -134,6 +134,10 @@ const en: LocaleType = {
       Title: "Including Context",
       SubTitle: "Export context prompts in mask or not",
     },
+    IncludeSysMemoryPrompt: {
+      Title: "Including System Memory Prompts",
+      SubTitle: "Export system memory prompts in mask or not",
+    },
     Steps: {
       Select: "Select",
       Preview: "Preview",
