@@ -148,6 +148,7 @@ export function MessageExporter() {
   const [exportConfig, setExportConfig] = useState({
     format: "image" as ExportFormat,
     includeContext: true,
+    includeSysMemoryPrompt: true,
   });
 
   function updateExportConfig(updater: (config: typeof exportConfig) => void) {
@@ -168,6 +169,7 @@ export function MessageExporter() {
     return ret;
   }, [
     exportConfig.includeContext,
+    exportConfig.includeSysMemoryPrompt,
     session.messages,
     session.mask.context,
     selection,
@@ -175,11 +177,19 @@ export function MessageExporter() {
   function preview() {
     if (exportConfig.format === "text") {
       return (
-        <MarkdownPreviewer messages={selectedMessages} topic={session.topic} />
+        <MarkdownPreviewer
+          messages={selectedMessages}
+          topic={session.topic}
+          includeSysMemoryPrompt={exportConfig.includeSysMemoryPrompt}
+          />
       );
     } else if (exportConfig.format === "json") {
       return (
-        <JsonPreviewer messages={selectedMessages} topic={session.topic} />
+        <JsonPreviewer
+          messages={selectedMessages}
+          topic={session.topic}
+          includeSysMemoryPrompt={exportConfig.includeSysMemoryPrompt}
+        />
       );
     } else {
       return (
@@ -230,6 +240,20 @@ export function MessageExporter() {
               onChange={(e) => {
                 updateExportConfig(
                   (config) => (config.includeContext = e.currentTarget.checked),
+                );
+              }}
+            ></input>
+          </ListItem>
+          <ListItem
+            title={Locale.Export.IncludeSysMemoryPrompt.Title}
+            subTitle={Locale.Export.IncludeSysMemoryPrompt.SubTitle}
+          >
+            <input
+              type="checkbox"
+              checked={exportConfig.includeSysMemoryPrompt}
+              onChange={(e) => {
+                updateExportConfig(
+                  (config) => (config.includeSysMemoryPrompt = e.currentTarget.checked),
                 );
               }}
             ></input>
@@ -609,9 +633,17 @@ export function ImagePreviewer(props: {
 export function MarkdownPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
+  includeSysMemoryPrompt: boolean;
 }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const memoryPrompt = session.memoryPrompt;
+  const systemMessage = memoryPrompt || "";
   const mdText =
     `# ${props.topic}\n\n` +
+    (props.includeSysMemoryPrompt && systemMessage
+      ? `## System Memory Prompt:\n${systemMessage}\n\n`
+      : "") +
     props.messages
       .map((m) => {
         return m.role === "user"
@@ -688,6 +720,7 @@ export function MarkdownPreviewer(props: {
 export function JsonPreviewer(props: {
   messages: ChatMessage[];
   topic: string;
+  includeSysMemoryPrompt: boolean;
 }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -695,7 +728,9 @@ export function JsonPreviewer(props: {
   const systemMessage = memoryPrompt || "";
   const msgs = {
     messages: [
-      ...(systemMessage ? [{ role: "system", content: systemMessage }] : []),
+      ...(props.includeSysMemoryPrompt && systemMessage
+        ? [{ role: "system", content: systemMessage }]
+        : []),
       ...props.messages.map((m) => ({
         role: m.role,
         content: m.content,
