@@ -645,7 +645,10 @@ export const useChatStore = createPersistStore(
               whitelist: true,
               onFinish(message) {
                 console.log("[Memory] ", message);
-                session.lastSummarizeIndex = lastSummarizeIndex;
+                get().updateCurrentSession((session) => {
+                  session.lastSummarizeIndex = lastSummarizeIndex;
+                  session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
+                });
                 showToast(
                   Locale.Chat.Commands.UI.SummarizeSuccess,
                 );
