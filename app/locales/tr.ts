@@ -41,7 +41,12 @@ const tr: PartialLocaleType = {
     Copy: "Tümünü Kopyala",
     Download: "İndir",
     MessageFromYou: "Sizin Mesajınız",
-    MessageFromChatGPT: "ChatGPT'nin Mesajı",
+    MessageFromChatGPT: {
+      NoRole: "ChatGPT'den Mesaj",
+      RoleAssistant: "Asistan",
+      RoleSystem: "Sistem",
+      SysMemoryPrompt: "Sistem Belleği İsteği",
+    },
   },
   Memory: {
     Title: "Bellek Komutları",

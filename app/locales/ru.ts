@@ -41,7 +41,12 @@ const ru: PartialLocaleType = {
     Copy: "Копировать все",
     Download: "Скачать",
     MessageFromYou: "Сообщение от вас",
-    MessageFromChatGPT: "Сообщение от ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Сообщение от ChatGPT",
+      RoleAssistant: "Ассистент",
+      RoleSystem: "Система",
+      SysMemoryPrompt: "Подсказка системной памяти",
+    },
   },
   Memory: {
     Title: "Память",

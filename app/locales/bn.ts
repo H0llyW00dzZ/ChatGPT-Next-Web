@@ -74,7 +74,12 @@ const bn: PartialLocaleType = {
     Copy: "সমস্তটি কপি করুন",
     Download: "ডাউনলোড করুন",
     MessageFromYou: "আপনার বার্তা",
-    MessageFromChatGPT: "চ্যাটজিপিটির বার্তা",
+    MessageFromChatGPT: {
+      NoRole: "চ্যাটজিপিটি থেকে বার্তা",
+      RoleAssistant: "সহযোগী",
+      RoleSystem: "সিস্টেম",
+      SysMemoryPrompt: "সিস্টেম মেমোরি প্রম্পট",
+    },
     Share: "শেয়ার করুন শেয়ারজিপিটি তে",
     Format: {
       Title: "রপ্তানি ফরম্যাট",

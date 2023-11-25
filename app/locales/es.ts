@@ -41,7 +41,12 @@ const es: PartialLocaleType = {
     Copy: "Copiar todo",
     Download: "Descargar",
     MessageFromYou: "Mensaje de ti",
-    MessageFromChatGPT: "Mensaje de ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Mensaje de ChatGPT",
+      RoleAssistant: "Asistente",
+      RoleSystem: "Sistema",
+      SysMemoryPrompt: "Indicación de Memoria del Sistema",
+    },
   },
   Memory: {
     Title: "Historial de memoria",

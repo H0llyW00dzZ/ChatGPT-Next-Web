@@ -40,7 +40,12 @@ const tw: PartialLocaleType = {
     Copy: "複製全部",
     Download: "下載檔案",
     MessageFromYou: "來自您的訊息",
-    MessageFromChatGPT: "來自 ChatGPT 的訊息",
+    MessageFromChatGPT: {
+      NoRole: "來自ChatGPT的訊息",
+      RoleAssistant: "助理",
+      RoleSystem: "系統",
+      SysMemoryPrompt: "系統記憶提示",
+    },
   },
   Memory: {
     Title: "上下文記憶 Prompt",

@@ -46,7 +46,12 @@ const jp: PartialLocaleType = {
     Copy: "すべてコピー",
     Download: "ファイルをダウンロード",
     MessageFromYou: "あなたからのメッセージ",
-    MessageFromChatGPT: "ChatGPTからのメッセージ",
+    MessageFromChatGPT: {
+      NoRole: "ChatGPTからのメッセージ",
+      RoleAssistant: "アシスタント",
+      RoleSystem: "システム",
+      SysMemoryPrompt: "システムメモリプロンプト",
+    },
   },
   Memory: {
     Title: "履歴メモリ",

@@ -41,7 +41,12 @@ const cs: PartialLocaleType = {
     Copy: "Kopírovat vše",
     Download: "Stáhnout",
     MessageFromYou: "Zpráva od vás",
-    MessageFromChatGPT: "Zpráva z ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Zpráva od ChatGPT",
+      RoleAssistant: "Asistent",
+      RoleSystem: "Systém",
+      SysMemoryPrompt: "Systémový paměťový dotaz",
+    },
   },
   Memory: {
     Title: "Pokyn z paměti",

@@ -66,7 +66,12 @@ const fr: PartialLocaleType = {
     Copy: "Tout sélectionner",
     Download: "Télécharger",
     MessageFromYou: "Message de votre part",
-    MessageFromChatGPT: "Message de ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Message de ChatGPT",
+      RoleAssistant: "Assistant",
+      RoleSystem: "Système",
+      SysMemoryPrompt: "Invite de mémoire système",
+    },
   },
   Memory: {
     Title: "Prompt mémoire",

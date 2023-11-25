@@ -123,7 +123,12 @@ const pt: PartialLocaleType = {
     Copy: "Copiar Tudo",
     Download: "Baixar",
     MessageFromYou: "Mensagem De Você",
-    MessageFromChatGPT: "Mensagem De ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Mensagem do ChatGPT",
+      RoleAssistant: "Assistente",
+      RoleSystem: "Sistema",
+      SysMemoryPrompt: "Prompt de Memória do Sistema",
+    },
     Share: "Compartilhar para ShareGPT",
     Format: {
       Title: "Formato de Exportação",

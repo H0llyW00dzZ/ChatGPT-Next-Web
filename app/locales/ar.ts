@@ -62,7 +62,12 @@ const ar: PartialLocaleType = {
     Copy: "نسخ الكل",
     Download: "تنزيل",
     MessageFromYou: "رسالة منك",
-    MessageFromChatGPT: "رسالة من ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "رسالة من ChatGPT",
+      RoleAssistant: "مساعد",
+      RoleSystem: "النظام",
+      SysMemoryPrompt: "تذكير الذاكرة النظامية",
+    },
     Share: "مشاركة على ShareGPT",
     Format: {
       Title: "صيغة التصدير",
