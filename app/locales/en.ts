@@ -124,7 +124,12 @@ const en: LocaleType = {
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
-    MessageFromChatGPT: "Message From ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Message From ChatGPT",
+      RoleAssistant: "Assistant",
+      RoleSystem: "System",
+      SysMemoryPrompt: "System Memory Prompt",
+    },
     Share: "Share to ShareGPT",
     Format: {
       Title: "Export Format",

@@ -123,7 +123,12 @@ const cn = {
     Download: "下载文件",
     Share: "分享到 ShareGPT",
     MessageFromYou: "用户",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "ChatGPT",
+      RoleAssistant: "助手",
+      RoleSystem: "系统",
+      SysMemoryPrompt: "系统记忆提示",
+    },
     Format: {
       Title: "导出格式",
       SubTitle: "可以导出 Markdown 文本或者 PNG 图片",

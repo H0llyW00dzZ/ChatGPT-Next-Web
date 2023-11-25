@@ -112,7 +112,12 @@ const id: PartialLocaleType = {
     Copy: "Salin Semua",
     Download: "Unduh",
     MessageFromYou: "Pesan dari Anda",
-    MessageFromChatGPT: "Pesan dari ChatGPT",
+    MessageFromChatGPT: {
+      NoRole: "Pesan Dari ChatGPT",
+      RoleAssistant: "Asisten",
+      RoleSystem: "Sistem",
+      SysMemoryPrompt: "Prompt Memori Sistem",
+    },
     Share: "Bagikan ke ShareGPT",
     Format: {
       Title: "Format Ekspor",

@@ -644,15 +644,22 @@ export function MarkdownPreviewer(props: {
   const memoryPrompt = session.memoryPrompt;
   const systemMessage = memoryPrompt || "";
   const mdText =
-    `# ${props.topic}\n\n` +
+    `# ${"💫"} ${Locale.Exporter.Topic}: ${props.topic}\n\n` +
     (props.includeSysMemoryPrompt && systemMessage
-      ? `## System Memory Prompt:\n${systemMessage}\n\n`
+      ? `## ${"⚙️"} ${"🧠"} ${Locale.Export.MessageFromChatGPT.SysMemoryPrompt}:\n${systemMessage}\n\n`
       : "") +
     props.messages
       .map((m) => {
-        return m.role === "user"
-          ? `## ${Locale.Export.MessageFromYou}:\n${m.content}`
-          : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
+        switch (m.role) {
+          case "user":
+            return `## ${"🤓"} ${Locale.Export.MessageFromYou}:\n${m.content}`;
+          case "assistant":
+            return `## ${"🤖"} ${Locale.Export.MessageFromChatGPT.NoRole} (${Locale.Export.MessageFromChatGPT.RoleAssistant}):\n${m.content.trim()}`;
+          case "system":
+            return `## ${"🤖"} ${"⚙️"} ${Locale.Export.MessageFromChatGPT.NoRole} (${Locale.Export.MessageFromChatGPT.RoleSystem}):\n${m.content.trim()}`;
+          default:
+            return `## ${Locale.Export.MessageFromChatGPT.NoRole}:\n${m.content.trim()}`;
+        }
       })
       .join("\n\n");
 
