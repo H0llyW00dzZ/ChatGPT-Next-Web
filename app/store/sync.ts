@@ -187,13 +187,19 @@ export const useSyncStore = createPersistStore(
 
       if (overwriteAccessControl !== false) { // default is false ref #DEFAULT_SYNC_STATE
         const accessControl = localState['access-control'];
-        accessControl.openaiApiKey
-        accessControl.accessCode
-        accessControl.needCode
-        accessControl.hideUserApiKey
-        accessControl.hideBalanceQuery
-        accessControl.disableGPT4
-        accessControl.openaiUrl
+        // Assuming user's local state has properties that you want to use to overwrite accessControl
+        const userLocalState = getLocalAppState();
+        accessControl.openaiApiKey = userLocalState["access-control"].openaiApiKey;
+        accessControl.accessCode = userLocalState["access-control"].accessCode;
+        accessControl.needCode = userLocalState["access-control"].needCode;
+        accessControl.hideUserApiKey = userLocalState["access-control"].hideUserApiKey;
+        accessControl.hideBalanceQuery = userLocalState["access-control"].hideBalanceQuery;
+        accessControl.disableGPT4 = userLocalState["access-control"].disableGPT4;
+        accessControl.openaiUrl = userLocalState["access-control"].openaiUrl;
+        accessControl.azureApiKey = userLocalState["access-control"].azureApiKey;
+        accessControl.azureUrl = userLocalState["access-control"].azureUrl;
+        accessControl.azureApiVersion = userLocalState["access-control"].azureApiVersion;
+        accessControl.useCustomConfig = userLocalState["access-control"].useCustomConfig;
       }
 
       if (provider === ProviderType.WebDAV) {
