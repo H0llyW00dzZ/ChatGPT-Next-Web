@@ -1353,6 +1353,9 @@ function _Chat() {
         {messages.map((message, i) => {
           const isUser = message.role === "user";
           const isContext = i < context.length;
+          const isAssistant = message.role === "assistant";
+          const isDallEModel = session.mask.modelConfig.model.startsWith("dall-e");
+
           const showActions =
             i > 0 &&
             !(message.preview || message.content.length === 0) &&
@@ -1450,11 +1453,13 @@ function _Chat() {
                       </div>
                     )}
                   </div>
-                  {showTyping && (
+                  {showTyping && (isAssistant || isUser) ? (
                     <div className={styles["chat-message-status"]}>
-                      {Locale.Chat.Typing}
+                      {isAssistant && isDallEModel
+                        ? Locale.Chat.GeneratingImage
+                        : Locale.Chat.Typing}
                     </div>
-                  )}
+                  ) : null}
                   <div className={styles["chat-message-item"]}>
                     <Markdown
                       content={message.content}
