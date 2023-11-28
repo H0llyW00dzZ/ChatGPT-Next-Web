@@ -105,6 +105,7 @@ const en: LocaleType = {
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
+    GeneratingImage: "Generating Images…",
     Input: (submitKey: string) => {
       var inputHints = `${submitKey} to send`;
       if (submitKey === String(SubmitKey.Enter)) {

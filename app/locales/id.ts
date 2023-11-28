@@ -92,6 +92,7 @@ const id: PartialLocaleType = {
     },
     Rename: "Ubah Nama Chat",
     Typing: "Mengetik...",
+    GeneratingImage: "Menghasilkan Gambar...",
     Input: (submitKey: string) => {
       var inputHints = `${submitKey} untuk mengirim`;
       if (submitKey === String(SubmitKey.Enter)) {
