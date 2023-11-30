@@ -405,6 +405,10 @@ const id: PartialLocaleType = {
       Title: "Token Maksimum",
       SubTitle: "Panjang maksimum token input dan output",
     },
+    UseMaxTokens: {
+      Title: "Gunakan Jumlah Token Maksimum",
+      SubTitle: "Apakah akan menggunakan jumlah maksimum token.",
+    },
     PresencePenalty: {
       Title: "Penalti Kehadiran",
       SubTitle: "Semakin tinggi nilai, semakin mungkin topik baru muncul",
