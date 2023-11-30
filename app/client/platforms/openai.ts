@@ -80,6 +80,7 @@ export class ChatGPTApi implements LLMApi {
    * @param model - The model to retrieve information for.
    * @param max_tokens - The maximum number of tokens.
    * @param system_fingerprint - The system fingerprint.
+   * @param useMaxTokens - Whether to use the maximum number of max tokens.
    * @returns An object containing information about the new stuff.
    *
    * @author H0llyW00dzZ
