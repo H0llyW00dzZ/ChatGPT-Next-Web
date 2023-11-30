@@ -87,7 +87,8 @@ export class ChatGPTApi implements LLMApi {
   private getNewStuff(
     model: string,
     max_tokens?: number,
-    system_fingerprint?: string
+    system_fingerprint?: string,
+    useMaxTokens: boolean = true,
   ): {
     max_tokens?: number;
     system_fingerprint?: string;
@@ -105,7 +106,7 @@ export class ChatGPTApi implements LLMApi {
 
     if (isNewModel) {
       return {
-        max_tokens: max_tokens !== undefined ? max_tokens : modelConfig.max_tokens,
+        max_tokens: useMaxTokens ? (max_tokens !== undefined ? max_tokens : modelConfig.max_tokens) : undefined,
         system_fingerprint:
           system_fingerprint !== undefined
             ? system_fingerprint
@@ -251,7 +252,8 @@ export class ChatGPTApi implements LLMApi {
     const { max_tokens, system_fingerprint } = this.getNewStuff(
       modelConfig.model,
       modelConfig.max_tokens,
-      modelConfig.system_fingerprint
+      modelConfig.system_fingerprint,
+      modelConfig.useMaxTokens,
     );
 
     /**
@@ -273,7 +275,7 @@ export class ChatGPTApi implements LLMApi {
         top_p: modelConfig.top_p,
         // beta test for new model's since it consumed much tokens
         // max is 4096
-        ...{ max_tokens }, // Spread the max_tokens value
+        ...(max_tokens !== undefined ? { max_tokens } : {}), // Spread the max_tokens value if defined
         // not yet ready
         //...{ system_fingerprint }, // Spread the system_fingerprint value
       },

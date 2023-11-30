@@ -79,6 +79,7 @@ export const DEFAULT_CONFIG = {
     style: "vivid", // Only DALL·E-3 for DALL·E-2 not not really needed
     system_fingerprint: "",
     sendMemory: true,
+    useMaxTokens: false,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
@@ -266,6 +267,12 @@ export const useAppConfig = createPersistStore(
 
       if (version < 4.3) {
         state.speed_animation = 60;
+      }
+
+      // control useMaxTokens for latest models gpt-4-1106-preview, default is false
+
+      if (version < 4.4) {
+        state.modelConfig.useMaxTokens = false;
       }
 
       return state as any;
