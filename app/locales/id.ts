@@ -157,6 +157,7 @@ const id: PartialLocaleType = {
     DeleteChat: "Anda yakin ingin menghapus percakapan yang dipilih?",
     DeleteToast: "Percakapan telah dihapus",
     Revert: "Kembali",
+    Search: "Masukkan kata kunci filter",
   },
   Settings: {
     Title: "Pengaturan",
