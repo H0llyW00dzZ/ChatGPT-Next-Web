@@ -170,6 +170,7 @@ const cn = {
     DeleteChat: "确认删除选中的对话？",
     DeleteToast: "已删除会话",
     Revert: "撤销",
+    Search: "输入筛选的关键词",
   },
   Settings: {
     Title: "设置",
@@ -615,9 +616,9 @@ const cn = {
     Manage: "管理",
   },
   Exporter: {
-    Description : {
-      Title: "只有清除上下文之后的消息会被展示"
-    },  
+    Description: {
+      Title: "只有清除上下文之后的消息会被展示",
+    },
     Model: "模型",
     ServiceProvider: "服务提供商",
     Messages: "消息",
