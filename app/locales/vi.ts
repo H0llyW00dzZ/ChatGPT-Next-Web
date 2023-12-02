@@ -235,6 +235,7 @@ const vi: PartialLocaleType = {
     Cancel: "Hủy",
     Close: "Đóng",
     Create: "Tạo",
+    Continue: "Tiếp tục",
     Edit: "Chỉnh sửa",
   },
   Exporter: {

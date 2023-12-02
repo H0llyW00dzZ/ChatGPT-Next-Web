@@ -239,6 +239,7 @@ const es: PartialLocaleType = {
     Cancel: "Cancel",
     Close: "Close",
     Create: "Create",
+    Continue: "Continuar",
     Edit: "Edit",
   },
   Exporter: {

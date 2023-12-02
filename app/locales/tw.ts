@@ -226,6 +226,7 @@ const tw: PartialLocaleType = {
     Cancel: "取消",
     Close: "關閉",
     Create: "新增",
+    Continue: "繼續",
     Edit: "編輯",
   },
   Exporter: {

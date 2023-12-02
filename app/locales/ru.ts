@@ -243,6 +243,7 @@ const ru: PartialLocaleType = {
     Cancel: "Отмена",
     Close: "Закрыть",
     Create: "Создать",
+    Continue: "Продолжить",
     Edit: "Редактировать",
   },
   Exporter: {

@@ -608,6 +608,7 @@ const cn = {
     Cancel: "取消",
     Close: "关闭",
     Create: "新建",
+    Continue: "继续",
     Edit: "编辑",
     Export: "导出",
     Import: "导入",

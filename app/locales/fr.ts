@@ -308,6 +308,7 @@ const fr: PartialLocaleType = {
     Cancel: "Annuler",
     Close: "Fermer",
     Create: "Créer",
+    Continue: "Continuer",
     Edit: "Éditer",
   },
   Exporter: {

@@ -288,6 +288,7 @@ ${builtin} مدمجة، ${custom} تم تعريفها من قبل المستخد
     Cancel: "إلغاء",
     Close: "إغلاق",
     Create: "إنشاء",
+    Continue: "استمرار",
     Edit: "تعديل",
   },
   Exporter: {

@@ -240,6 +240,7 @@ const tr: PartialLocaleType = {
     Cancel: "Cancel",
     Close: "Close",
     Create: "Create",
+    Continue: "Continue",
     Edit: "Edit",
   },
   Exporter: {

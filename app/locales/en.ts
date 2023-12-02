@@ -612,6 +612,7 @@ const en: LocaleType = {
     Cancel: "Cancel",
     Close: "Close",
     Create: "Create",
+    Continue: "Continue",
     Edit: "Edit",
     Export: "Export",
     Import: "Import",

@@ -236,6 +236,7 @@ const ko: PartialLocaleType = {
     Cancel: "취소",
     Close: "닫기",
     Create: "생성",
+    Continue: "계속",
     Edit: "편집",
   },
   Exporter: {

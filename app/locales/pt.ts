@@ -606,6 +606,7 @@ const pt: PartialLocaleType = {
     Cancel: "Cancelar",
     Close: "Fechar",
     Create: "Criar",
+    Continue: "Continuar",
     Edit: "Editar",
     Export: "Exportar",
     Import: "Importar",

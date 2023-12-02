@@ -543,6 +543,7 @@ const id: PartialLocaleType = {
     Cancel: "Batal",
     Close: "Tutup",
     Create: "Buat",
+    Continue: "Lanjutkan",
     Edit: "Edit",
     Manage: "Kelola",
   },

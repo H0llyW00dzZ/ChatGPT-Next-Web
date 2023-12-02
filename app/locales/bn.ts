@@ -333,6 +333,7 @@ const bn: PartialLocaleType = {
     Cancel: "বাতিল করুন",
     Close: "বন্ধ করুন",
     Create: "তৈরি করুন",
+    Continue: "চালিয়ে যান",
     Edit: "সম্পাদন করুন",
   },
   Exporter: {

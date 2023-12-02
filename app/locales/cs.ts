@@ -237,6 +237,7 @@ const cs: PartialLocaleType = {
     Cancel: "Zrušit",
     Close: "Zavřít",
     Create: "Vytvořit",
+    Continue: "Pokračovat",
     Edit: "Upravit",
   },
   Exporter: {

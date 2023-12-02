@@ -266,6 +266,7 @@ const jp: PartialLocaleType = {
     Cancel: "キャンセル",
     Close: "閉じる",
     Create: "新規",
+    Continue: "続ける",
     Edit: "編集",
   },
   Exporter: {
