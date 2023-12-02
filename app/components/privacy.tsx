@@ -66,7 +66,7 @@ export function PrivacyPage() {
       didCancel = true; // Set the flag to indicate better cleanup
       controller.abort();
     };
-  }, []);
+  }, [privacyTerms]); // keep forgeting this lmao
 
   const handleAgree = () => {
     const lang = getLang();
