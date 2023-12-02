@@ -27,22 +27,46 @@ export function PrivacyPage() {
   const [privacyTerms, setPrivacyTerms] = useState<any>(null);
 
   useEffect(() => {
+    let didCancel = false; // This flag will let us know if the effect better cleanup function has run
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const fetchPrivacyTerms = async () => {
-      const lang = getLang();
-      const response = await fetch("./privacy.json");
-      const data = await response.json();
-      setPrivacyTerms(data);
-      const privacyPolicy = data[lang][0][1];
-      setMdText(privacyPolicy);
-      setPageTitle(data[lang][0][0]);
-      setDescription(data[lang][0][2]); // Assuming the description is at index 2
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (privacyTerms) {
+        return; // If we already have privacy terms, don't fetch them again
+      }
+
+      try {
+        const lang = getLang();
+        const response = await fetch("privacy.json", { signal });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (didCancel) {
+          return; // If the component has unmounted, do not set the state
+        }
+
+        setPrivacyTerms(data);
+        const privacyPolicy = data[lang][0][1];
+        setMdText(privacyPolicy);
+        setPageTitle(data[lang][0][0]);
+        setDescription(data[lang][0][2]); // Assuming the description is at index 2
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e) {
+        if (!didCancel && e !== 'AbortError') {
+          console.error('Fetch error:', e);
+        }
+      }
     };
 
-    if (!privacyTerms) {
-      fetchPrivacyTerms();
-    }
-  }, [privacyTerms]);
+    fetchPrivacyTerms();
+    return () => {
+      didCancel = true; // Set the flag to indicate better cleanup
+      controller.abort();
+    };
+  }, []);
 
   const handleAgree = () => {
     const lang = getLang();
@@ -87,7 +111,7 @@ export function PrivacyPage() {
         <div className={styles["privacy-actions"]}>
           <div className="window-action-button">
             <IconButton
-              text={Locale.PrivacyPage.Confirm}
+              text={Locale.UI.Continue}
               icon={<ConfirmIcon />}
               onClick={handleAgree}
               bordered
@@ -95,7 +119,7 @@ export function PrivacyPage() {
           </div>
           <div className="window-action-button">
             <IconButton
-              text={Locale.UI.Cancel}
+              text={Locale.UI.Close}
               icon={<CloseIcon />}
               bordered
               onClick={() => navigate(-1)}
