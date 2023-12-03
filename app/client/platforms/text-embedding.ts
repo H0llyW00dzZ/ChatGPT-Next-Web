@@ -71,6 +71,7 @@ export async function getTextEmbeddingsFromCSV(file: File, embeddingPath: string
             const textsToEmbed = (results.data as CsvRow[]).map(row => row[columnName] || '');
 
             // Now we have the texts, let's get the embeddings not only python LOL
+            // Reason: Python so slow
             try {
               const embeddings = await textEmbedding(textsToEmbed, embeddingPath, model);
               resolve(embeddings);
