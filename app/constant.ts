@@ -82,6 +82,8 @@ export const OpenaiPath = {
   // todo
   ImageEditPath: "v1/images/edits",
   ImageVariationPath: "v1/images/variations",
+  // text embedding (wip)
+  EmbeddingPath: "/v1/embeddings",
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
