@@ -620,6 +620,13 @@ const en: LocaleType = {
     Config: "Config",
     Manage: "Manage",
   },
+  ThrowError: {
+    TextEmbedding: "Failed to get text embeddings",
+    TextEmbeddingRequest: "Failed to make a text embedding request",
+    FileReader: "Error parsing CSV file",
+    ParsingCSV: "FileReader event target is null",
+    ReadingCSV: "Error reading CSV file",
+  },
   Exporter: {
     Description: {
       Title: "Only messages after clearing the context will be displayed",

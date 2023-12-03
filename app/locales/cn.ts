@@ -616,6 +616,13 @@ const cn = {
     Config: "配置",
     Manage: "管理",
   },
+  ThrowError: {
+    TextEmbedding: "获取文本嵌入失败",
+    TextEmbeddingRequest: "创建文本嵌入请求失败",
+    FileReader: "解析 CSV 文件时出错",
+    ParsingCSV: "FileReader 事件目标为 null",
+    ReadingCSV: "读取 CSV 文件错误",
+  },
   Exporter: {
     Description: {
       Title: "只有清除上下文之后的消息会被展示",

@@ -15,15 +15,25 @@ import {
   LLMApi,
   LLMModel,
   LLMUsage } from "../api";
+import Locale from "../../locales";
+import { makeAzurePath } from "@/app/azure";
 import Papa from "papaparse";
+import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 // Define the structure of the CSV row based on the expected columns
 interface CsvRow {
   [columnName: string]: string | undefined; // Use 'undefined' as well since some columns might be missing
 }
 
+// Assuming you have a function to get the provider from the state
+function getProviderFromState(): string {
+  const accessStore = useAccessStore.getState();
+  return accessStore.provider;
+}
+
 // Function to call the OpenAI API to get text embeddings
 export async function textEmbedding(inputTexts: string[], embeddingPath: string, model: string): Promise<any> {
+  const provider = getProviderFromState(); // Get the provider when needed
   try {
     const payload = {
       input: inputTexts,
@@ -37,18 +47,19 @@ export async function textEmbedding(inputTexts: string[], embeddingPath: string,
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get text embeddings from OpenAI');
+      throw new Error(`[${provider}] ${Locale.ThrowError.TextEmbedding}`);
     }
 
     return await response.json();
   } catch (e) {
-    console.error('Failed to make a text embedding request', e);
+    console.error(`[${provider}] ${Locale.ThrowError.TextEmbeddingRequest}`, e);
     throw e;
   }
 }
 
 // This function is responsible for reading CSV, parsing it, and getting embeddings
 export async function getTextEmbeddingsFromCSV(file: File, embeddingPath: string, columnName: string, model: string): Promise<any> {
+  const provider = getProviderFromState(); // Get the provider when needed
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -64,22 +75,22 @@ export async function getTextEmbeddingsFromCSV(file: File, embeddingPath: string
               const embeddings = await textEmbedding(textsToEmbed, embeddingPath, model);
               resolve(embeddings);
             } catch (error) {
-              console.error('Failed to make a text embedding request', error);
+              console.error(`[${provider}] ${Locale.ThrowError.TextEmbeddingRequest}`, error);
               reject(error);
             }
           },
           error: (error: any) => {
-            console.error('Error parsing CSV file', error);
+            console.error(`${Locale.ThrowError.ParsingCSV}`, error);
             reject(error);
           }
         });
       } else {
-        reject(new Error('FileReader event target is null'));
+        reject(new Error(`${Locale.ThrowError.FileReader}`));
       }
     };
 
     reader.onerror = (error) => {
-      console.error('Error reading CSV file', error);
+      console.error(`${Locale.ThrowError.ReadingCSV}`, error);
       reject(error);
     };
 

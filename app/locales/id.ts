@@ -547,6 +547,13 @@ const id: PartialLocaleType = {
     Edit: "Edit",
     Manage: "Kelola",
   },
+  ThrowError: {
+    TextEmbedding: "Gagal mendapatkan penyematan teks",
+    TextEmbeddingRequest: "Gagal membuat permintaan penyematan teks",
+    FileReader: "Kesalahan saat mengurai file CSV",
+    ParsingCSV: "Target event FileReader adalah null",
+    ReadingCSV: "Kesalahan membaca file CSV",
+  },
   Exporter: {
     Description: {
       Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"
