@@ -86,7 +86,9 @@ export async function getTextEmbeddingsFromCSV(file: File, embeddingPath: string
           }
         });
       } else {
-        reject(new Error(`${Locale.ThrowError.FileReader}`));
+        // better handling error response
+        console.error(`${Locale.ThrowError.FileReader(file.name)}`, e);
+        reject(new Error(Locale.ThrowError.FileReader(file.name)));
       }
     };
 

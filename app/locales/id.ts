@@ -550,7 +550,7 @@ const id: PartialLocaleType = {
   ThrowError: {
     TextEmbedding: "Gagal mendapatkan penyematan teks",
     TextEmbeddingRequest: "Gagal membuat permintaan penyematan teks",
-    FileReader: "Kesalahan saat mengurai file CSV",
+    FileReader: (x: any) => `Kesalahan ${x} file`,
     ParsingCSV: "Target event FileReader adalah null",
     ReadingCSV: "Kesalahan membaca file CSV",
   },

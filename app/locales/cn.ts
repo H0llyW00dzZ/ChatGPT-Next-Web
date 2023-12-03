@@ -619,7 +619,7 @@ const cn = {
   ThrowError: {
     TextEmbedding: "获取文本嵌入失败",
     TextEmbeddingRequest: "创建文本嵌入请求失败",
-    FileReader: "解析 CSV 文件时出错",
+    FileReader: (x: any) => `错误 ${x} 文件`,
     ParsingCSV: "FileReader 事件目标为 null",
     ReadingCSV: "读取 CSV 文件错误",
   },

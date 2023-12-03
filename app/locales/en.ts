@@ -623,7 +623,7 @@ const en: LocaleType = {
   ThrowError: {
     TextEmbedding: "Failed to get text embeddings",
     TextEmbeddingRequest: "Failed to make a text embedding request",
-    FileReader: "Error parsing CSV file",
+    FileReader: (x: any) => `Error ${x} file`,
     ParsingCSV: "FileReader event target is null",
     ReadingCSV: "Error reading CSV file",
   },
