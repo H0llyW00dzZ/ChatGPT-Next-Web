@@ -223,6 +223,10 @@ const en: LocaleType = {
     },
     SendKey: "Send Key",
     PinAppKey: "Pin App Shortcut Key",
+    SystemPromptTemplate: {
+      Title: "System Prompt Template",
+      Subtitle: "A system prompt template for every request. It can use the local language. If the language is not listed, the default language (English) will be used.",
+    },
     Theme: "Theme",
     TightBorder: "Tight Border",
     SendPreviewBubble: {

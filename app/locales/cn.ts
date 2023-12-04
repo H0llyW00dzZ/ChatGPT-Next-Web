@@ -221,6 +221,10 @@ const cn = {
     },
     SendKey: "发送键",
     PinAppKey: "固定应用快捷键",
+    SystemPromptTemplate: {
+      Title: "系统提示模板",
+      Subtitle: "每个请求的系统提示模板。它可以使用本地语言。如果没有列出该语言，则将使用默认语言（英语）。",
+    },
     Theme: "主题",
     TightBorder: "无边框模式",
     SendPreviewBubble: {

@@ -323,6 +323,10 @@ const id: PartialLocaleType = {
     },
     SendKey: "Kirim",
     PinAppKey: "Tombol pintas Aplikasi",
+    SystemPromptTemplate: {
+      Title: "Template Perintah Sistem",
+      Subtitle: "Sebuah template perintah sistem untuk setiap permintaan. Ini dapat menggunakan bahasa lokal. Jika bahasa tidak terdaftar, maka bahasa default (Inggris) akan digunakan.",
+    },
     Theme: "Tema",
     TightBorder: "Batas Ketat",
     SendPreviewBubble: {
