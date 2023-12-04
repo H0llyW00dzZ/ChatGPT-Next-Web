@@ -16,6 +16,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+import { getProviderFromState } from "@/app/utils";
 import { makeAzurePath } from "@/app/azure";
 /**
  * Models Text-Moderations OpenAI
@@ -128,24 +129,6 @@ export class ChatGPTApi implements LLMApi {
   }
 
   /**
-   * Retrieves the service provider based on the access store.
-   * @returns The service provider as a string.
-   * @author H0llyW00dzZ
-   */
-  private getServiceProvider(): string {
-    const accessStore = useAccessStore.getState();
-    let provider = "";
-  
-    if (accessStore.provider === ServiceProvider.Azure) {
-      provider = ServiceProvider.Azure;
-    } else if (accessStore.provider === ServiceProvider.OpenAI) {
-      provider = ServiceProvider.OpenAI;
-    }
-  
-    return provider;
-  }
-
-  /**
    * Initiates a chat with the specified options.
    * 
    * @param options - The chat (LLM's method by Yidadaa) options.
@@ -164,7 +147,7 @@ export class ChatGPTApi implements LLMApi {
      */
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
-    const checkprovider = this.getServiceProvider();
+    const checkprovider = getProviderFromState();
     if (textmoderation
       && DEFAULT_MODELS
       && options.whitelist !== true
@@ -299,7 +282,7 @@ export class ChatGPTApi implements LLMApi {
      * @author H0llyW00dzZ
      */
     const magicPayload = this.getNewStuff(defaultModel);
-    const provider = this.getServiceProvider();
+    const provider = getProviderFromState();
 
     let payload;
     if (magicPayload.isDalle) {
@@ -711,7 +694,7 @@ export class ChatGPTApi implements LLMApi {
       });
 
       const moderationJson = await moderationResponse.json();
-      const provider = this.getServiceProvider();
+      const provider = getProviderFromState();
 
       if (moderationJson.results && moderationJson.results.length > 0) {
         let moderationResult = moderationJson.results[0]; // Access the first element of the array
