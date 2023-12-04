@@ -621,6 +621,7 @@ const cn = {
     Manage: "管理",
   },
   // don't linting this `System_Template` keep format like this
+  // this a object not string
   System_Template: `
 您正在与ChatGPT对话，这是一个由OpenAI训练的大型语言模型。
 知识截止点: {{cutoff}}

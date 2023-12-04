@@ -552,6 +552,7 @@ const id: PartialLocaleType = {
     Manage: "Kelola",
   },
   // don't linting this `System_Template` keep format like this
+  // this a object not string
   System_Template: `
 Anda adalah ChatGPT, sebuah model bahasa besar yang dilatih oleh OpenAI.
 Batas pengetahuan: {{cutoff}}

@@ -253,6 +253,30 @@ export function ModelConfigList(props: {
             ></input>
           </ListItem>
 
+          {props.modelConfig.enableInjectSystemPrompts && (
+            <>
+              <ListItem
+                title={Locale.Settings.SystemPromptTemplate.Title}
+                subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+              >
+                <Select
+                  value={props.modelConfig.systemprompt.default}
+                  onChange={(e) =>
+                    props.updateConfig(
+                      (config) => (config.systemprompt.default = e.currentTarget.value),
+                    )
+                  }
+                >
+                  {customsystemprompts.map((prompt) => (
+                    <option value={prompt.value} key={prompt.value}>
+                      {prompt.label}
+                    </option>
+                  ))}
+                </Select>
+              </ListItem>
+            </>
+          )}
+
           <ListItem
             title={Locale.Settings.InputTemplate.Title}
             subTitle={Locale.Settings.InputTemplate.SubTitle}
@@ -317,25 +341,6 @@ export function ModelConfigList(props: {
           </ListItem>
         </>
       )}
-      <ListItem
-        title={Locale.Settings.SystemPromptTemplate.Title}
-        subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
-      >
-        <Select
-          value={props.modelConfig.systemprompt.default}
-          onChange={(e) =>
-            props.updateConfig(
-              (config) => (config.systemprompt.default = e.currentTarget.value),
-            )
-          }
-        >
-          {customsystemprompts.map((prompt) => (
-            <option value={prompt.value} key={prompt.value}>
-              {prompt.label}
-            </option>
-          ))}
-        </Select>
-      </ListItem>
     </>
   );
 }
