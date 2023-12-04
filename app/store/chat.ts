@@ -375,6 +375,7 @@ export const useChatStore = createPersistStore(
         const clearContextIndex = session.clearContextIndex ?? 0;
         const messages = session.messages.slice();
         const totalMessageCount = session.messages.length;
+        const customsystemprompt = session.mask.modelConfig.systemprompt;
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
@@ -387,7 +388,7 @@ export const useChatStore = createPersistStore(
                 role: "system",
                 content: fillTemplateWith("", {
                   ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
+                  template: customsystemprompt.default,
                 }),
               }),
             ]
