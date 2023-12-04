@@ -547,6 +547,14 @@ const id: PartialLocaleType = {
     Edit: "Edit",
     Manage: "Kelola",
   },
+  System_Template: `
+    Anda adalah ChatGPT, sebuah model bahasa besar yang dilatih oleh OpenAI.
+    Batas pengetahuan: {{cutoff}}
+    Model saat ini: {{model}}
+    Waktu saat ini: {{time}}
+    Latex inline: $x^2$ 
+    Latex block: $$e=mc^2$$
+  `,
   Exporter: {
     Description: {
       Title: "Hanya pesan setelah menghapus konteks yang akan ditampilkan"

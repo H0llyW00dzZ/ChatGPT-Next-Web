@@ -616,6 +616,14 @@ const cn = {
     Config: "配置",
     Manage: "管理",
   },
+  System_Template: `
+  您正在与ChatGPT对话，这是一个由OpenAI训练的大型语言模型。
+  知识截止点: {{cutoff}}
+  当前模型: {{model}}
+  当前时间: {{time}}
+  Latex 行内公式: $x^2$ 
+  Latex 块公式: $$e=mc^2$$
+  `,
   Exporter: {
     Description: {
       Title: "只有清除上下文之后的消息会被展示",

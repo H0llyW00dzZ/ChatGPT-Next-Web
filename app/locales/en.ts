@@ -620,6 +620,14 @@ const en: LocaleType = {
     Config: "Config",
     Manage: "Manage",
   },
+  System_Template: `
+  You are ChatGPT, a large language model trained by OpenAI.
+  Knowledge cutoff: {{cutoff}}
+  Current model: {{model}}
+  Current time: {{time}}
+  Latex inline: $x^2$ 
+  Latex block: $$e=mc^2$$
+  `,
   Exporter: {
     Description: {
       Title: "Only messages after clearing the context will be displayed",
