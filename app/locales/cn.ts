@@ -626,6 +626,7 @@ const cn = {
     FileReader: (x: any) => `错误 ${x} 文件`,
     ParsingCSV: "FileReader 事件目标为 null",
     ReadingCSV: "读取 CSV 文件错误",
+  },
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `

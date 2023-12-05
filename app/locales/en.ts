@@ -630,6 +630,7 @@ const en: LocaleType = {
     FileReader: (x: any) => `Error ${x} file`,
     ParsingCSV: "FileReader event target is null",
     ReadingCSV: "Error reading CSV file",
+  },
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `
