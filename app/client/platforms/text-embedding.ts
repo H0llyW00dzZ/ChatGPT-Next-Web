@@ -1,4 +1,4 @@
-// textEmbedding.ts
+// text-embedding.ts
 // note: unused import are marked as todo
 import {
   ApiPath,
@@ -19,19 +19,26 @@ import Locale from "../../locales";
 import { makeAzurePath } from "@/app/azure";
 import Papa from "papaparse";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
+import { getProviderFromState } from "@/app/utils"; // Assuming you have a function to get the provider from the state
 
-// Define the structure of the CSV row based on the expected columns
+/**
+ * Represents a row in a CSV file.
+ * @author H0llyW00dzZ
+ */
 interface CsvRow {
   [columnName: string]: string | undefined; // Use 'undefined' as well since some columns might be missing
 }
 
-// Assuming you have a function to get the provider from the state
-function getProviderFromState(): string {
-  const accessStore = useAccessStore.getState();
-  return accessStore.provider;
-}
-
 // Function to call the OpenAI API to get text embeddings
+/**
+ * Embeds the given input texts using the specified model and returns the result.
+ * @param inputTexts - An array of input texts to be embedded.
+ * @param embeddingPath - The path to the embedding endpoint.
+ * @param model - The name of the model to be used for embedding.
+ * @returns A promise that resolves to the embedded texts.
+ * @throws An error if the embedding request fails.
+ * @author H0llyW00dzZ
+ */
 export async function textEmbedding(inputTexts: string[], embeddingPath: string, model: string): Promise<any> {
   const provider = getProviderFromState(); // Get the provider when needed
   try {
@@ -58,6 +65,15 @@ export async function textEmbedding(inputTexts: string[], embeddingPath: string,
 }
 
 // This function is responsible for reading CSV, parsing it, and getting embeddings
+/**
+ * Reads a CSV file and retrieves text embeddings for a specified column using a given embedding path and model.
+ * @param file - The CSV file to read.
+ * @param embeddingPath - The path to the text embedding resource.
+ * @param columnName - The name of the column containing the text to embed.
+ * @param model - The name of the text embedding model.
+ * @returns A promise that resolves with the text embeddings.
+ * @author H0llyW00dzZ
+ */
 export async function getTextEmbeddingsFromCSV(file: File, embeddingPath: string, columnName: string, model: string): Promise<any> {
   const provider = getProviderFromState(); // Get the provider when needed
   return new Promise((resolve, reject) => {
