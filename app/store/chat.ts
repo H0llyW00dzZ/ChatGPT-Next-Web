@@ -375,6 +375,7 @@ export const useChatStore = createPersistStore(
         const clearContextIndex = session.clearContextIndex ?? 0;
         const messages = session.messages.slice();
         const totalMessageCount = session.messages.length;
+        const customsystemprompt = session.mask.modelConfig.systemprompt;
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
@@ -387,7 +388,7 @@ export const useChatStore = createPersistStore(
                 role: "system",
                 content: fillTemplateWith("", {
                   ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
+                  template: customsystemprompt.default,
                 }),
               }),
             ]
@@ -698,7 +699,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.1,
+    version: 3.2,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -742,6 +743,16 @@ export const useChatStore = createPersistStore(
             s.mask.modelConfig.enableInjectSystemPrompts =
               config.modelConfig.enableInjectSystemPrompts;
           }
+        });
+      }
+
+      // New migration step for systemprompt
+      if (version < 3.2) { // assuming 3.2 is the version where systemprompt was introduced
+        newState.sessions.forEach((session) => {
+          // Check if the systemprompt property exists, and if not, add it with the default value
+          session.mask.modelConfig.systemprompt = session.mask.modelConfig.systemprompt || {
+            default: DEFAULT_SYSTEM_TEMPLATE,
+          };
         });
       }
 

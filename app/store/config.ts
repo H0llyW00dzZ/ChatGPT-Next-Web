@@ -5,8 +5,10 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_SYSTEM_TEMPLATE,
   StoreKey,
 } from "../constant";
+import Locale from ".././locales";
 import { createPersistStore } from "../utils/store";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
@@ -84,6 +86,9 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
     enableInjectSystemPrompts: true,
     template: DEFAULT_INPUT_TEMPLATE,
+    systemprompt: {
+      default: DEFAULT_SYSTEM_TEMPLATE,
+    },
   },
   /**
    * Text Moderation Open AI
@@ -209,7 +214,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.3, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.5, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -273,6 +278,14 @@ export const useAppConfig = createPersistStore(
 
       if (version < 4.4) {
         state.modelConfig.useMaxTokens = false;
+      }
+
+      // use local language for system prompt
+
+      if (version < 4.5) {
+        state.modelConfig.systemprompt = {
+          default: DEFAULT_SYSTEM_TEMPLATE,
+        }
       }
 
       return state as any;

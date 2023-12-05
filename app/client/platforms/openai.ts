@@ -19,17 +19,15 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
+import { sendModerationRequest } from './textmoderation';
+import { 
+  getNewStuff,
+  getModelForInstructVersion,
+} from './NewStuffLLMs';
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+import { getProviderFromState } from "@/app/utils";
 import { makeAzurePath } from "@/app/azure";
-/**
- * Models Text-Moderations OpenAI
- * Author: @H0llyW00dzZ
- **/
-interface ModerationResponse {
-  flagged: boolean;
-  categories: Record<string, boolean>;
-}
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -80,77 +78,6 @@ export class ChatGPTApi implements LLMApi {
   }
 
   /**
-   * Retrieves information about the new stuff.
-   *
-   * @param model - The model to retrieve information for.
-   * @param max_tokens - The maximum number of tokens.
-   * @param system_fingerprint - The system fingerprint.
-   * @param useMaxTokens - Whether to use the maximum number of max tokens.
-   * @returns An object containing information about the new stuff.
-   *
-   * @author H0llyW00dzZ
-   */
-  private getNewStuff(
-    model: string,
-    max_tokens?: number,
-    system_fingerprint?: string,
-    useMaxTokens: boolean = true,
-  ): {
-    max_tokens?: number;
-    system_fingerprint?: string;
-    isNewModel: boolean;
-    payloadType: 'chat' | 'image';
-    isDalle: boolean;
-  } {
-    const modelConfig = {
-      ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-    };
-    const isNewModel = model.endsWith("-preview");
-    const isDalle = model.startsWith("dall-e");
-    let payloadType: 'chat' | 'image' = 'chat';
-
-    if (isNewModel) {
-      return {
-        max_tokens: useMaxTokens ? (max_tokens !== undefined ? max_tokens : modelConfig.max_tokens) : undefined,
-        system_fingerprint:
-          system_fingerprint !== undefined
-            ? system_fingerprint
-            : modelConfig.system_fingerprint,
-        isNewModel: true,
-        payloadType,
-        isDalle,
-      };
-    } else if (isDalle) {
-      payloadType = 'image';
-    }
-
-    return {
-      isNewModel: false,
-      payloadType,
-      isDalle,
-    };
-  }
-
-  /**
-   * Retrieves the service provider based on the access store.
-   * @returns The service provider as a string.
-   * @author H0llyW00dzZ
-   */
-  private getServiceProvider(): string {
-    const accessStore = useAccessStore.getState();
-    let provider = "";
-  
-    if (accessStore.provider === ServiceProvider.Azure) {
-      provider = ServiceProvider.Azure;
-    } else if (accessStore.provider === ServiceProvider.OpenAI) {
-      provider = ServiceProvider.OpenAI;
-    }
-  
-    return provider;
-  }
-
-  /**
    * Initiates a chat with the specified options.
    * 
    * @param options - The chat (LLM's method by Yidadaa) options.
@@ -169,7 +96,7 @@ export class ChatGPTApi implements LLMApi {
      */
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
-    const checkprovider = this.getServiceProvider();
+    const checkprovider = getProviderFromState();
     if (textmoderation
       && DEFAULT_MODELS
       && options.whitelist !== true
@@ -190,7 +117,7 @@ export class ChatGPTApi implements LLMApi {
         };
 
         try {
-          const moderationResponse = await this.sendModerationRequest(
+          const moderationResponse = await sendModerationRequest(
             moderationPath,
             moderationPayload
           );
@@ -254,8 +181,8 @@ export class ChatGPTApi implements LLMApi {
      * @usage in this chat: prompt
      * @example : A Best Picture of Andromeda Galaxy
      */
-    const actualModel = this.getModelForInstructVersion(modelConfig.model);
-    const { max_tokens, system_fingerprint } = this.getNewStuff(
+    const actualModel = getModelForInstructVersion(modelConfig.model);
+    const { max_tokens, system_fingerprint } = getNewStuff(
       modelConfig.model,
       modelConfig.max_tokens,
       modelConfig.system_fingerprint,
@@ -303,8 +230,8 @@ export class ChatGPTApi implements LLMApi {
      * 
      * @author H0llyW00dzZ
      */
-    const magicPayload = this.getNewStuff(defaultModel);
-    const provider = this.getServiceProvider();
+    const magicPayload = getNewStuff(defaultModel);
+    const provider = getProviderFromState();
 
     let payload;
     if (magicPayload.isDalle) {
@@ -696,86 +623,6 @@ export class ChatGPTApi implements LLMApi {
     }));
   }
 
-  /**
-   * Sends a moderation request to the specified moderation path with the given payload.
-   * @param moderationPath The path for the moderation request.
-   * @param moderationPayload The payload for the moderation request.
-   * @returns A promise that resolves to a ModerationResponse object.
-   * @throws An error if the moderation response is empty or if the moderation request fails.
-   * @author H0llyW00dzZ
-   */
-  private async sendModerationRequest(
-    moderationPath: string,
-    moderationPayload: any
-  ): Promise<ModerationResponse> {
-    try {
-      const moderationResponse = await fetch(moderationPath, {
-        method: "POST",
-        body: JSON.stringify(moderationPayload),
-        headers: getHeaders(),
-      });
-
-      const moderationJson = await moderationResponse.json();
-      const provider = this.getServiceProvider();
-
-      if (moderationJson.results && moderationJson.results.length > 0) {
-        let moderationResult = moderationJson.results[0]; // Access the first element of the array
-
-        if (!moderationResult.flagged) {
-          const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
-          moderationPayload.model = stable;
-          const fallbackModerationResponse = await fetch(moderationPath, {
-            method: "POST",
-            body: JSON.stringify(moderationPayload),
-            headers: getHeaders(),
-          });
-
-          const fallbackModerationJson =
-            await fallbackModerationResponse.json();
-
-          if (
-            fallbackModerationJson.results &&
-            fallbackModerationJson.results.length > 0
-          ) {
-            moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
-          }
-        }
-
-        console.log(`[${provider}] [Text Moderation] flagged:`, moderationResult.flagged); // Log the flagged result
-
-        if (moderationResult.flagged) {
-          const flaggedCategories = Object.entries(moderationResult.categories)
-            .filter(([category, flagged]) => flagged)
-            .map(([category]) => category);
-
-          console.log(`[${provider}] [Text Moderation] flagged categories:`, flaggedCategories); // Log the flagged categories
-        }
-
-        return moderationResult as ModerationResponse;
-      } else {
-        console.error(`[${provider}] [Text Moderation] Moderation response is empty`);
-        throw new Error(`[${provider}] [Text Moderation] Failed to get moderation response`);
-      }
-    } catch (e) {
-      console.error("[Request] failed to make a moderation request", e);
-      return {} as ModerationResponse;
-    }
-  }
-  /**
-   * Returns the model name for the given input model, accounting for instruct versions (For Instruct Version Still WIP).
-   * If the input model is not found in the model map, it returns the input model as is.
-   * @param inputModel - The input model name.
-   * @returns The corresponding model name or the input model if not found.
-   * @author H0llyW00dzZ
-   */
-
-  private getModelForInstructVersion(inputModel: string): string {
-    const modelMap: Record<string, string> = {
-      "dall-e-2-beta-instruct-vision": "dall-e-2",
-      "dall-e-3-beta-instruct-vision": "dall-e-3",
-    };
-    return modelMap[inputModel] || inputModel;
-  }
   /**
    * Saves the image from the response to the local filesystem.
    * @param imageResponse - The response containing the image data.

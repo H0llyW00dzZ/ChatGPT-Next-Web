@@ -4,6 +4,7 @@ import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
+import { DEFAULT_SYSTEM_TEMPLATE } from "../constant";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -15,6 +16,10 @@ export function ModelConfigList(props: {
   const styleOptions = ["vivid", "natural"];
 
   const isDalleModel = props.modelConfig.model.startsWith("dall-e");
+  const customsystemprompts = [
+    { value: DEFAULT_SYSTEM_TEMPLATE, label: Locale.Label_System_Template.Default },
+    { value: Locale.System_Template, label: Locale.Label_System_Template.Local },
+  ];
 
   return (
     <>
@@ -247,6 +252,30 @@ export function ModelConfigList(props: {
               }
             ></input>
           </ListItem>
+
+          {props.modelConfig.enableInjectSystemPrompts && (
+            <>
+              <ListItem
+                title={Locale.Settings.SystemPromptTemplate.Title}
+                subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+              >
+                <Select
+                  value={props.modelConfig.systemprompt.default}
+                  onChange={(e) =>
+                    props.updateConfig(
+                      (config) => (config.systemprompt.default = e.currentTarget.value),
+                    )
+                  }
+                >
+                  {customsystemprompts.map((prompt) => (
+                    <option value={prompt.value} key={prompt.value}>
+                      {prompt.label}
+                    </option>
+                  ))}
+                </Select>
+              </ListItem>
+            </>
+          )}
 
           <ListItem
             title={Locale.Settings.InputTemplate.Title}
