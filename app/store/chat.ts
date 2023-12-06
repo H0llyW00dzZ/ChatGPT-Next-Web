@@ -381,7 +381,8 @@ export const useChatStore = createPersistStore(
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
+        const modelStartsWithDallE = modelConfig.model.startsWith("dall-e");
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts && !modelStartsWithDallE;
         const systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
@@ -393,7 +394,10 @@ export const useChatStore = createPersistStore(
               }),
             ]
           : [];
-        if (shouldInjectSystemPrompts) {
+
+        if (modelStartsWithDallE) {
+          console.log("[Global System Prompt] Dall-e Models no need this");
+        } else if (shouldInjectSystemPrompts) {
           console.log(
             "[Global System Prompt] ",
             systemPrompts.at(0)?.content ?? "empty",
