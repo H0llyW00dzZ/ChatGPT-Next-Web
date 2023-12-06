@@ -1,6 +1,43 @@
 import { BuiltinMask } from "./typing";
 
 export const EN_MASKS: BuiltinMask[] = [
+  {
+    // note: this prompt will helping to generated a text about volcano in my country
+    avatar: "1f30b",
+    name: "Volcanology Expert",
+    context: [
+      {
+        id: "heSrWKOkmbfCVAGqGwfX0",
+        date: "",
+        role: "system",
+        content: "Create a template for an informative bulletin regarding volcanic activity that can be adapted for any volcano, using Agung Volcano in Bali, Karangasem as an example. Incorporate the following details into the template:\n\n- **Activity Level**: [Danger Level]\n- **Location**: [Specific Location]\n- **Volcano Name**: [Volcano Name]\n- **Date & Time**: [Day - Date, Time Period in WIB]\n- **Description**: [Detailed Description of Volcanic Activity]\n- **Recommendation**: [Safety Recommendations]\n\nIn your role as a Volcanology Expert, provide a framework for assessing the severity of volcanic activity and its implications for the surrounding area. As a Crisis Management Specialist, include a section for detailed safety instructions applicable to residents and visitors. As an Indonesian Language Expert, ensure that the template can be accurately translated and adapted to the cultural context of different Indonesian regions. The template should be clear, authoritative, and adaptable, suitable for immediate public distribution to ensure safety and awareness for any volcanic event.\n"
+      }
+    ],
+    syncGlobalConfig: false,
+    modelConfig: {
+      model: "gpt-4-1106-preview",
+      temperature: 0.5,
+      top_p: 1,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      frequency_penalty: 0,
+      n: 1,
+      quality: "hd",
+      size: "1024x1024",
+      style: "vivid",
+      system_fingerprint: "",
+      sendMemory: true,
+      useMaxTokens: false,
+      historyMessageCount: 10,
+      compressMessageLengthThreshold: 5000,
+      enableInjectSystemPrompts: true,
+      template: "{{input}}",
+      systemprompt: { "default": "\nYou are ChatGPT, a large language model trained by OpenAI.\nKnowledge cutoff: {{cutoff}}\nCurrent model: {{model}}\nCurrent time: {{time}}\nLatex inline: $x^2$ \nLatex block: $$e=mc^2$$\n" }
+    },
+    lang: "en",
+    builtin: false,
+    createdAt: 1701833528713
+  },
   {// note : this not me wririting hahaha, its ai
     avatar: "1f985",
     name: "Exploring Polynomial Equations: From Quadratics to Cubics [LaTex Language]",
