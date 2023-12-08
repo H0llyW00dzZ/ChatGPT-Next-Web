@@ -92,7 +92,7 @@ export class ChatGPTApi implements LLMApi {
     const textmoderation = useAppConfig.getState().textmoderation;
     const latest = OpenaiPath.TextModerationModels.latest;
     const checkprovider = getProviderFromState();
-    if (textmoderation
+    if (textmoderation !== false // forgot to fix this, was focusing in backend lmao
       && DEFAULT_MODELS
       && options.whitelist !== true
       // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
