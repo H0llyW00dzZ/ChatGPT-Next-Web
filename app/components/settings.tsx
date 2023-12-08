@@ -1483,13 +1483,15 @@ export function Settings() {
             >
               <input
                 type="checkbox"
-                checked={config.textmoderation}
-                onChange={(e) =>
-                  updateConfig(
-                    (config) =>
-                      (config.textmoderation = e.currentTarget.checked),
-                  )
-                }
+                checked={config.textmoderation && accessStore.provider !== ServiceProvider.Custom}
+                onChange={(e) => {
+                  const isChecked = e.currentTarget.checked;
+                  // If the provider is Custom, always set textmoderation to false, otherwise use the checkbox value.
+                  const shouldCheck = accessStore.provider === ServiceProvider.Custom ? false : isChecked;
+                  updateConfig((config) => {
+                    config.textmoderation = shouldCheck;
+                  });
+                }}
               ></input>
             </ListItem>
           )}

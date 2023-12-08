@@ -67,6 +67,8 @@ export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 export enum ServiceProvider {
   OpenAI = "OpenAI",
   Azure = "Azure",
+  // Custom Service Provider e.g. one-api by @songquanpeng or other (open source community)
+  Custom = "Custom",
 }
 
 export const OpenaiPath = {

@@ -95,7 +95,8 @@ export class ChatGPTApi implements LLMApi {
     if (textmoderation
       && DEFAULT_MODELS
       && options.whitelist !== true
-      && checkprovider !== ServiceProvider.Azure) { // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
+      // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
+      && checkprovider !== ServiceProvider.Azure) {
       const messages = options.messages.map((v) => ({
         role: v.role,
         content: v.content,
