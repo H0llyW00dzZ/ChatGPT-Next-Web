@@ -1320,7 +1320,7 @@ export function Settings() {
                     </Select>
                   </ListItem>
 
-                  {accessStore.provider === "OpenAI" ? (
+                  {accessStore.provider === "OpenAI" || accessStore.provider === "Custom" ? (
                     <>
                       <ListItem
                         title={Locale.Settings.Access.OpenAI.Endpoint.Title}
@@ -1483,13 +1483,15 @@ export function Settings() {
             >
               <input
                 type="checkbox"
-                checked={config.textmoderation && accessStore.provider !== ServiceProvider.Custom}
+                checked={accessStore.provider !== ServiceProvider.Custom && config.textmoderation}
                 onChange={(e) => {
-                  const isChecked = e.currentTarget.checked;
-                  // If the provider is Custom, always set textmoderation to false, otherwise use the checkbox value.
-                  const shouldCheck = accessStore.provider === ServiceProvider.Custom ? false : isChecked;
+                  // If the provider is Custom, prevent checking the box.
+                  if (accessStore.provider === ServiceProvider.Custom) {
+                    return;
+                  }
+                  // Otherwise, update the config based on the checkbox state.
                   updateConfig((config) => {
-                    config.textmoderation = shouldCheck;
+                    config.textmoderation = e.currentTarget.checked;
                   });
                 }}
               ></input>
