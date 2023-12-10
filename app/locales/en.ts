@@ -458,6 +458,18 @@ const en: LocaleType = {
           SubTitle: "Check your api version from azure console",
         },
       },
+      Custom: {
+        ApiKey: {
+          Title: "Custom API Key",
+          SubTitle: "User custom Api Key",
+          Placeholder: "sk-xxx",
+        },
+
+        Endpoint: {
+          Title: "Custom Endpoint",
+          SubTitle: "Must starts with http(s):// Example: ",
+        },
+      },
       CustomModel: {
         Title: "Custom Models",
         SubTitle: "Custom model options, seperated by comma",

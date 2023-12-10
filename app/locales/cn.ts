@@ -453,6 +453,18 @@ const cn = {
           SubTitle: "选择指定的部分版本",
         },
       },
+      Custom: {
+        ApiKey: {
+          Title: "自定义 API 密钥",
+          SubTitle: "用户自定义 Api 密钥",
+          Placeholder: "sk-xxx",
+        },
+
+        Endpoint: {
+          Title: "自定义端点",
+          SubTitle: "必须以 http(s):// 开头",
+        },
+      },
       CustomModel: {
         Title: "自定义模型名",
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
