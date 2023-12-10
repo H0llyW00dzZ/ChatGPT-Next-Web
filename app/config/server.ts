@@ -27,7 +27,7 @@ declare global {
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
 
-      // cuystom service provider
+      // custom service provider
       CUSTOM_URL?: string;
       CUstom_API_KEY?: string;
     }
