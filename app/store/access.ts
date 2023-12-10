@@ -29,6 +29,10 @@ const DEFAULT_ACCESS_STATE = {
   azureApiKey: "",
   azureApiVersion: "2023-08-01-preview",
 
+  // custom used example desktop app or self-hosted e.g, is https://chatgpt.btz.sh/api/proxy/
+  customUrl: DEFAULT_API_HOST,
+  customApiKey: "",
+
   // server config
   needCode: true,
   hideUserApiKey: false,
@@ -56,6 +60,10 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["azureUrl", "azureApiKey", "azureApiVersion"]);
     },
 
+    isValidCustom() {
+      return ensure(get(), ["customUrl", "customApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -63,6 +71,7 @@ export const useAccessStore = createPersistStore(
       return (
         this.isValidOpenAI() ||
         this.isValidAzure() ||
+        this.isValidCustom() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
@@ -92,7 +101,7 @@ export const useAccessStore = createPersistStore(
   }),
   {
     name: StoreKey.Access,
-    version: 2,
+    version: 2.1,
     migrate(persistedState, version) {
       if (version < 2) {
         const state = persistedState as {
@@ -102,6 +111,16 @@ export const useAccessStore = createPersistStore(
         };
         state.openaiApiKey = state.token;
         state.azureApiVersion = "2023-08-01-preview";
+      }
+
+      if (version < 2.1) {
+        const state = persistedState as {
+          token: string;
+          customApiKey: string;
+          customUrl: string;
+        };
+        state.customApiKey = state.token;
+        state.customUrl = `${DEFAULT_API_HOST}`;
       }
 
       return persistedState as any;
