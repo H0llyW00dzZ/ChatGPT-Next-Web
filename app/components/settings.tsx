@@ -59,6 +59,8 @@ import {
 import Link from "next/link";
 import {
   Azure,
+  Custom,
+  DEFAULT_API_HOST,
   OPENAI_BASE_URL,
   Path,
   RELEASE_URL,
@@ -1319,8 +1321,7 @@ export function Settings() {
                       ))}
                     </Select>
                   </ListItem>
-
-                  {accessStore.provider === "OpenAI" || accessStore.provider === "Custom" ? (
+                  {accessStore.provider === "OpenAI" && (
                     <>
                       <ListItem
                         title={Locale.Settings.Access.OpenAI.Endpoint.Title}
@@ -1359,63 +1360,105 @@ export function Settings() {
                         />
                       </ListItem>
                     </>
-                  ) : (
+                  )}
+                  {accessStore.provider === "Azure" && (
+                    <>
+                    <ListItem
+                      title={Locale.Settings.Access.Azure.Endpoint.Title}
+                      subTitle={
+                        Locale.Settings.Access.Azure.Endpoint.SubTitle +
+                        Azure.ExampleEndpoint
+                      }
+                    >
+                      <input
+                        type="text"
+                        value={accessStore.azureUrl}
+                        placeholder={Azure.ExampleEndpoint}
+                        onChange={(e) =>
+                          accessStore.update(
+                            (access) =>
+                              (access.azureUrl = e.currentTarget.value),
+                          )
+                        }
+                      ></input>
+                    </ListItem>
+                    <ListItem
+                      title={Locale.Settings.Access.Azure.ApiKey.Title}
+                      subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+                    >
+                      <PasswordInput
+                        value={accessStore.azureApiKey}
+                        type="text"
+                        placeholder={
+                          Locale.Settings.Access.Azure.ApiKey.Placeholder
+                        }
+                        onChange={(e) => {
+                          accessStore.update(
+                            (access) =>
+                              (access.azureApiKey = e.currentTarget.value),
+                          );
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem
+                      title={Locale.Settings.Access.Azure.ApiVerion.Title}
+                      subTitle={
+                        Locale.Settings.Access.Azure.ApiVerion.SubTitle
+                      }
+                    >
+                      <input
+                        type="text"
+                        value={accessStore.azureApiVersion}
+                        placeholder="2023-08-01-preview"
+                        onChange={(e) =>
+                          accessStore.update(
+                            (access) =>
+                              (access.azureApiVersion =
+                                e.currentTarget.value),
+                          )
+                        }
+                      ></input>
+                    </ListItem>
+                  </>
+                  )}
+                  {accessStore.provider === "Custom" && (
                     <>
                       <ListItem
-                        title={Locale.Settings.Access.Azure.Endpoint.Title}
+                        title={Locale.Settings.Access.Custom.Endpoint.Title}
                         subTitle={
-                          Locale.Settings.Access.Azure.Endpoint.SubTitle +
-                          Azure.ExampleEndpoint
+                          Locale.Settings.Access.Custom.Endpoint.SubTitle +
+                          Custom.ExampleEndpoint
                         }
                       >
                         <input
                           type="text"
-                          value={accessStore.azureUrl}
-                          placeholder={Azure.ExampleEndpoint}
+                          value={accessStore.customUrl}
+                          placeholder={DEFAULT_API_HOST}
                           onChange={(e) =>
                             accessStore.update(
                               (access) =>
-                                (access.azureUrl = e.currentTarget.value),
+                                (access.customUrl = e.currentTarget.value),
                             )
                           }
                         ></input>
                       </ListItem>
                       <ListItem
-                        title={Locale.Settings.Access.Azure.ApiKey.Title}
-                        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+                        title={Locale.Settings.Access.Custom.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.Custom.ApiKey.SubTitle}
                       >
                         <PasswordInput
-                          value={accessStore.azureApiKey}
+                          value={accessStore.customApiKey}
                           type="text"
                           placeholder={
-                            Locale.Settings.Access.Azure.ApiKey.Placeholder
+                            Locale.Settings.Access.Custom.ApiKey.Placeholder
                           }
                           onChange={(e) => {
                             accessStore.update(
                               (access) =>
-                                (access.azureApiKey = e.currentTarget.value),
+                                (access.customApiKey = e.currentTarget.value),
                             );
                           }}
                         />
-                      </ListItem>
-                      <ListItem
-                        title={Locale.Settings.Access.Azure.ApiVerion.Title}
-                        subTitle={
-                          Locale.Settings.Access.Azure.ApiVerion.SubTitle
-                        }
-                      >
-                        <input
-                          type="text"
-                          value={accessStore.azureApiVersion}
-                          placeholder="2023-08-01-preview"
-                          onChange={(e) =>
-                            accessStore.update(
-                              (access) =>
-                                (access.azureApiVersion =
-                                  e.currentTarget.value),
-                            )
-                          }
-                        ></input>
                       </ListItem>
                     </>
                   )}
