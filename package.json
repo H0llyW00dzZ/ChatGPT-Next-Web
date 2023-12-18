@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
-    "@hello-pangea/dnd": "^16.3.0",
+    "@hello-pangea/dnd": "^16.5.0",
     "@svgr/webpack": "^6.5.1",
     "@tauri-apps/api": "^1.5.1",
     "@types/lodash": "^4.14.199",
