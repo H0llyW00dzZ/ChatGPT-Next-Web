@@ -23,7 +23,7 @@
     "@types/lodash": "^4.14.199",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.5.15",
-    "fuse.js": "^6.6.2",
+    "fuse.js": "^7.0.0",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
     "mermaid": "^10.6.1",
