@@ -24,13 +24,13 @@ export function getEmojiUrl(unified: string, style: EmojiStyle) {
 }
 
 export function debounce(func: Function, delay: number) {
-let timeoutId: NodeJS.Timeout;
-return function (...args: any[]) {
-  clearTimeout(timeoutId);
-  timeoutId = setTimeout(() => {
-    func.apply(null, args);
-  }, delay);
-};
+  let timeoutId: NodeJS.Timeout;
+  return function (...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
 }
 
 export function AvatarPicker(props: {
