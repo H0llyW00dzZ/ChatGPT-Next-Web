@@ -43,3 +43,5 @@ declare interface Window {
     };
   };
 }
+
+declare module '@tauri-apps/api/window';
