@@ -11,16 +11,16 @@ import BlackBotIcon from "../icons/black-bot.svg";
 import { isIOS, isMacOS } from "../utils"; // Import the isIOS & isMacOS functions from the utils file
 
 export function getEmojiUrl(unified: string, style: EmojiStyle) {
-const isAppleDevice = isMacOS() || isIOS();
-const emojiDataSource =
-  (isAppleDevice && style === "apple") ||
-  (!isAppleDevice && style === "google")
-    ? "emoji-datasource-apple"
-    : "emoji-datasource-google";
+  const isAppleDevice = isMacOS() || isIOS();
+  const emojiDataSource =
+    (isAppleDevice && style === "apple") ||
+      (!isAppleDevice && style === "google")
+      ? "emoji-datasource-apple"
+      : "emoji-datasource-google";
 
-const emojiStyle = style === "apple" && isAppleDevice ? "apple" : "google";
+  const emojiStyle = style === "apple" && isAppleDevice ? "apple" : "google";
 
-return `https://cdn.staticfile.org/${emojiDataSource}/15.0.1/img/${emojiStyle}/64/${unified}.png`;
+  return `https://cdn.staticfile.org/${emojiDataSource}/15.0.1/img/${emojiStyle}/64/${unified}.png`;
 }
 
 export function debounce(func: Function, delay: number) {
