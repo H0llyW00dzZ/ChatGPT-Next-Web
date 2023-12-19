@@ -94,6 +94,10 @@ export const Azure = {
   ExampleEndpoint: "https://{resource-url}/openai/deployments/{deploy-id}",
 };
 
+export const Custom = {
+  ExampleEndpoint: DEFAULT_API_HOST,
+};
+
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 export const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.

@@ -26,6 +26,10 @@ declare global {
       AZURE_URL?: string; // https://{azure-url}/openai/deployments/{deploy-name}
       AZURE_API_KEY?: string;
       AZURE_API_VERSION?: string;
+
+      // custom service provider
+      CUSTOM_URL?: string;
+      CUstom_API_KEY?: string;
     }
   }
 }
@@ -61,6 +65,7 @@ export const getServerSideConfig = () => {
   }
 
   const isAzure = !!process.env.AZURE_URL;
+  const isCustom = !!process.env.CUSTOM_URL;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -93,5 +98,9 @@ export const getServerSideConfig = () => {
     hideBalanceQuery: !process.env.ENABLE_BALANCE_QUERY,
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
+
+    isCustom,
+    customUrl: process.env.CUSTOM_URL,
+    customApiKey: process.env.CUstom_API_KEY,
   };
 };
