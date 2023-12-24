@@ -39,7 +39,7 @@ export function ModelConfigList(props: {
             .filter((v) => v.available)
             .map((v, i) => (
               <option value={v.name} key={i}>
-                {v.displayName}
+                {v.displayName}({v.provider?.providerName})
               </option>
             ))}
         </Select>
@@ -148,9 +148,9 @@ export function ModelConfigList(props: {
                   onChange={(e) =>
                     props.updateConfig(
                       (config) =>
-                        (config.max_tokens = ModalConfigValidator.max_tokens(
-                          e.currentTarget.valueAsNumber
-                        ))
+                      (config.max_tokens = ModalConfigValidator.max_tokens(
+                        e.currentTarget.valueAsNumber
+                      ))
                     )
                   }
                 ></input>
@@ -196,86 +196,180 @@ export function ModelConfigList(props: {
             ></InputRange>
           </ListItem>
           <ListItem
-            title={Locale.Settings.PresencePenalty.Title}
-            subTitle={Locale.Settings.PresencePenalty.SubTitle}
+            title={Locale.Settings.Temperature.Title}
+            subTitle={Locale.Settings.Temperature.SubTitle}
           >
             <InputRange
-              value={props.modelConfig.presence_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
+              value={props.modelConfig.temperature?.toFixed(1)}
+              min="0"
+              max="1" // lets limit it to 0-1
               step="0.1"
               onChange={(e) => {
                 props.updateConfig(
                   (config) =>
-                  (config.presence_penalty =
-                    ModalConfigValidator.presence_penalty(
-                      e.currentTarget.valueAsNumber,
-                    )),
+                  (config.temperature = ModalConfigValidator.temperature(
+                    e.currentTarget.valueAsNumber,
+                  )),
                 );
               }}
             ></InputRange>
           </ListItem>
-
           <ListItem
-            title={Locale.Settings.FrequencyPenalty.Title}
-            subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+            title={Locale.Settings.TopP.Title}
+            subTitle={Locale.Settings.TopP.SubTitle}
           >
             <InputRange
-              value={props.modelConfig.frequency_penalty?.toFixed(1)}
-              min="-2"
-              max="2"
+              value={(props.modelConfig.top_p ?? 1).toFixed(1)}
+              min="0"
+              max="1"
               step="0.1"
               onChange={(e) => {
                 props.updateConfig(
                   (config) =>
-                  (config.frequency_penalty =
-                    ModalConfigValidator.frequency_penalty(
-                      e.currentTarget.valueAsNumber,
-                    )),
+                  (config.top_p = ModalConfigValidator.top_p(
+                    e.currentTarget.valueAsNumber,
+                  )),
                 );
               }}
             ></InputRange>
           </ListItem>
-
           <ListItem
-            title={Locale.Settings.InjectSystemPrompts.Title}
-            subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+            title={Locale.Settings.MaxTokens.Title}
+            subTitle={Locale.Settings.MaxTokens.SubTitle}
           >
             <input
-              type="checkbox"
-              checked={props.modelConfig.enableInjectSystemPrompts}
+              type="number"
+              min={1024}
+              max={512000}
+              value={props.modelConfig.max_tokens}
               onChange={(e) =>
                 props.updateConfig(
                   (config) =>
-                    (config.enableInjectSystemPrompts = e.currentTarget.checked),
+                  (config.max_tokens = ModalConfigValidator.max_tokens(
+                    e.currentTarget.valueAsNumber,
+                  )),
                 )
               }
             ></input>
           </ListItem>
 
-          {props.modelConfig.enableInjectSystemPrompts && (
+          {props.modelConfig.model === "gemini-pro" ? null : (
             <>
               <ListItem
-                title={Locale.Settings.SystemPromptTemplate.Title}
-                subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+                title={Locale.Settings.PresencePenalty.Title}
+                subTitle={Locale.Settings.PresencePenalty.SubTitle}
               >
-                <Select
-                  value={props.modelConfig.systemprompt.default}
+                <InputRange
+                  value={props.modelConfig.presence_penalty?.toFixed(1)}
+                  min="-2"
+                  max="2"
+                  step="0.1"
+                  onChange={(e) => {
+                    props.updateConfig(
+                      (config) =>
+                      (config.presence_penalty =
+                        ModalConfigValidator.presence_penalty(
+                          e.currentTarget.valueAsNumber,
+                        )),
+                    );
+                  }}
+                ></InputRange>
+              </ListItem>
+
+              <ListItem
+                title={Locale.Settings.FrequencyPenalty.Title}
+                subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
+              >
+                <InputRange
+                  value={props.modelConfig.frequency_penalty?.toFixed(1)}
+                  min="-2"
+                  max="2"
+                  step="0.1"
+                  onChange={(e) => {
+                    props.updateConfig(
+                      (config) =>
+                      (config.frequency_penalty =
+                        ModalConfigValidator.frequency_penalty(
+                          e.currentTarget.valueAsNumber,
+                        )),
+                    );
+                  }}
+                ></InputRange>
+              </ListItem>
+
+              <ListItem
+                title={Locale.Settings.InjectSystemPrompts.Title}
+                subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+              >
+                <input
+                  type="checkbox"
+                  checked={props.modelConfig.enableInjectSystemPrompts}
                   onChange={(e) =>
                     props.updateConfig(
-                      (config) => (config.systemprompt.default = e.currentTarget.value),
+                      (config) =>
+                      (config.enableInjectSystemPrompts =
+                        e.currentTarget.checked),
                     )
                   }
-                >
-                  {customsystemprompts.map((prompt) => (
-                    <option value={prompt.value} key={prompt.value}>
-                      {prompt.label}
-                    </option>
-                  ))}
-                </Select>
+                ></input>
+              </ListItem>
+
+              {props.modelConfig.enableInjectSystemPrompts && (
+                <>
+                  <ListItem
+                    title={Locale.Settings.SystemPromptTemplate.Title}
+                    subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+                  >
+                    <Select
+                      value={props.modelConfig.systemprompt.default}
+                      onChange={(e) =>
+                        props.updateConfig(
+                          (config) => (config.systemprompt.default = e.currentTarget.value),
+                        )
+                      }
+                    >
+                      {customsystemprompts.map((prompt) => (
+                        <option value={prompt.value} key={prompt.value}>
+                          {prompt.label}
+                        </option>
+                      ))}
+                    </Select>
+                  </ListItem>
+                </>
+              )}
+              <ListItem
+                title={Locale.Settings.InputTemplate.Title}
+                subTitle={Locale.Settings.InputTemplate.SubTitle}
+              >
+                <input
+                  type="text"
+                  value={props.modelConfig.template}
+                  onChange={(e) =>
+                    props.updateConfig(
+                      (config) => (config.template = e.currentTarget.value),
+                    )
+                  }
+                ></input>
               </ListItem>
             </>
           )}
+          <ListItem
+            title={Locale.Settings.HistoryCount.Title}
+            subTitle={Locale.Settings.HistoryCount.SubTitle}
+          >
+            <InputRange
+              title={props.modelConfig.historyMessageCount.toString()}
+              value={props.modelConfig.historyMessageCount}
+              min="0"
+              max="64"
+              step="1"
+              onChange={(e) =>
+                props.updateConfig(
+                  (config) => (config.historyMessageCount = e.target.valueAsNumber),
+                )
+              }
+            ></InputRange>
+          </ListItem>
 
           <ListItem
             title={Locale.Settings.InputTemplate.Title}
