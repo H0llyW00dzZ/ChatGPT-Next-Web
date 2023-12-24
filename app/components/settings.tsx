@@ -1555,8 +1555,8 @@ export function Settings() {
                 type="checkbox"
                 checked={config.textmoderation}
                 onChange={(e) => {
-                  updateConfig((prevConfig) => {
-                    return { ...prevConfig, textmoderation: e.currentTarget.checked };
+                  updateConfig((config) => {
+                    config.textmoderation = e.currentTarget.checked;
                   });
                 }}
               ></input>
