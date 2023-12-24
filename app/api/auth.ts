@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
-import { ACCESS_CODE_PREFIX } from "../constant";
+import { ACCESS_CODE_PREFIX, ModelProvider } from "../constant";
 
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
@@ -30,7 +30,7 @@ function doubleHashForDisplay(hashedCode: string): string {
   return md5.hash(hashedCode);
 }
 
-export function auth(req: NextRequest) {
+export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
@@ -62,12 +62,19 @@ export function auth(req: NextRequest) {
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
-    const systemApiKey = serverConfig.isAzure
-      ? serverConfig.azureApiKey
-      : serverConfig.isGoogle
-      ? serverConfig.googleApiKey
-      : serverConfig.apiKey;
 
+    // const systemApiKey = serverConfig.isAzure
+    //   ? serverConfig.azureApiKey
+    //   : serverConfig.isGoogle
+    //   ? serverConfig.googleApiKey
+    //   : serverConfig.apiKey;
+
+    const systemApiKey =
+      modelProvider === ModelProvider.GeminiPro
+        ? serverConfig.googleApiKey
+        : serverConfig.isAzure
+        ? serverConfig.azureApiKey
+        : serverConfig.apiKey;
     if (systemApiKey) {
       console.log("[Auth] use system api key");
       req.headers.set("Authorization", `Bearer ${systemApiKey}`);
