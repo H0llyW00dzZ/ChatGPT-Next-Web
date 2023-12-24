@@ -383,33 +383,34 @@ export const useChatStore = createPersistStore(
         const clearContextIndex = session.clearContextIndex ?? 0;
         const messages = session.messages.slice();
         const totalMessageCount = session.messages.length;
-        const customsystemprompt = session.mask.modelConfig.systemprompt;
+        const customSystemPrompt = session.mask.modelConfig.systemprompt; // Renamed to camelCase for consistency
 
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-const modelStartsWithDallE = modelConfig.model.startsWith("dall-e");
-const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
-        var systemPrompts: ChatMessage[] = [];
-        if (modelConfig.model !== "gemini-pro" && modelStartsWithDallE) {
-          systemPrompts = shouldInjectSystemPrompts
-            ? [
-                createMessage({
-                  role: "system",
-                  content: fillTemplateWith("", {
-                    ...modelConfig,
-                    template: DEFAULT_SYSTEM_TEMPLATE,
-                  }),
-                }),
-              ]
-            : [];
-          if (shouldInjectSystemPrompts) {
-            console.log(
-              "[Global System Prompt] ",
-              systemPrompts.at(0)?.content ?? "empty",
-            );
-          }
+        const modelStartsWithDallE = modelConfig.model.startsWith("dall-e");
+        const modelStartsWithGemini = modelConfig.model.startsWith("gemini-pro");
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
+        let systemPrompts: ChatMessage[] = []; // Define the type for better type checking
+        if (shouldInjectSystemPrompts) {
+          systemPrompts.push(createMessage({
+            role: "system",
+            content: fillTemplateWith("", {
+              ...modelConfig,
+              template: customSystemPrompt.default, // Removed the extra line breaks
+            }),
+          }));
+        }
+
+        // Log messages about system prompts based on conditions
+        if (modelStartsWithDallE || modelStartsWithGemini) {
+          console.log("[Global System Prompt] Dall-e or Gemini Models no need this");
+        } else if (shouldInjectSystemPrompts) {
+          console.log(
+            "[Global System Prompt] ",
+            systemPrompts[0]?.content ?? "empty",
+          );
         }
 
         // long term memory
