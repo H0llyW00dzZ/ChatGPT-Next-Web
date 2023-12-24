@@ -980,7 +980,7 @@ export function Settings() {
     if (accessStore.provider === ServiceProvider.Azure || accessStore.provider === ServiceProvider.Google) {
       updateConfig(prevConfig => ({ ...prevConfig, textmoderation: false }));
     }
-  }, [accessStore.provider]);
+  }, [accessStore.provider, updateConfig]); // fix warning react while building into binaries
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;
