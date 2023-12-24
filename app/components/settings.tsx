@@ -1538,7 +1538,8 @@ export function Settings() {
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
-          {accessStore.provider !== ServiceProvider.Azure && (
+          {accessStore.provider !== ServiceProvider.Azure && 
+           accessStore.provider !== ServiceProvider.Google && ( // disable text-moderation for azure and google provider
             <ListItem
               title={Locale.Settings.TextModeration.Title}
               subTitle={Locale.Settings.TextModeration.SubTitle}
