@@ -323,8 +323,7 @@ export const useChatStore = createPersistStore(
               botMessage.content = message;
             }
             get().updateCurrentSession((session) => {
-              // Update the session messages with the new bot message
-              session.messages = session.messages.concat([botMessage]);
+              session.messages = session.messages.concat();
             });
           },
           onFinish(message) {
@@ -347,8 +346,7 @@ export const useChatStore = createPersistStore(
             userMessage.isError = !isAborted;
             botMessage.isError = !isAborted;
             get().updateCurrentSession((session) => {
-              // Update the session messages with the new bot and user messages
-              session.messages = session.messages.concat([userMessage, botMessage]);
+              session.messages = session.messages.concat();
             });
             ChatControllerPool.remove(
               session.id,
