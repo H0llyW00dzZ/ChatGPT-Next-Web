@@ -303,7 +303,9 @@ export const useChatStore = createPersistStore(
           ]);
         });
 
-        var api: ClientApi;
+        // Changed 'var' to 'let' since 'api' is reassigned conditionally
+       // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
+        let api: ClientApi;
         if (modelConfig.model === "gemini-pro") {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
@@ -344,7 +346,8 @@ export const useChatStore = createPersistStore(
             userMessage.isError = !isAborted;
             botMessage.isError = !isAborted;
             get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
+              // Update the session messages with the new bot and user messages
+              session.messages = session.messages.concat([userMessage, botMessage]);
             });
             ChatControllerPool.remove(
               session.id,
