@@ -323,7 +323,8 @@ export const useChatStore = createPersistStore(
               botMessage.content = message;
             }
             get().updateCurrentSession((session) => {
-              session.messages = session.messages.concat();
+              // Update the session messages with the new bot message
+              session.messages = session.messages.concat([botMessage]);
             });
           },
           onFinish(message) {
