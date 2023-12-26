@@ -195,63 +195,6 @@ export function ModelConfigList(props: {
               }}
             ></InputRange>
           </ListItem>
-          <ListItem
-            title={Locale.Settings.Temperature.Title}
-            subTitle={Locale.Settings.Temperature.SubTitle}
-          >
-            <InputRange
-              value={props.modelConfig.temperature?.toFixed(1)}
-              min="0"
-              max="1" // lets limit it to 0-1
-              step="0.1"
-              onChange={(e) => {
-                props.updateConfig(
-                  (config) =>
-                  (config.temperature = ModalConfigValidator.temperature(
-                    e.currentTarget.valueAsNumber,
-                  )),
-                );
-              }}
-            ></InputRange>
-          </ListItem>
-          <ListItem
-            title={Locale.Settings.TopP.Title}
-            subTitle={Locale.Settings.TopP.SubTitle}
-          >
-            <InputRange
-              value={(props.modelConfig.top_p ?? 1).toFixed(1)}
-              min="0"
-              max="1"
-              step="0.1"
-              onChange={(e) => {
-                props.updateConfig(
-                  (config) =>
-                  (config.top_p = ModalConfigValidator.top_p(
-                    e.currentTarget.valueAsNumber,
-                  )),
-                );
-              }}
-            ></InputRange>
-          </ListItem>
-          <ListItem
-            title={Locale.Settings.MaxTokens.Title}
-            subTitle={Locale.Settings.MaxTokens.SubTitle}
-          >
-            <input
-              type="number"
-              min={1024}
-              max={512000}
-              value={props.modelConfig.max_tokens}
-              onChange={(e) =>
-                props.updateConfig(
-                  (config) =>
-                  (config.max_tokens = ModalConfigValidator.max_tokens(
-                    e.currentTarget.valueAsNumber,
-                  )),
-                )
-              }
-            ></input>
-          </ListItem>
 
           {props.modelConfig.model === "gemini-pro" ? null : (
             <>
