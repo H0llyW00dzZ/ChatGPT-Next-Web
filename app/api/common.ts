@@ -9,7 +9,7 @@ const serverConfig = getServerSideConfig();
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
 
-  var authValue,
+  let authValue,
     authHeaderName = "";
   if (serverConfig.isAzure) {
     authValue =
