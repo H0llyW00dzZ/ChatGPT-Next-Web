@@ -19,7 +19,7 @@
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
     "@svgr/webpack": "^6.5.1",
-    "@tauri-apps/api": "^1.5.2",
+    "@tauri-apps/api": "^1.5.3",
     "@types/lodash": "^4.14.199",
     "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.5.15",
