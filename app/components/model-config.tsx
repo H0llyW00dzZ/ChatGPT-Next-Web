@@ -315,39 +315,6 @@ export function ModelConfigList(props: {
           </ListItem>
 
           <ListItem
-            title={Locale.Settings.InputTemplate.Title}
-            subTitle={Locale.Settings.InputTemplate.SubTitle}
-          >
-            <input
-              type="text"
-              value={props.modelConfig.template}
-              onChange={(e) =>
-                props.updateConfig(
-                  (config) => (config.template = e.currentTarget.value),
-                )
-              }
-            ></input>
-          </ListItem>
-
-          <ListItem
-            title={Locale.Settings.HistoryCount.Title}
-            subTitle={Locale.Settings.HistoryCount.SubTitle}
-          >
-            <InputRange
-              title={props.modelConfig.historyMessageCount.toString()}
-              value={props.modelConfig.historyMessageCount}
-              min="0"
-              max="64"
-              step="1"
-              onChange={(e) =>
-                props.updateConfig(
-                  (config) => (config.historyMessageCount = e.target.valueAsNumber),
-                )
-              }
-            ></InputRange>
-          </ListItem>
-
-          <ListItem
             title={Locale.Settings.CompressThreshold.Title}
             subTitle={Locale.Settings.CompressThreshold.SubTitle}
           >
