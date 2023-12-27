@@ -392,7 +392,7 @@ export const useChatStore = createPersistStore(
 
         // system prompts, to get close to OpenAI Web ChatGPT
         const modelStartsWithDallE = modelConfig.model.startsWith("dall-e");
-        const modelStartsWithGemini = modelConfig.model.startsWith("gemini-pro");
+        //const modelStartsWithGemini = modelConfig.model.startsWith("gemini-pro");
         const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
         let systemPrompts: ChatMessage[] = []; // Define the type for better type checking
         if (shouldInjectSystemPrompts) {
@@ -406,8 +406,8 @@ export const useChatStore = createPersistStore(
         }
 
         // Log messages about system prompts based on conditions
-        if (modelStartsWithDallE || modelStartsWithGemini) {
-          console.log("[Global System Prompt] Dall-e or Gemini Models no need this");
+        if (modelStartsWithDallE) {
+          console.log("[Global System Prompt] Dall-e no need this");
         } else if (shouldInjectSystemPrompts) {
           console.log(
             "[Global System Prompt] ",
