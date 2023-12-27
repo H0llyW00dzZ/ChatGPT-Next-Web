@@ -250,7 +250,7 @@ export class GeminiProApi implements LLMApi {
   async models(): Promise<LLMModel[]> {
     return [];
   }
-
+  // todo: fix tauri desktop app issue, currently focusing passing a context to the ai first
   path(endpoint: string): string {
     return `/api/google/${endpoint}`;
   }

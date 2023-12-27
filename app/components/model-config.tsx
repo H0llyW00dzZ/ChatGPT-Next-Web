@@ -21,6 +21,8 @@ export function ModelConfigList(props: {
     { value: Locale.System_Template, label: Locale.Label_System_Template.Local },
   ];
 
+  const isGoogleAIModel = props.modelConfig.model === "gemini-pro";
+
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -196,50 +198,8 @@ export function ModelConfigList(props: {
             ></InputRange>
           </ListItem>
 
-          {props.modelConfig.model === "gemini-pro" ? null : (
+          {isGoogleAIModel && (
             <>
-              <ListItem
-                title={Locale.Settings.PresencePenalty.Title}
-                subTitle={Locale.Settings.PresencePenalty.SubTitle}
-              >
-                <InputRange
-                  value={props.modelConfig.presence_penalty?.toFixed(1)}
-                  min="-2"
-                  max="2"
-                  step="0.1"
-                  onChange={(e) => {
-                    props.updateConfig(
-                      (config) =>
-                      (config.presence_penalty =
-                        ModalConfigValidator.presence_penalty(
-                          e.currentTarget.valueAsNumber,
-                        )),
-                    );
-                  }}
-                ></InputRange>
-              </ListItem>
-
-              <ListItem
-                title={Locale.Settings.FrequencyPenalty.Title}
-                subTitle={Locale.Settings.FrequencyPenalty.SubTitle}
-              >
-                <InputRange
-                  value={props.modelConfig.frequency_penalty?.toFixed(1)}
-                  min="-2"
-                  max="2"
-                  step="0.1"
-                  onChange={(e) => {
-                    props.updateConfig(
-                      (config) =>
-                      (config.frequency_penalty =
-                        ModalConfigValidator.frequency_penalty(
-                          e.currentTarget.valueAsNumber,
-                        )),
-                    );
-                  }}
-                ></InputRange>
-              </ListItem>
-
               <ListItem
                 title={Locale.Settings.InjectSystemPrompts.Title}
                 subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
@@ -248,37 +208,36 @@ export function ModelConfigList(props: {
                   type="checkbox"
                   checked={props.modelConfig.enableInjectSystemPrompts}
                   onChange={(e) =>
-                    props.updateConfig(
-                      (config) =>
-                      (config.enableInjectSystemPrompts =
-                        e.currentTarget.checked),
-                    )
+                    props.updateConfig((config) => {
+                      // Use e.target to refer to the element that triggered the event
+                      config.enableInjectSystemPrompts = e.target.checked;
+                    })
                   }
-                ></input>
+                />
               </ListItem>
 
               {props.modelConfig.enableInjectSystemPrompts && (
-                <>
-                  <ListItem
-                    title={Locale.Settings.SystemPromptTemplate.Title}
-                    subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+                <ListItem
+                  title={Locale.Settings.SystemPromptTemplate.Title}
+                  subTitle={Locale.Settings.SystemPromptTemplate.SubTitle}
+                >
+                  <Select
+                    value={props.modelConfig.systemprompt.default}
+                    onChange={(e) =>
+                      props.updateConfig((config) => {
+                        // Use e.target to refer to the element that triggered the event
+                        config.systemprompt.default = e.target.value;
+                      })
+                    }
                   >
-                    <Select
-                      value={props.modelConfig.systemprompt.default}
-                      onChange={(e) =>
-                        props.updateConfig(
-                          (config) => (config.systemprompt.default = e.currentTarget.value),
-                        )
-                      }
-                    >
-                      {customsystemprompts.map((prompt) => (
-                        <option value={prompt.value} key={prompt.value}>
-                          {prompt.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </ListItem>
-                </>
+                    {customsystemprompts.map((prompt) => (
+                      // Use a unique value for the key, not the array index
+                      <option value={prompt.value} key={prompt.value}>
+                        {prompt.label}
+                      </option>
+                    ))}
+                  </Select>
+                </ListItem>
               )}
               <ListItem
                 title={Locale.Settings.InputTemplate.Title}
