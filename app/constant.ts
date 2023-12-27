@@ -111,6 +111,10 @@ export const Google = {
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
+// In latest refactor for google ai (by H0llyW00dzZ), we can use this template to generate the default system message as pass context prompt
+// otherwise, we can configure this by costumize the default system message in the settings page
+// example configure this by costumize the default system message in the settings page
+// just change a chatgpt and "OPENAI" to "GOOGLE" and "GEMINI-PRO"
 export const DEFAULT_SYSTEM_TEMPLATE = `
 You are ChatGPT, a large language model trained by OpenAI.
 Knowledge cutoff: {{cutoff}}

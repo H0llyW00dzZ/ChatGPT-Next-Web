@@ -11,7 +11,7 @@ import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
 
 // Define interfaces for your payloads and responses to ensure type safety.
-// Copyright (c) 2023 H0llyW00dzz
+// Copyright (c) 2023 H0llyW00dzZ
 interface GoogleResponse {
   candidates?: Array<{
     content?: {
