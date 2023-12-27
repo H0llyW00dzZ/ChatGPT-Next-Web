@@ -130,6 +130,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
   "gpt-4-1106-preview": "2023-04",
   "gpt-4-vision-preview": "2023-04",
+  "gemini-pro": "2023-12", // this need to changed which is the latest date are correctly
 };
 
 export const DEFAULT_MODELS = [
