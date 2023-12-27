@@ -1,3 +1,9 @@
+/**
+ * Interfaces and classes for interacting with Google's AI models through the Gemini Pro API.
+ * @module google
+ * // Copyright (c) 2023 H0llyW00dzZ
+ */
+
 import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
@@ -11,7 +17,9 @@ import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
 
 // Define interfaces for your payloads and responses to ensure type safety.
-// Copyright (c) 2023 H0llyW00dzZ
+/**
+ * Represents the response format received from Google's API.
+ */
 interface GoogleResponse {
   candidates?: Array<{
     content?: {
@@ -25,16 +33,24 @@ interface GoogleResponse {
   };
 }
 
+/**
+ * Represents a part of a message, typically containing text.
+ */
 interface MessagePart {
   text: string;
 }
 
+/**
+ * Represents a full message, including the role of the sender and the message parts.
+ */
 interface Message {
   role: string;
   parts: MessagePart[];
 }
 
-// Define a type for model configuration that is used within the chat method.
+/**
+ * Configuration for the AI model used within the chat method.
+ */
 interface ModelConfig {
   temperature?: number;
   max_tokens?: number;
@@ -43,7 +59,16 @@ interface ModelConfig {
   model?: string;
 }
 
+/**
+ * The GeminiProApi class provides methods to interact with the Google AI via the Gemini Pro API.
+ * It implements the LLMApi interface.
+ */
 export class GeminiProApi implements LLMApi {
+  /**
+   * Extracts the message text from the GoogleResponse object.
+   * @param {GoogleResponse} res - The response object from Google's API.
+   * @returns {string} The extracted message text or error message.
+   */
   extractMessage(res: GoogleResponse): string {
     console.log("[Response] gemini-pro response: ", res);
 
@@ -53,7 +78,11 @@ export class GeminiProApi implements LLMApi {
       ""
     );
   }
-
+  /**
+   * Sends a chat message to the Google API and handles the response.
+   * @param {ChatOptions} options - The chat options including messages and configuration.
+   * @returns {Promise<void>} A promise that resolves when the chat request is complete.
+   */
   async chat(options: ChatOptions): Promise<void> {
     const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
@@ -243,10 +272,17 @@ export class GeminiProApi implements LLMApi {
       options.onError?.(e instanceof Error ? e : new Error(String(e)));
     }
   }
-
+  /**
+   * Fetches the usage statistics of the LLM.
+   * @returns {Promise<LLMUsage>} A promise that resolves to the usage statistics.
+   */
   usage(): Promise<LLMUsage> {
     throw new Error("Method not implemented.");
   }
+  /**
+   * Fetches the available LLM models.
+   * @returns {Promise<LLMModel[]>} A promise that resolves to an array of LLM models.
+   */
   async models(): Promise<LLMModel[]> {
     return [];
   }
