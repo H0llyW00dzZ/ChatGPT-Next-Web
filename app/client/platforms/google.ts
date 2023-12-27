@@ -4,7 +4,7 @@
  * // Copyright (c) 2023 H0llyW00dzZ
  */
 
-import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { DEFAULT_API_HOST, DEFAULT_CORS_HOST, GEMINI_BASE_URL, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import {
@@ -286,8 +286,26 @@ export class GeminiProApi implements LLMApi {
   async models(): Promise<LLMModel[]> {
     return [];
   }
-  // todo: fix tauri desktop app issue, currently focusing passing a context to the ai first
+  /**
+   * Constructs the appropriate URL path for API requests.
+   *
+   * This is a temporary fix to address an issue where the Google AI services
+   * cannot be directly accessed from the Tauri desktop application. By routing
+   * requests through a CORS proxy, we work around the limitation that prevents
+   * direct API communication due to the desktop app's security constraints.
+   *
+   * @param {string} endpoint - The API endpoint that needs to be accessed.
+   * @returns {string} The fully constructed URL path for the API request.
+   */
   path(endpoint: string): string {
-    return `/api/google/${endpoint}`;
+    const isApp = !!getClientConfig()?.isApp;
+    // Use DEFAULT_CORS_HOST as the base URL if the client is a desktop app.
+    const basePath = isApp ? `${DEFAULT_CORS_HOST}/api/google` : '/api/google';
+  
+    // Normalize the endpoint to prevent double slashes, but preserve "https://" if present.
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    
+    return `${basePath}/${normalizedEndpoint}`;
   }
+
 }
