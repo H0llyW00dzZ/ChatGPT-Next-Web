@@ -8,8 +8,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "ChatGPT Next Web",
-    "version": "2.9.13"
+    "productName": "NextChat",
+    "version": "2.10.1"
   },
   "tauri": {
     "allowlist": {
