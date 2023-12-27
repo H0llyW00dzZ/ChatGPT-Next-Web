@@ -79,7 +79,7 @@ if (mode !== "export") {
       // google ai for gemini-pro
       // it will syncing the router in tauri desktop app
       {
-        source: "/api/proxy/:path*",
+        source: "/api/proxy/google/:path*",
         destination: "https://generativelanguage.googleapis.com/:path*",
       },
     ];
