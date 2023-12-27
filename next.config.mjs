@@ -76,6 +76,12 @@ if (mode !== "export") {
         source: "/sharegpt",
         destination: "https://sharegpt.com/api/conversations",
       },
+      // google ai for gemini-pro
+      // it will syncing the router in tauri desktop app
+      {
+        source: "/api/proxy/:path*",
+        destination: "https://generativelanguage.googleapis.com/:path*",
+      },
     ];
 
     return {
