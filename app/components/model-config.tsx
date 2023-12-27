@@ -4,7 +4,10 @@ import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
-import { DEFAULT_SYSTEM_TEMPLATE } from "../constant";
+import {
+  DEFAULT_SYSTEM_TEMPLATE,
+  ModelProvider,
+} from "../constant";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -20,8 +23,6 @@ export function ModelConfigList(props: {
     { value: DEFAULT_SYSTEM_TEMPLATE, label: Locale.Label_System_Template.Default },
     { value: Locale.System_Template, label: Locale.Label_System_Template.Local },
   ];
-
-  const isGoogleAIModel = props.modelConfig.model === "gemini-pro";
 
   return (
     <>
@@ -198,7 +199,7 @@ export function ModelConfigList(props: {
             ></InputRange>
           </ListItem>
 
-          {isGoogleAIModel && (
+          {allModels && (
             <>
               <ListItem
                 title={Locale.Settings.InjectSystemPrompts.Title}
