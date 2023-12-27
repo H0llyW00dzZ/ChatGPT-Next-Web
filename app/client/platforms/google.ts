@@ -9,43 +9,75 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
+
+// Define interfaces for your payloads and responses to ensure type safety.
+// Copyright (c) 2023 H0llyW00dzz
+interface GoogleResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+      }>;
+    };
+  }>;
+  error?: {
+    message?: string;
+  };
+}
+
+interface MessagePart {
+  text: string;
+}
+
+interface Message {
+  role: string;
+  parts: MessagePart[];
+}
+
+// Define a type for model configuration that is used within the chat method.
+interface ModelConfig {
+  temperature?: number;
+  max_tokens?: number;
+  top_p?: number;
+  // top_k?: number; // Uncomment and add to the interface if used.
+  model?: string;
+}
+
 export class GeminiProApi implements LLMApi {
-  extractMessage(res: any) {
+  extractMessage(res: GoogleResponse): string {
     console.log("[Response] gemini-pro response: ", res);
 
     return (
-      res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
-      res?.error?.message ||
+      res.candidates?.[0]?.content?.parts?.[0]?.text ||
+      res.error?.message ||
       ""
     );
   }
+
   async chat(options: ChatOptions): Promise<void> {
-    const messages = options.messages.map((v) => ({
+    const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
     }));
 
     // google requires that role in neighboring messages must not be the same
     for (let i = 0; i < messages.length - 1; ) {
-      // Check if current and next item both have the role "model"
       if (messages[i].role === messages[i + 1].role) {
-        // Concatenate the 'parts' of the current and next item
         messages[i].parts = messages[i].parts.concat(messages[i + 1].parts);
-        // Remove the next item
         messages.splice(i + 1, 1);
       } else {
-        // Move to the next item
         i++;
       }
     }
 
-    const modelConfig = {
-      ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-      ...{
-        model: options.config.model,
-      },
+    const appConfig = useAppConfig.getState().modelConfig;
+    const chatConfig = useChatStore.getState().currentSession().mask.modelConfig;
+    const modelConfig: ModelConfig = {
+      ...appConfig,
+      ...chatConfig,
+      model: options.config.model,
     };
+
     const requestPayload = {
       contents: messages,
       generationConfig: {
@@ -65,6 +97,7 @@ export class GeminiProApi implements LLMApi {
     const shouldStream = false;
     const controller = new AbortController();
     options.onController?.(controller);
+
     try {
       const chatPath = this.path(Google.ChatPath);
       const chatPayload = {
@@ -207,16 +240,18 @@ export class GeminiProApi implements LLMApi {
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
-      options.onError?.(e as Error);
+      options.onError?.(e instanceof Error ? e : new Error(String(e)));
     }
   }
+
   usage(): Promise<LLMUsage> {
     throw new Error("Method not implemented.");
   }
   async models(): Promise<LLMModel[]> {
     return [];
   }
-  path(path: string): string {
-    return "/api/google/" + path;
+
+  path(endpoint: string): string {
+    return `/api/google/${endpoint}`;
   }
 }
