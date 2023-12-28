@@ -118,7 +118,8 @@ jobs:
             org.opencontainers.image.description="${{ github.event.inputs.description }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
+      # This ensures the cleanup runs even if the build fails
       -
-          name: Clean up cache
-          run: docker builder prune --
+          name: Clean up Buildx builder
+          if: always()
+          run: docker buildx rm
