@@ -88,6 +88,7 @@ export class GeminiProApi implements LLMApi {
    */
   async chat(options: ChatOptions): Promise<void> {
     const provider = getProviderFromState();
+    const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
     const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
@@ -158,7 +159,7 @@ export class GeminiProApi implements LLMApi {
           }
 
           if (remainText.length > 0) {
-            const fetchCount = Math.max(1, Math.round(remainText.length / 60));
+            const fetchCount = Math.max(1, Math.round(remainText.length / cfgspeed_animation));
             const fetchText = remainText.slice(0, fetchCount);
             responseText += fetchText;
             remainText = remainText.slice(fetchCount);
