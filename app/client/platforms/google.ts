@@ -16,6 +16,7 @@ import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
 import { getProviderFromState } from "@/app/utils";
+import { getNewStuff } from './NewStuffLLMs';
 
 
 // Define interfaces for your payloads and responses to ensure type safety.
@@ -106,10 +107,20 @@ export class GeminiProApi implements LLMApi {
 
     const appConfig = useAppConfig.getState().modelConfig;
     const chatConfig = useChatStore.getState().currentSession().mask.modelConfig;
+
+    // Call getNewStuff to determine the max_tokens and other configurations
+    const { max_tokens } = getNewStuff(
+      options.config.model,
+      chatConfig.max_tokens,
+      chatConfig.system_fingerprint,
+      chatConfig.useMaxTokens,
+    );
+
     const modelConfig: ModelConfig = {
       ...appConfig,
       ...chatConfig,
-      model: options.config.model,
+      // Use max_tokens from getNewStuff if defined, otherwise use the existing value
+      max_tokens: max_tokens !== undefined ? max_tokens : options.config.max_tokens,
     };
 
     const requestPayload = {
@@ -119,7 +130,7 @@ export class GeminiProApi implements LLMApi {
         //   "Title"
         // ],
         temperature: modelConfig.temperature,
-        maxOutputTokens: modelConfig.max_tokens,
+        ...(max_tokens !== undefined ? { maxOutputTokens: max_tokens } : {}), // Spread the max_tokens value if defined
         topP: modelConfig.top_p,
         // "topK": modelConfig.top_k,
       },
