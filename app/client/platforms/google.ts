@@ -73,7 +73,7 @@ export class GeminiProApi implements LLMApi {
    */
   extractMessage(res: GoogleResponse): string {
     const provider = getProviderFromState();
-    console.log(`[${provider}] [Text Moderation] flagged categories result:`, res);
+    console.log(`[${provider}] [Text Moderation] gemini-pro response: `, res);
 
     return (
       res.candidates?.[0]?.content?.parts?.[0]?.text ||
