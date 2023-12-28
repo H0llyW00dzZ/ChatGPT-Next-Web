@@ -1,5 +1,5 @@
 /**
- * This module provides functionality for sending text moderation requests and processing their responses.
+ * This module provides functionality for sending text moderation Openai requests and processing their responses.
  * @module textmoderation
  * @author H0llyW00dzZ
  * @copyright (c) 2023 H0llyW00dzZ
