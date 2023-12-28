@@ -14,7 +14,7 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
-import { sendModerationRequest } from './textmoderation';
+import { moderateText } from './textmoderation';
 import { 
   getNewStuff,
   getModelForInstructVersion,
@@ -90,64 +90,20 @@ export class ChatGPTApi implements LLMApi {
      * @author H0llyW00dzZ
      */
     const textmoderation = useAppConfig.getState().textmoderation;
-    const latest = OpenaiPath.TextModerationModels.latest;
     const checkprovider = getProviderFromState();
-    if (textmoderation !== false // forgot to fix this, was focusing in backend lmao
-      && DEFAULT_MODELS
+    const userMessageS = options.messages.filter((msg) => msg.role === "user");
+    const lastUserMessage = userMessageS[userMessageS.length - 1]?.content;
+    const moderationPath = this.path(OpenaiPath.ModerationPath);
+    // Check if text moderation is enabled and required
+    if (textmoderation !== false
       && options.whitelist !== true
       // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
       && checkprovider !== ServiceProvider.Azure) {
-      const messages = options.messages.map((v) => ({
-        role: v.role,
-        content: v.content,
-      }));
-
-      const userMessages = messages.filter((msg) => msg.role === "user");
-      const userMessage = userMessages[userMessages.length - 1]?.content;
-
-      if (userMessage) {
-        const moderationPath = this.path(OpenaiPath.ModerationPath);
-        const moderationPayload = {
-          input: userMessage,
-          model: latest,
-        };
-
-        try {
-          const moderationResponse = await sendModerationRequest(
-            moderationPath,
-            moderationPayload
-          );
-
-          if (moderationResponse.flagged) {
-            const flaggedCategories = Object.entries(
-              moderationResponse.categories
-            )
-              .filter(([category, flagged]) => flagged)
-              .map(([category]) => category);
-
-            if (flaggedCategories.length > 0) {
-              const translatedReasons = flaggedCategories.map((category) => {
-                const translation =
-                  (Locale.Error.Content_Policy.Reason as any)[category];
-                return translation ? translation : category; // Use category name if translation is not available
-              });
-              const translatedReasonText = translatedReasons.join(", ");
-              const responseText = `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n${Locale.Error.Content_Policy.SubTitle}\n`;
-
-              const responseWithGraph = responseText;
-              options.onFinish(responseWithGraph);
-              return;
-            }
-          }
-        } catch (e) {
-          console.log("[Request] failed to make a moderation request", e);
-          const error = {
-            error: (e as Error).message,
-            stack: (e as Error).stack,
-          };
-          options.onFinish(JSON.stringify(error));
-          return;
-        }
+      // Call the moderateText method and handle the result
+      const moderationResult = await moderateText(moderationPath, lastUserMessage, OpenaiPath.TextModerationModels.latest);
+      if (moderationResult) {
+        options.onFinish(moderationResult); // Finish early if moderationResult is not null
+        return;
       }
     }
 
