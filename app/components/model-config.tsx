@@ -6,6 +6,7 @@ import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 import {
   DEFAULT_SYSTEM_TEMPLATE,
+  Google,
   ModelProvider,
 } from "../constant";
 
@@ -203,7 +204,7 @@ export function ModelConfigList(props: {
             <>
               <ListItem
                 title={Locale.Settings.InjectSystemPrompts.Title}
-                subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
+                subTitle={Locale.Settings.InjectSystemPrompts.SubTitle + Google.Info}
               >
                 <input
                   type="checkbox"
