@@ -15,6 +15,8 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
+import { getProviderFromState } from "@/app/utils";
+
 
 // Define interfaces for your payloads and responses to ensure type safety.
 /**
@@ -70,7 +72,8 @@ export class GeminiProApi implements LLMApi {
    * @returns {string} The extracted message text or error message.
    */
   extractMessage(res: GoogleResponse): string {
-    console.log("[Response] gemini-pro response: ", res);
+    const provider = getProviderFromState();
+    console.log(`[${provider}] [Text Moderation] flagged categories result:`, res);
 
     return (
       res.candidates?.[0]?.content?.parts?.[0]?.text ||
@@ -84,6 +87,7 @@ export class GeminiProApi implements LLMApi {
    * @returns {Promise<void>} A promise that resolves when the chat request is complete.
    */
   async chat(options: ChatOptions): Promise<void> {
+    const provider = getProviderFromState();
     const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
@@ -119,8 +123,7 @@ export class GeminiProApi implements LLMApi {
         // "topK": modelConfig.top_k,
       },
     };
-
-    console.log("[Request] google payload: ", requestPayload);
+    console.log(`[Request] [${provider}] payload: `, requestPayload);
 
     // todo: support stream later
     const shouldStream = false;
@@ -183,7 +186,7 @@ export class GeminiProApi implements LLMApi {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log(
-              "[OpenAI] request response content type: ",
+              `[${provider}] request response content type: `,
               contentType,
             );
 
