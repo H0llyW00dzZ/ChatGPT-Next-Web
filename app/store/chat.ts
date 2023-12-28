@@ -306,9 +306,8 @@ export const useChatStore = createPersistStore(
         const checkprovider = getProviderFromState();
         if (textmoderation !== false
           && options.whitelist !== true
-          // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
-          && checkprovider !== ServiceProvider.Azure
-          || checkprovider !== ServiceProvider.Google) {
+          // Group the provider checks together so that they are evaluated correctly in the context of the other conditions
+          && (checkprovider !== ServiceProvider.Azure && checkprovider !== ServiceProvider.Google)) {
           // Call the moderateText method and handle the result
           const userMessageS = options.messages.filter((msg) => msg.role === "user");
           const lastUserMessage = userMessageS[userMessageS.length - 1]?.content;
