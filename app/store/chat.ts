@@ -9,20 +9,15 @@ import {
   DEFAULT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
   ModelProvider,
-  OPENAI_BASE_URL,
-  OpenaiPath,
-  ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
 } from "../constant";
-import { ChatOptions, ClientApi, RequestMessage } from "../client/api";
+import { ClientApi, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
-import { moderateText } from "../client/platforms/textmoderation";
-import { ChatGPTApi } from "../client/platforms/openai";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -60,8 +55,6 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
-
-  lastMessageFlagged: boolean; // New property to indicate if the last message was flagged
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -85,8 +78,6 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
-
-    lastMessageFlagged: false,
   };
 }
 
@@ -277,13 +268,7 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string, options: ChatOptions) {
-        // Check if the last message was flagged. If so, do not send the message.
-        const userMessageS = options.messages.filter((msg) => msg.role === "user");
-        const lastUserMessage = userMessageS[userMessageS.length - 1]?.content;
-        const chatApi = new ChatGPTApi();
-        const moderationPath = chatApi.path(OpenaiPath.ModerationPath);
-        const moderationResult = await moderateText(moderationPath, lastUserMessage, OpenaiPath.TextModerationModels.latest);
+      async onUserInput(content: string) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -307,24 +292,16 @@ export const useChatStore = createPersistStore(
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
-        if (moderationResult) {
-          options.onFinish(moderationResult); // Handle the flagged message
-          get().updateCurrentSession((session) => {
-            session.lastMessageFlagged = true; // Set the flag to true if the message was flagged
-          });
-          return;
-        }
-          get().updateCurrentSession((session) => {
-            session.lastMessageFlagged = false; // Set the flag to false if the message was not flagged
-            const savedUserMessage = {
-              ...userMessage,
-              content,
-            };
-            session.messages = session.messages.concat([
-              savedUserMessage,
-              botMessage,
-            ]);
-          });
+        get().updateCurrentSession((session) => {
+          const savedUserMessage = {
+            ...userMessage,
+            content,
+          };
+          session.messages = session.messages.concat([
+            savedUserMessage,
+            botMessage,
+          ]);
+        });
 
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
        // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
@@ -515,12 +492,6 @@ export const useChatStore = createPersistStore(
         const config = useAppConfig.getState();
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-
-        // Check if the last message was flagged. If so, do not summarize.
-        if (session.lastMessageFlagged) {
-          console.log("Skipping summarization due to the last message being flagged.");
-          return;
-        }
 
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
         // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
@@ -751,7 +722,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.3, // pass context to text moderation
+    version: 3.2,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -807,14 +778,6 @@ export const useChatStore = createPersistStore(
           };
         });
       }
-
-      if (version < 3.3) {
-        newState.sessions.forEach((session) => {
-          // Initialize lastMessageFlagged for existing sessions
-          session.lastMessageFlagged = false;
-        });
-      }
-
 
       return newState as any;
     },

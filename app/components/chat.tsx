@@ -99,7 +99,6 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { appWindow } from '@tauri-apps/api/window';
 import { sendDesktopNotification } from "../utils/taurinotification";
-import { ChatOptions } from "../client/api";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -915,27 +914,7 @@ function _Chat() {
       return;
     }
     setIsLoading(true);
-
-    // Define the options object with onFinish property
-    const chatOptions: ChatOptions = {
-      messages: session.messages, // Assuming have access to current session messages
-      onFinish: (moderationResult) => {
-        // Handle the result of text moderation
-        console.log("Moderation Result:", moderationResult);
-        setIsLoading(true); // Update loading state based on moderation result
-      },
-      config: {
-        model: session.mask.modelConfig.model,
-        stream: true, // how if we stream this ? hahaha
-      },
-      whitelist: false
-    };
-  
-    // Pass context the options object to onUserInput
-    chatStore.onUserInput(escapedInput, chatOptions).then(() => {
-      setIsLoading(false); // Update loading state after message is processed
-    });
-
+    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
     setUserInput("");
     setPromptHints([]);
@@ -1079,30 +1058,12 @@ function _Chat() {
 
     // delete the original messages
     deleteMessage(userMessage.id);
-    if (botMessage) {
-      deleteMessage(botMessage.id);
-    }
-    // resend the message
-    // Define the options object with onFinish property
-    const chatOptions: ChatOptions = {
-      onFinish: (moderationResult) => {
-        // Handle the result of text moderation
-        console.log("Moderation Result:", moderationResult);
-        setIsLoading(true);
-      },
-      messages: [],
-      config: session.mask.modelConfig,
-      whitelist: false
-    };
+    deleteMessage(botMessage?.id);
 
-    // Resend the message with the correct options
+    // resend the message
     setIsLoading(true);
-    chatStore.onUserInput(userMessage.content, chatOptions).finally(() => {
-      setIsLoading(false);
-    });
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
+    inputRef.current?.focus();
   };
 
   const onPinMessage = (message: ChatMessage) => {
@@ -1148,7 +1109,7 @@ function _Chat() {
               {
                 ...createMessage({
                   role: "assistant",
-                  content: "",
+                  content: "……",
                 }),
                 preview: true,
               },
