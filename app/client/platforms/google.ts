@@ -97,7 +97,7 @@ export class GeminiProApi implements LLMApi {
     }));
 
     // google requires that role in neighboring messages must not be the same
-    for (let i = 0; i < messages.length - 1; ) {
+    for (let i = 0; i < messages.length - 1;) {
       if (messages[i].role === messages[i + 1].role) {
         messages[i].parts = messages[i].parts.concat(messages[i + 1].parts);
         messages.splice(i + 1, 1);
@@ -169,7 +169,7 @@ export class GeminiProApi implements LLMApi {
           options.onFinish(responseText + remainText);
         };
 
-        // animate response to make it looks smooth
+        // Animate response to make it look smooth
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
@@ -185,7 +185,8 @@ export class GeminiProApi implements LLMApi {
             options.onUpdate?.(responseText, fetchText);
           }
 
-          requestAnimationFrame(animateResponseText);
+          // Use setTimeout to throttle the updates for smoothness
+          setTimeout(animateResponseText, 1000 / cfgspeed_animation); // Adjust the delay based on animation speed
         }
 
         // start animaion
@@ -201,7 +202,7 @@ export class GeminiProApi implements LLMApi {
               value,
             }): Promise<any> {
               if (done) {
-                console.log("Stream complete");
+                console.log("[Streaming] Stream complete");
                 // options.onFinish(responseText + remainText);
                 finished = true;
                 return Promise.resolve();
@@ -211,14 +212,16 @@ export class GeminiProApi implements LLMApi {
 
               try {
                 let data = JSON.parse(ensureProperEnding(partialData));
-                console.log(data);
+                console.log("[Streaming] fetching json decoder: ", data);
                 let fetchText = apiClient.extractMessage(data[data.length - 1]);
-                console.log("[Response Animation] fetchText: ", fetchText);
+                //console.log("[Response Animation] fetchText: ", fetchText);
                 remainText += fetchText;
               } catch (error) {
                 // skip error message when parsing json
               }
 
+              // Continue the read loop without introducing artificial delay here
+              // as the animation function is already throttled.
               return reader.read().then(processText);
             });
           })
@@ -236,7 +239,7 @@ export class GeminiProApi implements LLMApi {
           options.onError?.(
             new Error(
               "Message is being blocked for reason: " +
-                resJson.promptFeedback.blockReason,
+              resJson.promptFeedback.blockReason,
             ),
           );
         }
@@ -277,10 +280,10 @@ export class GeminiProApi implements LLMApi {
     const isApp = !!getClientConfig()?.isApp;
     // Use DEFAULT_CORS_HOST as the base URL if the client is a desktop app.
     const basePath = isApp ? `${DEFAULT_CORS_HOST}/api/google` : '/api/google';
-  
+
     // Normalize the endpoint to prevent double slashes, but preserve "https://" if present.
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-    
+
     return `${basePath}/${normalizedEndpoint}`;
   }
 
