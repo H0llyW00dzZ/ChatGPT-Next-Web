@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { useAccessStore } from "./store";
+import { ModelProvider, ServiceProvider } from "./constant";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -89,10 +90,27 @@ export async function downloadAs(text: object, filename: string) {
   }
 }
 
-// Assuming you have a function to get the provider from the state
-export function getProviderFromState(): string {
+// helper function
+function isServiceProvider(provider: string): provider is ServiceProvider {
+  return Object.values(ServiceProvider).includes(provider as ServiceProvider);
+}
+// helper function
+function isModelProvider(provider: string): provider is ModelProvider {
+  return Object.values(ModelProvider).includes(provider as ModelProvider);
+}
+
+// Assuming useAccessStore.getState().provider returns a string that matches the enum values
+export function getProviderFromState(): ServiceProvider | ModelProvider {
   const accessStore = useAccessStore.getState();
-  return accessStore.provider;
+  const provider = accessStore.provider;
+
+  if (isServiceProvider(provider)) {
+    return provider as ServiceProvider;
+  } else if (isModelProvider(provider)) {
+    return provider as ModelProvider;
+  } else {
+    throw new Error(`Unknown provider: ${provider}`);
+  }
 }
 
 export function readFromFile() {
