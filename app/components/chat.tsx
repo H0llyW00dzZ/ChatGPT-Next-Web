@@ -960,7 +960,7 @@ function _Chat() {
 
     try {
       // Send the user's message and wait for the assistant's response
-      await submitText(content, chatOptions);
+      submitText(content, chatOptions);
     } catch (error) {
       // Handle errors, such as by showing a toast notification
       console.error("Failed to send message:", error);
