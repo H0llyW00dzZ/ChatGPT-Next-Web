@@ -2,8 +2,8 @@ import { getClientConfig } from "./config/client";
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
-import { useAccessStore } from "./store";
-import { ModelProvider, ServiceProvider } from "./constant";
+import { ChatMessage, useAccessStore } from "./store";
+import { DEFAULT_MODELS, ModelProvider, ServiceProvider } from "./constant";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -110,6 +110,41 @@ export function getProviderFromState(): ServiceProvider {
     throw new Error(`Provider is not a valid ServiceProvider: ${provider}`);
   }
 }
+// move here, easy maintenance fuck complex
+// helper functions
+export function isGoogleAI(modelName: string): boolean {
+  // Check if modelName starts with "gemini-pro"
+  if (modelName.startsWith("gemini-pro")) {
+    return true;
+  }
+
+  // If not, helper functions can still look for the model in the DEFAULT_MODELS array as a fallback
+  const model = DEFAULT_MODELS.find(m => m.name === modelName);
+  if (!model) {
+    throw new Error(`Model not found: ${modelName}`);
+  }
+
+  // If helper functions find the model, we check its provider type
+  return model.provider.providerType === 'google';
+}
+
+// helper functions
+export const findUserMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
+  for (let i = startIndex; i >= 0; i--) {
+    if (messages[i].role === "user") {
+      return messages[i];
+    }
+  }
+};
+
+// helper functions
+export const findBotMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
+  for (let i = startIndex; i < messages.length; i++) {
+    if (messages[i].role === "assistant") {
+      return messages[i];
+    }
+  }
+};
 
 export function readFromFile() {
   return new Promise<string>((res, rej) => {

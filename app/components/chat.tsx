@@ -61,6 +61,9 @@ import {
   useMobileScreen,
   downloadAs,
   readFromFile,
+  isGoogleAI,
+  findUserMessageForResend,
+  findBotMessageForResend,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -84,7 +87,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
-  DEFAULT_MODELS,
   LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
@@ -918,22 +920,6 @@ function _Chat() {
       setIsLoading(false);
     });
   };
-  // helper functions
-  function isGoogleAI(modelName: string): boolean {
-    // Check if modelName starts with "gemini-pro"
-    if (modelName.startsWith("gemini-pro")) {
-      return true;
-    }
-
-    // If not, helper functions can still look for the model in the DEFAULT_MODELS array as a fallback
-    const model = DEFAULT_MODELS.find(m => m.name === modelName);
-    if (!model) {
-      throw new Error(`Model not found: ${modelName}`);
-    }
-
-    // If helper functions find the model, we check its provider type
-    return model.provider.providerType === 'google';
-  }
 
   const textModerationEnabled = useAppConfig(state => state.textmoderation); // Access state using a selector
   const modelProviderName = session.mask.modelConfig.model; // Assuming this holds the model name
@@ -1072,22 +1058,6 @@ function _Chat() {
 
   const onDelete = (msgId: string) => {
     deleteMessage(msgId);
-  };
-  // helper functions
-  const findUserMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
-    for (let i = startIndex; i >= 0; i--) {
-      if (messages[i].role === "user") {
-        return messages[i];
-      }
-    }
-  };
-  // helper functions
-  const findBotMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
-    for (let i = startIndex; i < messages.length; i++) {
-      if (messages[i].role === "assistant") {
-        return messages[i];
-      }
-    }
   };
 
   const onResend = (message: ChatMessage) => {
