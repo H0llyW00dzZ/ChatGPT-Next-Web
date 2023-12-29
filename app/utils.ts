@@ -118,14 +118,14 @@ export function isGoogleAI(modelName: string): boolean {
     return true;
   }
 
-  // If not, helper functions can still look for the model in the DEFAULT_MODELS array as a fallback
+  // If not, look for the model in the DEFAULT_MODELS array as a fallback
   const model = DEFAULT_MODELS.find(m => m.name === modelName);
   if (!model) {
     throw new Error(`Model not found: ${modelName}`);
   }
 
-  // If helper functions find the model, we check its provider type
-  return model.provider.providerType === 'google';
+  // Check if any of the providers for the model has a providerType of 'google'
+  return model.provider.every(provider => provider.providerType === 'google');
 }
 
 // helper functions
