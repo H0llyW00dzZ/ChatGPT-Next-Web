@@ -8,7 +8,7 @@ import {
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMModelProvider, LLMUsage } from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -528,7 +528,13 @@ export class ChatGPTApi implements LLMApi {
 
   async models(): Promise<LLMModel[]> {
     if (this.disableListModels) {
-      return DEFAULT_MODELS.slice();
+      // Map DEFAULT_MODELS to match the LLMModel type
+      return DEFAULT_MODELS.map(model => ({
+        ...model,
+        // Take the first provider in the array for the conversion
+        // Note: Make sure this is the intended logic, as you're ignoring any additional providers.
+        provider: model.provider[0] as LLMModelProvider,
+      }));
     }
 
     const res = await fetch(this.path(OpenaiPath.ListModelPath), {
