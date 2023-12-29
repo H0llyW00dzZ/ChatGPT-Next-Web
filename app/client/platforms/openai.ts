@@ -83,29 +83,6 @@ export class ChatGPTApi implements LLMApi {
    * 
    */
   async chat(options: ChatOptions) {
-    /**
-     * The text moderation configuration.
-     * @remarks
-     * This variable stores the text moderation settings obtained from the app configuration.
-     * @author H0llyW00dzZ
-     */
-    const textmoderation = useAppConfig.getState().textmoderation;
-    const checkprovider = getProviderFromState();
-    const userMessageS = options.messages.filter((msg) => msg.role === "user");
-    const lastUserMessage = userMessageS[userMessageS.length - 1]?.content;
-    const moderationPath = this.path(OpenaiPath.ModerationPath);
-    // Check if text moderation is enabled and required
-    if (textmoderation !== false
-      && options.whitelist !== true
-      // Skip text moderation for Azure provider since azure already have text-moderation, and its enabled by default on their service
-      && checkprovider !== ServiceProvider.Azure) {
-      // Call the moderateText method and handle the result
-      const moderationResult = await moderateText(moderationPath, lastUserMessage, OpenaiPath.TextModerationModels.latest);
-      if (moderationResult) {
-        options.onFinish(moderationResult); // Finish early if moderationResult is not null
-        return;
-      }
-    }
 
     const messages = options.messages.map((v) => ({
       role: v.role,
