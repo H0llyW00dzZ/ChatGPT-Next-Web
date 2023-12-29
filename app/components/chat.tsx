@@ -84,6 +84,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   CHAT_PAGE_SIZE,
+  DEFAULT_MODELS,
   LAST_INPUT_KEY,
   Path,
   REQUEST_TIMEOUT_MS,
@@ -124,7 +125,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
     const datePart = isApp
       ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
       : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
-  
+
     const formattedMessageCount = Locale.ChatItem.ChatItemCount(messageCount); // Format the message count using the translation function
     const fileName = `${session.topic}-(${formattedMessageCount})-${datePart}.json`;
     await downloadAs(session, fileName);
@@ -899,7 +900,7 @@ function _Chat() {
       }
     }
   };
- // helper function
+  // helper function
   const handleChatCommand = (input: string) => {
     const matchCommand = chatCommands.match(input);
     if (matchCommand.matched) {
@@ -917,43 +918,65 @@ function _Chat() {
       setIsLoading(false);
     });
   };
+  // helper functions
+  function isGoogleAI(modelName: string): boolean {
+    // Check if modelName starts with "gemini-pro"
+    if (modelName.startsWith("gemini-pro")) {
+      return true;
+    }
+
+    // If not, helper functions can still look for the model in the DEFAULT_MODELS array as a fallback
+    const model = DEFAULT_MODELS.find(m => m.name === modelName);
+    if (!model) {
+      throw new Error(`Model not found: ${modelName}`);
+    }
+
+    // If helper functions find the model, we check its provider type
+    return model.provider.providerType === 'google';
+  }
+
+  const textModerationEnabled = useAppConfig(state => state.textmoderation); // Access state using a selector
+  const modelProviderName = session.mask.modelConfig.model; // Assuming this holds the model name
 
   const sendMessage = async (content: string) => {
     setIsLoading(true);
-  
+
+    const providerExclusion = isGoogleAI(modelProviderName); // Pass arguments
+
     // Define the options for the chat
     const chatOptions: ChatOptions = {
-      messages: session.messages, // Assuming have access to current session messages
+      messages: session.messages,
       onFinish: (moderationResult) => {
         // Handle the result of text moderation
         console.log("Moderation Result:", moderationResult);
-        setIsLoading(true); // Update loading state based on moderation result
       },
       config: {
         model: session.mask.modelConfig.model,
         stream: true, // how if we stream this ? hahaha
       },
-      whitelist: false
+      // Set whitelist to true if provider is excluded or if text moderation is not enabled
+      whitelist: providerExclusion || !textModerationEnabled,
     };
-  
+
     try {
       // Send the user's message and wait for the assistant's response
-      submitText(content, chatOptions);
+      await submitText(content, chatOptions);
     } catch (error) {
       // Handle errors, such as by showing a toast notification
       console.error("Failed to send message:", error);
     } finally {
-      setIsLoading(true);
+      // End loading state
+      setIsLoading(false);
     }
-  };  
-  
+  };
+
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
-  
+
     // Send message and handle assistant's response
     sendMessage(userInput);
     setAutoScroll(true);
-  
+
     // Clear the input field and local state
     setUserInput("");
     setPromptHints([]);
@@ -1086,9 +1109,9 @@ function _Chat() {
     let userMessage: ChatMessage | undefined;
     let botMessage: ChatMessage | undefined;
 
-  // Use helper functions to find user and bot messages
-  userMessage = message.role === "assistant" ? findUserMessageForResend(session.messages, resendingIndex) : message;
-  botMessage = message.role === "user" ? findBotMessageForResend(session.messages, resendingIndex) : undefined;
+    // Use helper functions to find user and bot messages
+    userMessage = message.role === "assistant" ? findUserMessageForResend(session.messages, resendingIndex) : message;
+    botMessage = message.role === "user" ? findBotMessageForResend(session.messages, resendingIndex) : undefined;
 
     if (userMessage === undefined) {
       console.error("[Chat] failed to resend", message);
