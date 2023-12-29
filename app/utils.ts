@@ -100,16 +100,14 @@ function isModelProvider(provider: string): provider is ModelProvider {
 }
 
 // Assuming useAccessStore.getState().provider returns a string that matches the enum values
-export function getProviderFromState(): ServiceProvider | ModelProvider {
+export function getProviderFromState(): ServiceProvider {
   const accessStore = useAccessStore.getState();
   const provider = accessStore.provider;
 
   if (isServiceProvider(provider)) {
-    return provider as ServiceProvider;
-  } else if (isModelProvider(provider)) {
-    return provider as ModelProvider;
+    return provider;
   } else {
-    throw new Error(`Unknown provider: ${provider}`);
+    throw new Error(`Provider is not a valid ServiceProvider: ${provider}`);
   }
 }
 
