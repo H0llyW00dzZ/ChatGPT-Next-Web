@@ -458,9 +458,9 @@ export const DEFAULT_MODELS: Model[] = [
         providerType: "google",
       },
       {
-        id: "Gopher",
-        providerName: "Gopher",
-        providerType: "Gopher",
+        id: "gopher_secret",
+        providerName: "Gopher Secret",
+        providerType: "Gopher Secret",
       },
     ],
   },
