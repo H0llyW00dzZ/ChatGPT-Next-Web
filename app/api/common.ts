@@ -3,6 +3,7 @@ import { getServerSideConfig } from "../config/server";
 import { DEFAULT_MODELS, OPENAI_BASE_URL, GEMINI_BASE_URL } from "../constant";
 import { collectModelTable } from "../utils/model";
 import { makeAzurePath } from "../azure";
+import { LLMModelProvider } from "../client/api";
 
 const serverConfig = getServerSideConfig();
 
@@ -84,7 +85,12 @@ export async function requestOpenai(req: NextRequest) {
   if (serverConfig.customModels && req.body) {
     try {
       const modelTable = collectModelTable(
-        DEFAULT_MODELS,
+        DEFAULT_MODELS.map(model => ({
+          ...model,
+          // Take the first provider in the array for the conversion
+          // Note: Make sure this is the intended logic, as you're ignoring any additional providers.
+          provider: model.provider[0] as unknown as LLMModelProvider,
+        })),
         serverConfig.customModels,
       );
       const clonedBody = await req.text();
