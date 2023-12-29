@@ -100,9 +100,12 @@ function countMessages(msgs: ChatMessage[]) {
   return msgs.reduce((pre, cur) => pre + estimateTokenLength(cur.content), 0);
 }
 
+// let machine typing as safety
+type ModelName = 'default' | 'gpt-4-1106-preview' | 'gpt-4-vision-preview' | 'gemini-pro';
+
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   let cutoff =
-    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+    KnowledgeCutOffDate[modelConfig.model as ModelName] ?? KnowledgeCutOffDate.default;
 
   const vars = {
     cutoff,
