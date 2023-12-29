@@ -254,6 +254,54 @@ export const DEFAULT_MODELS: Model[] = [
       },
     ],
   },
+  {
+    name: "gpt-4-32k",
+    available: true,
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
+  },
+  {
+    name: "gpt-4-32k-0314",
+    available: true,
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
+  },
+  {
+    name: "gpt-4-32k-0613",
+    available: true,
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
+  },
   // recent update 
   // read here : https://openai.com/blog/new-models-and-developer-products-announced-at-devday
   {
