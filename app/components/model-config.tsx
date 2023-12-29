@@ -7,7 +7,6 @@ import { useAllModels } from "../utils/hooks";
 import {
   DEFAULT_SYSTEM_TEMPLATE,
   Google,
-  ModelProvider,
 } from "../constant";
 
 export function ModelConfigList(props: {
@@ -24,7 +23,7 @@ export function ModelConfigList(props: {
     { value: DEFAULT_SYSTEM_TEMPLATE, label: Locale.Label_System_Template.Default },
     { value: Locale.System_Template, label: Locale.Label_System_Template.Local },
   ];
-
+// TODO: listing all models based of the provider
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
