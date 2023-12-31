@@ -60,6 +60,24 @@ interface ModelConfig {
   top_p?: number;
   // top_k?: number; // Uncomment and add to the interface if used.
   model?: string;
+  safetySettings?: [
+    {
+      category: string,
+      threshold: string,
+    },
+    {
+      category: string,
+      threshold: string,
+    },
+    {
+      category: string,
+      threshold: string,
+    },
+    {
+      category: string,
+      threshold: string,
+    },
+  ],
 }
 
 /**
