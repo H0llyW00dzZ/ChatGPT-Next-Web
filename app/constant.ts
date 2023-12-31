@@ -103,8 +103,7 @@ export const Azure = {
 };
 
 export const Google = {
-  ExampleEndpoint:
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+  ExampleEndpoint: "https://generativelanguage.googleapis.com/",
   ChatPath: "v1beta/models/gemini-pro:generateContent",
   Info: ". For Google AI you have to untick this as disabled (Currently is not supported)",
 
