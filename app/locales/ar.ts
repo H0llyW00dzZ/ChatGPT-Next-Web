@@ -140,6 +140,10 @@ const ar: PartialLocaleType = {
       Title: "عرض معاينة الـ Send",
       SubTitle: "معاينة Markdown في فقاعة",
     },
+    AutoScrollMessage: {
+      Title: "الرد التلقائي للتمرير",
+      SubTitle: "تمرير الرسالة أثناء الرد",
+    },
     Mask: {
       Splash: {
         Title: "شاشة تظهر الأقنعة",

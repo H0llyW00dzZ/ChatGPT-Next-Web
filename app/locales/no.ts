@@ -87,6 +87,10 @@ const no: PartialLocaleType = {
     SendKey: "Send nøkkel",
     Theme: "Tema",
     TightBorder: "Stram innramming",
+    AutoScrollMessage: {
+      Title: "Automatisk rulling av svar",
+      SubTitle: "Rull meldingen under svar",
+    },
     Prompt: {
       Disable: {
         Title: "Skru av autofullfør",
