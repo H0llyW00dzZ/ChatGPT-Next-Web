@@ -1190,7 +1190,8 @@ function _Chat() {
     }
 
     setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
+    let isAutoScrollEnabled: boolean = config.autoScrollMessage;
+    setAutoScroll(isAutoScrollEnabled);
   }, [setHitBottom, setAutoScroll, isMobileScreen, msgRenderIndex, setMsgRenderIndex]); // Added setMsgRenderIndex
 
   // Use the custom hook to debounce the onChatBodyScroll function
