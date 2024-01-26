@@ -61,6 +61,9 @@ import {
   useMobileScreen,
   downloadAs,
   readFromFile,
+  isGoogleAI,
+  findUserMessageForResend,
+  findBotMessageForResend,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -99,6 +102,7 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { appWindow } from '@tauri-apps/api/window';
 import { sendDesktopNotification } from "../utils/taurinotification";
+import { ChatOptions } from "../client/api";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -123,7 +127,7 @@ export function SessionConfigModel(props: { onClose: () => void }) {
     const datePart = isApp
       ? `${currentDate.toLocaleDateString().replace(/\//g, '_')} ${currentDate.toLocaleTimeString().replace(/:/g, '_')}`
       : `${currentDate.toLocaleString().replace(/:/g, '_')}`;
-  
+
     const formattedMessageCount = Locale.ChatItem.ChatItemCount(messageCount); // Format the message count using the translation function
     const fileName = `${session.topic}-(${formattedMessageCount})-${datePart}.json`;
     await downloadAs(session, fileName);
@@ -898,24 +902,68 @@ function _Chat() {
       }
     }
   };
-
-  const doSubmit = (userInput: string) => {
-    if (userInput.trim() === "") return;
-
-    // reduce a zod cve CVE-2023-4316
-    const escapedInput = escapeRegExp(userInput);
-
-    const matchCommand = chatCommands.match(escapedInput);
-
+  // helper function
+  const handleChatCommand = (input: string) => {
+    const matchCommand = chatCommands.match(input);
     if (matchCommand.matched) {
       setUserInput("");
       setPromptHints([]);
       matchCommand.invoke();
-      return;
+      return true;
     }
+    return false;
+  };
+  // helper functions
+  const submitText = (input: string, options: ChatOptions) => {
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
-    localStorage.setItem(LAST_INPUT_KEY, userInput);
+    chatStore.onUserInput(input, options).finally(() => {
+      setIsLoading(false);
+    });
+  };
+
+  const textModerationEnabled = useAppConfig(state => state.textmoderation); // Access state using a selector
+  const modelProviderName = session.mask.modelConfig.model; // Assuming this holds the model name
+
+  const sendMessage = async (content: string) => {
+    setIsLoading(true);
+
+    const providerExclusion = isGoogleAI(modelProviderName); // Pass arguments
+
+    // Define the options for the chat
+    const chatOptions: ChatOptions = {
+      messages: session.messages,
+      onFinish: (moderationResult) => {
+        // Handle the result of text moderation
+        console.log("Moderation Result:", moderationResult);
+      },
+      config: {
+        model: session.mask.modelConfig.model,
+        stream: true, // how if we stream this ? hahaha
+      },
+      // Set whitelist to true if provider is excluded or if text moderation is not enabled
+      whitelist: providerExclusion || !textModerationEnabled,
+    };
+
+    try {
+      // Send the user's message and wait for the assistant's response
+      submitText(content, chatOptions);
+    } catch (error) {
+      // Handle errors, such as by showing a toast notification
+      console.error("Failed to send message:", error);
+    } finally {
+      // End loading state
+      setIsLoading(false);
+    }
+  };
+
+  const doSubmit = (userInput: string) => {
+    if (userInput.trim() === "") return;
+
+    // Send message and handle assistant's response
+    sendMessage(userInput);
+    setAutoScroll(true);
+
+    // Clear the input field and local state
     setUserInput("");
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
@@ -1031,25 +1079,9 @@ function _Chat() {
     let userMessage: ChatMessage | undefined;
     let botMessage: ChatMessage | undefined;
 
-    if (message.role === "assistant") {
-      // if it is resending a bot's message, find the user input for it
-      botMessage = message;
-      for (let i = resendingIndex; i >= 0; i -= 1) {
-        if (session.messages[i].role === "user") {
-          userMessage = session.messages[i];
-          break;
-        }
-      }
-    } else if (message.role === "user") {
-      // if it is resending a user's input, find the bot's response
-      userMessage = message;
-      for (let i = resendingIndex; i < session.messages.length; i += 1) {
-        if (session.messages[i].role === "assistant") {
-          botMessage = session.messages[i];
-          break;
-        }
-      }
-    }
+    // Use helper functions to find user and bot messages
+    userMessage = message.role === "assistant" ? findUserMessageForResend(session.messages, resendingIndex) : message;
+    botMessage = message.role === "user" ? findBotMessageForResend(session.messages, resendingIndex) : undefined;
 
     if (userMessage === undefined) {
       console.error("[Chat] failed to resend", message);
@@ -1058,12 +1090,30 @@ function _Chat() {
 
     // delete the original messages
     deleteMessage(userMessage.id);
-    deleteMessage(botMessage?.id);
-
+    if (botMessage) {
+      deleteMessage(botMessage.id);
+    }
     // resend the message
+    // Define the options object with onFinish property
+    const chatOptions: ChatOptions = {
+      onFinish: (moderationResult) => {
+        // Handle the result of text moderation
+        console.log("Moderation Result:", moderationResult);
+        setIsLoading(true);
+      },
+      messages: [],
+      config: session.mask.modelConfig,
+      whitelist: false
+    };
+
+    // Resend the message with the correct options
     setIsLoading(true);
-    chatStore.onUserInput(userMessage.content).then(() => setIsLoading(false));
-    inputRef.current?.focus();
+    chatStore.onUserInput(userMessage.content, chatOptions).finally(() => {
+      setIsLoading(false);
+    });
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   const onPinMessage = (message: ChatMessage) => {
@@ -1109,7 +1159,7 @@ function _Chat() {
               {
                 ...createMessage({
                   role: "assistant",
-                  content: "……",
+                  content: "",
                 }),
                 preview: true,
               },

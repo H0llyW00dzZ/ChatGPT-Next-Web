@@ -58,7 +58,7 @@ export const NARROW_SIDEBAR_WIDTH = 100;
 export const ACCESS_CODE_PREFIX = "nk-";
 
 export const LAST_INPUT_KEY = "last-input";
-export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
+export const UNFINISHED_INPUT = (id: string) => `unfinished-input-${id}`;
 
 export const STORAGE_KEY = "chatgpt-next-web";
 
@@ -125,8 +125,10 @@ Latex block: $$e=mc^2$$
 `;
 
 export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
+// let machine typing as safety
+type ModelName = 'default' | 'gpt-4-1106-preview' | 'gpt-4-vision-preview' | 'gemini-pro';
 
-export const KnowledgeCutOffDate: Record<string, string> = {
+export const KnowledgeCutOffDate: Record<ModelName, string> = {
   default: "2021-09",
   "gpt-4-turbo-preview": "2023-04",
   "gpt-4-1106-preview": "2023-04",
@@ -135,96 +137,171 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro": "2023-12", // this need to changed which is the latest date are correctly
 };
 
-export const DEFAULT_MODELS = [
+// Define a type for the provider to ensure each provider object conforms to the expected structure
+type Provider = {
+  id: string;
+  providerName: string;
+  providerType: string;
+};
+
+// Define a type for the model to ensure each model object conforms to the expected structure
+type Model = {
+  name: string;
+  available: boolean;
+  provider: Provider[];
+};
+
+export const DEFAULT_MODELS: Model[] = [
   {
     name: "dall-e-2",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "dall-e-3",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "dall-e-2-beta-instruct-vision",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+
+    ],
   },
   {
     name: "dall-e-3-beta-instruct-vision",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+    ],
   },
   {
     name: "gpt-4",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-0314",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-0613",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-32k",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-32k-0314",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-32k-0613",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai_enterprise",
+        providerName: "OpenAI Enterprise",
+        providerType: "openai_enterprise",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   // recent update 
   // read here : https://openai.com/blog/new-models-and-developer-products-announced-at-devday
@@ -240,11 +317,18 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-1106-preview",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-4-0125-preview",
@@ -258,76 +342,150 @@ export const DEFAULT_MODELS = [
   {
     name: "gpt-4-vision-preview",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo-0301",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo-0613",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo-1106",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo-16k",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
+  },
+  {
+    name: "gpt-3.5-turbo-16k",
+    available: true,
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gpt-3.5-turbo-16k-0613",
     available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
+    provider: [
+      {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+      },
+      {
+        id: "azure",
+        providerName: "Microsoft Azure",
+        providerType: "azure",
+      },
+    ],
   },
   {
     name: "gemini-pro",
     available: true,
-    provider: {
-      id: "google",
-      providerName: "Google",
-      providerType: "google",
-    },
+    provider: [
+      {
+        id: "google",
+        providerName: "Google",
+        providerType: "google",
+      },
+      {
+        id: "gopher_secret",
+        providerName: "Gopher Secret",
+        providerType: "Gopher Secret",
+      },
+    ],
   },
-] as const;
+
+];
+
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;

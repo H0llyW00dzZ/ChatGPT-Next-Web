@@ -2,7 +2,8 @@ import { getClientConfig } from "./config/client";
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
-import { useAccessStore } from "./store";
+import { ChatMessage, useAccessStore } from "./store";
+import { DEFAULT_MODELS, ModelProvider, ServiceProvider } from "./constant";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -89,11 +90,61 @@ export async function downloadAs(text: object, filename: string) {
   }
 }
 
-// Assuming you have a function to get the provider from the state
-export function getProviderFromState(): string {
-  const accessStore = useAccessStore.getState();
-  return accessStore.provider;
+// helper function
+function isServiceProvider(provider: string): provider is ServiceProvider {
+  return Object.values(ServiceProvider).includes(provider as ServiceProvider);
 }
+// helper function
+function isModelProvider(provider: string): provider is ModelProvider {
+  return Object.values(ModelProvider).includes(provider as ModelProvider);
+}
+
+// Assuming useAccessStore.getState().provider returns a string that matches the enum values
+export function getProviderFromState(): ServiceProvider {
+  const accessStore = useAccessStore.getState();
+  const provider = accessStore.provider;
+
+  if (isServiceProvider(provider)) {
+    return provider;
+  } else {
+    throw new Error(`Provider is not a valid ServiceProvider: ${provider}`);
+  }
+}
+// move here, easy maintenance fuck complex
+// helper functions
+export function isGoogleAI(modelName: string): boolean {
+  // Check if modelName starts with "gemini-pro"
+  if (modelName.startsWith("gemini-pro")) {
+    return true;
+  }
+
+  // If not, look for the model in the DEFAULT_MODELS array as a fallback
+  const model = DEFAULT_MODELS.find(m => m.name === modelName);
+  if (!model) {
+    throw new Error(`Model not found: ${modelName}`);
+  }
+
+  // Check if any of the providers for the model has a providerType of 'google'
+  return model.provider.every(provider => provider.providerType === 'google');
+}
+
+// helper functions
+export const findUserMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
+  for (let i = startIndex; i >= 0; i--) {
+    if (messages[i].role === "user") {
+      return messages[i];
+    }
+  }
+};
+
+// helper functions
+export const findBotMessageForResend = (messages: ChatMessage[], startIndex: number): ChatMessage | undefined => {
+  for (let i = startIndex; i < messages.length; i++) {
+    if (messages[i].role === "assistant") {
+      return messages[i];
+    }
+  }
+};
 
 export function readFromFile() {
   return new Promise<string>((res, rej) => {

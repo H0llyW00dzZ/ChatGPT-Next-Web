@@ -1,4 +1,4 @@
-import { trimTopic } from "../utils";
+import { getProviderFromState, trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -9,15 +9,20 @@ import {
   DEFAULT_SYSTEM_TEMPLATE,
   KnowledgeCutOffDate,
   ModelProvider,
+  OPENAI_BASE_URL,
+  OpenaiPath,
+  ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
 } from "../constant";
-import { ClientApi, RequestMessage } from "../client/api";
+import { ChatOptions, ClientApi, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { moderateText } from "../client/platforms/textmoderation";
+import { ChatGPTApi } from "../client/platforms/openai";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -55,6 +60,8 @@ export interface ChatSession {
   clearContextIndex?: number;
 
   mask: Mask;
+
+  lastMessageFlagged: boolean; // New property to indicate if the last message was flagged
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
@@ -78,6 +85,8 @@ function createEmptySession(): ChatSession {
     lastSummarizeIndex: 0,
 
     mask: createEmptyMask(),
+
+    lastMessageFlagged: false,
   };
 }
 
@@ -91,9 +100,12 @@ function countMessages(msgs: ChatMessage[]) {
   return msgs.reduce((pre, cur) => pre + estimateTokenLength(cur.content), 0);
 }
 
+// let machine typing as safety
+type ModelName = 'default' | 'gpt-4-1106-preview' | 'gpt-4-vision-preview' | 'gemini-pro';
+
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   let cutoff =
-    KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
+    KnowledgeCutOffDate[modelConfig.model as ModelName] ?? KnowledgeCutOffDate.default;
 
   const vars = {
     cutoff,
@@ -268,7 +280,7 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string) {
+      async onUserInput(content: string, options: ChatOptions) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -292,7 +304,30 @@ export const useChatStore = createPersistStore(
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
+        // Check if the last message was flagged. If so, do not send the message.
+        const textmoderation = useAppConfig.getState().textmoderation;
+        const checkprovider = getProviderFromState();
+        if (textmoderation !== false
+          && options.whitelist !== true
+          // Group the provider checks together so that they are evaluated correctly in the context of the other conditions
+          && (checkprovider !== ServiceProvider.Azure && checkprovider !== ServiceProvider.Google)) {
+          // Call the moderateText method and handle the result
+          const userMessageS = options.messages.filter((msg) => msg.role === "user");
+          const lastUserMessage = userMessageS[userMessageS.length - 1]?.content;
+          const chatApi = new ChatGPTApi();
+          const moderationPath = chatApi.path(OpenaiPath.ModerationPath);
+          const moderationResult = await moderateText(moderationPath, lastUserMessage, OpenaiPath.TextModerationModels.latest);
+
+          if (moderationResult) {
+            options.onFinish(moderationResult); // Handle the flagged message
+            get().updateCurrentSession((session) => {
+              session.lastMessageFlagged = true; // Set the flag to true if the message was flagged
+            });
+            return;
+          }
+        }
         get().updateCurrentSession((session) => {
+          session.lastMessageFlagged = false; // Set the flag to false if the message was not flagged
           const savedUserMessage = {
             ...userMessage,
             content,
@@ -304,7 +339,7 @@ export const useChatStore = createPersistStore(
         });
 
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
-       // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
+        // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
         let api: ClientApi;
         if (modelConfig.model === "gemini-pro") {
           api = new ClientApi(ModelProvider.GeminiPro);
@@ -492,6 +527,12 @@ export const useChatStore = createPersistStore(
         const config = useAppConfig.getState();
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
+
+        // Check if the last message was flagged. If so, do not summarize.
+        if (session.lastMessageFlagged) {
+          console.log("Skipping summarization due to the last message being flagged.");
+          return;
+        }
 
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
         // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
@@ -722,7 +763,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.2,
+    version: 3.3, // pass context to text moderation
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -778,6 +819,14 @@ export const useChatStore = createPersistStore(
           };
         });
       }
+
+      if (version < 3.3) {
+        newState.sessions.forEach((session) => {
+          // Initialize lastMessageFlagged for existing sessions
+          session.lastMessageFlagged = false;
+        });
+      }
+
 
       return newState as any;
     },

@@ -94,7 +94,7 @@ export const DEFAULT_CONFIG = {
    * Text Moderation Open AI
    * Author: @H0llyW00dzZ
    **/
-  textmoderation: true, // text moderation default is enabled
+  textmoderation: false, // text moderation default is enabled
 
   desktopShortcut: "",
   speed_animation: 60, // Lower values will result in faster animation
@@ -214,7 +214,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.5, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
+    version: 4.6, // DALL·E Models switching version to 4.1 because in 4.0 @Yidadaa using it.
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -286,6 +286,10 @@ export const useAppConfig = createPersistStore(
         state.modelConfig.systemprompt = {
           default: DEFAULT_SYSTEM_TEMPLATE,
         }
+      }
+      // force to optional as false
+      if (version < 4.6) {
+        state.textmoderation = false;
       }
 
       return state as any;
