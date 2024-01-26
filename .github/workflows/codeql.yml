@@ -104,7 +104,7 @@ jobs:
 
       - name: Initialize CodeQL
         id: InitCodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           # Configuration for init codeQL
           languages: ${{ env.languages }}
@@ -114,12 +114,12 @@ jobs:
       # Currently only for Go, but more can be added later
       - name: Attempt to automatically build code for ${{ matrix.language }}
         if: ${{ matrix.language == 'go' }}
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL-Security Analysis
         if: ${{ env.languages != '' }}
         id: CodeQL
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           # disable default upload because using multiple method
           upload: false
@@ -129,7 +129,7 @@ jobs:
       - name: Upload ${{ matrix.language }} SARIF for Analysis Result
         if: ${{ matrix.language && env.languages != '' }}
         id: upload-Analysis_Result-sarif
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ runner.workspace }}/results/javascript.sarif
           category: "Analysis Result: ${{ matrix.language }}"
