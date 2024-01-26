@@ -642,6 +642,13 @@ const en: LocaleType = {
     Config: "Config",
     Manage: "Manage",
   },
+  ThrowError: {
+    TextEmbedding: "Failed to get text embeddings",
+    TextEmbeddingRequest: "Failed to make a text embedding request",
+    FileReader: (x: any) => `Error ${x} file`,
+    ParsingCSV: "FileReader event target is null",
+    ReadingCSV: "Error reading CSV file",
+  },
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `

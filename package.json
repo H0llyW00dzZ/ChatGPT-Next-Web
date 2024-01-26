@@ -21,6 +21,7 @@
     "@svgr/webpack": "^6.5.1",
     "@tauri-apps/api": "^1.5.3",
     "@types/lodash": "^4.14.199",
+    "@types/papaparse": "^5.3.14",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
     "emoji-picker-react": "^4.5.15",

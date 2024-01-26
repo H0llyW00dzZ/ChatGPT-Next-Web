@@ -9,6 +9,11 @@ import {
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+// todo: unused import
+import { 
+  textEmbedding,
+  getTextEmbeddingsFromCSV,
+} from "./text-embedding";
 import Locale from "../../locales";
 import {
   EventStreamContentType,

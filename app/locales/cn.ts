@@ -637,6 +637,13 @@ const cn = {
     Config: "配置",
     Manage: "管理",
   },
+  ThrowError: {
+    TextEmbedding: "获取文本嵌入失败",
+    TextEmbeddingRequest: "创建文本嵌入请求失败",
+    FileReader: (x: any) => `错误 ${x} 文件`,
+    ParsingCSV: "FileReader 事件目标为 null",
+    ReadingCSV: "读取 CSV 文件错误",
+  },
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `

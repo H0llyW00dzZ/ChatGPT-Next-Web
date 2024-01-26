@@ -551,6 +551,13 @@ const id: PartialLocaleType = {
     Edit: "Edit",
     Manage: "Kelola",
   },
+  ThrowError: {
+    TextEmbedding: "Gagal mendapatkan penyematan teks",
+    TextEmbeddingRequest: "Gagal membuat permintaan penyematan teks",
+    FileReader: (x: any) => `Kesalahan ${x} file`,
+    ParsingCSV: "Target event FileReader adalah null",
+    ReadingCSV: "Kesalahan membaca file CSV",
+  },
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `
