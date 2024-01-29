@@ -12,6 +12,13 @@ const jp: PartialLocaleType = {
   },
   Chat: {
     SubTitle: (count: number) => `ChatGPTとの ${count} 通のチャット`,
+    EditMessage: {
+      Title: "全てのメッセージを修正",
+      Topic: {
+        Title: "トピック",
+        SubTitle: "このトピックを変える",
+      },
+    },
     Actions: {
       ChatList: "メッセージリストを表示",
       CompressedHistory: "圧縮された履歴プロンプトを表示",
@@ -46,12 +53,34 @@ const jp: PartialLocaleType = {
     Copy: "すべてコピー",
     Download: "ファイルをダウンロード",
     MessageFromYou: "あなたからのメッセージ",
-    MessageFromChatGPT: {
-      NoRole: "ChatGPTからのメッセージ",
-      RoleAssistant: "アシスタント",
-      RoleSystem: "システム",
-      SysMemoryPrompt: "システムメモリプロンプト",
+  MessageFromChatGPT: {
+    NoRole: "ChatGPTからのメッセージ",
+    RoleAssistant: "アシスタント",
+    RoleSystem: "システム",
+    SysMemoryPrompt: "システムメモリプロンプト",
+  },
+    Format: {
+      Title: "フォーマットをエクスポート",
+      SubTitle: "マークダウン形式、PNG画像形式を選択できます。",
     },
+    IncludeContext: {
+      Title: "コンテキストを含みますか？",
+      SubTitle: "コンテキストを含ませるか否か",
+    },
+    Steps: {
+      Select: "エクスポート設定",
+      Preview: "プレビュー",
+    },
+    Image: {
+      Toast: "画像生成中...",
+      Modal: "長押し、または右クリックで保存してください。",
+    },
+  },
+  Select: {
+    Search: "検索",
+    All: "すべて選択",
+    Latest: "新しいメッセージを選択",
+    Clear: "クリア",
   },
   Memory: {
     Title: "履歴メモリ",
@@ -123,6 +152,10 @@ const jp: PartialLocaleType = {
         Title: "キャラクターページ",
         SubTitle: "新規チャット作成時にキャラクターページを表示する",
       },
+      Builtin: {
+        Title: "ビルトインマスクを非表示",
+        SubTitle: "マスクリストからビルトインを非表示する",
+      },
     },
     Prompt: {
       Disable: {
@@ -165,7 +198,6 @@ const jp: PartialLocaleType = {
       Check: "再確認",
       NoAccess: `残高を確認するには、APIキーの先頭に「sess-」を付けたセッションキーを入力してください。`,
     },
-
     Model: "モデル (model)",
     Temperature: {
       Title: "ランダム性 (temperature)",
@@ -183,6 +215,10 @@ const jp: PartialLocaleType = {
     FrequencyPenalty: {
       Title: "話題の頻度 (frequency_penalty)",
       SubTitle: "値が大きいほど、重複語を低減する可能性が高くなります",
+    },
+    AutoGenerateTitle: {
+      Title: "タイトルの自動生成",
+      SubTitle: "会話内容に基づいて適切なタイトルを生成する",
     },
   },
   Store: {
