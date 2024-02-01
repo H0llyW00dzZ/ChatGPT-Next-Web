@@ -22,7 +22,7 @@ export function getEmojiUrl(unified: string, style: EmojiStyle) {
   // Whoever owns this Content Delivery Network (CDN), I am using your CDN to serve emojis
   // Old CDN broken, so I had to switch to this one
   // Author: https://github.com/H0llyW00dzZ
-  return `https://cdn.jsdelivr.net/npm/${emojiDataSource}/img/${emojiStyle}/64/${unified}.png`;
+  return `https://fastly.jsdelivr.net/npm/${emojiDataSource}/img/${emojiStyle}/64/${unified}.png`;
 }
 
 export function debounce(func: Function, delay: number) {
