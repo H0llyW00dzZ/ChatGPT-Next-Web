@@ -645,7 +645,7 @@ const en: LocaleType = {
   // don't linting this `System_Template` keep format like this
   // this a object not string
   System_Template: `
-You are ChatGPT, a large language model trained by OpenAI.
+You are ChatGPT, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
