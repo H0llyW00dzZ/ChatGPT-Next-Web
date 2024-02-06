@@ -204,7 +204,7 @@ export function ModelConfigList(props: {
             <>
               <ListItem
                 title={Locale.Settings.InjectSystemPrompts.Title}
-                subTitle={Locale.Settings.InjectSystemPrompts.SubTitle + Google.Info}
+                subTitle={Locale.Settings.InjectSystemPrompts.SubTitle}
               >
                 <input
                   type="checkbox"
