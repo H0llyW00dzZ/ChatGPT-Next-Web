@@ -5,7 +5,7 @@ import { getClientConfig } from "@/app/config/client";
 
 const isApp = !!getClientConfig()?.isApp;
 
-type Command = (param: string) => void;
+type Command = (param?: string) => void;
 interface Commands {
   fill?: Command;
   submit?: Command;
@@ -77,12 +77,21 @@ export function useChatCommand(commands: ChatCommands = {}) {
   }
 
   function match(userInput: string) {
-    const command = extract(userInput);
-    const matched = typeof chatCommands[command] === "function";
-
+    if (!userInput.startsWith(ChatCommandPrefix)) {
+      return { matched: false, invoke: () => {} };
+    }
+  
+    const commandKey = extract(userInput);
+    const command = chatCommands[commandKey];
+    const matched = typeof command === "function";
+  
     return {
       matched,
-      invoke: () => matched && chatCommands[command]!(userInput),
+      invoke: () => {
+        if (matched) {
+          command();
+        }
+      },
     };
   }
 
