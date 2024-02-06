@@ -1193,12 +1193,21 @@ function _Chat() {
   const showMaxIcon = !isMobileScreen && !clientConfig?.isApp;
 
   useCommand({
-    fill: setUserInput,
+    fill: (text) => {
+      // Call setUserInput only if text is a string
+      if (text !== undefined) {
+        setUserInput(text);
+      }
+    },
     submit: (text) => {
-      doSubmit(text);
+      // Call doSubmit only if text is a string
+      if (text !== undefined) {
+        doSubmit(text);
+      }
     },
     code: (text) => {
-      if (accessStore.disableFastLink) return;
+      // Exit if fast link is disabled or text is undefined
+      if (accessStore.disableFastLink || text === undefined) return;
       console.log("[Command] got code from url: ", text);
       showConfirm(Locale.URLCommand.Code + `code = ${text}`).then((res) => {
         if (res) {
@@ -1207,7 +1216,7 @@ function _Chat() {
       });
     },
     settings: (text) => {
-      if (accessStore.disableFastLink) return;
+      if (accessStore.disableFastLink || typeof text !== 'string') return;
 
       try {
         const payload = JSON.parse(text) as {
@@ -1217,22 +1226,22 @@ function _Chat() {
 
         console.log("[Command] got settings from url: ", payload);
 
-        if (payload.key || payload.url) {
-          showConfirm(
-            Locale.URLCommand.Settings +
-              `\n${JSON.stringify(payload, null, 4)}`,
-          ).then((res) => {
-            if (!res) return;
-            if (payload.key) {
-              accessStore.update(
-                (access) => (access.openaiApiKey = payload.key!),
-              );
+        showConfirm(
+          Locale.URLCommand.Settings +
+          `\n${JSON.stringify(payload, null, 4)}`,
+        ).then((res) => {
+          if (!res) return;
+          accessStore.update((access) => {
+            // Only update openaiApiKey if payload.key is a string
+            if (typeof payload.key === 'string') {
+              access.openaiApiKey = payload.key;
             }
-            if (payload.url) {
-              accessStore.update((access) => (access.openaiUrl = payload.url!));
+            // Only update openaiUrl if payload.url is a string
+            if (typeof payload.url === 'string') {
+              access.openaiUrl = payload.url;
             }
           });
-        }
+        });
       } catch {
         console.error("[Command] failed to get settings from url: ", text);
       }
