@@ -894,7 +894,6 @@ export function Settings() {
   const remoteId = updateStore.formatVersion(updateStore.remoteVersion);
   const hasNewVersion = currentVersion !== remoteId;
   const updateUrl = getClientConfig()?.isApp ? RELEASE_URL : UPDATE_URL;
-  const isApp = getClientConfig();
 
   function checkUpdate(force = false) {
     setCheckingUpdate(true);
@@ -1074,7 +1073,7 @@ export function Settings() {
               ))}
             </Select>
           </ListItem>
-          {isApp ? (
+          {clientConfig?.isApp ? (
             <ListItem
               title={Locale.Settings.PinAppKey}
             >
