@@ -1312,6 +1312,8 @@ function _Chat() {
     if (mayBeUnfinishedInput && userInput.length === 0) {
       setUserInput(mayBeUnfinishedInput);
       // Optionally clear the unfinished input from local storage after loading it.
+      // Note: The removal of "localStorage.removeItem(key);" here is intentional. 
+      // The preservation of input is already handled by the debounced function, which simplifies the stupid complexity.
     }
 
     // Capture the current value of the input reference.
