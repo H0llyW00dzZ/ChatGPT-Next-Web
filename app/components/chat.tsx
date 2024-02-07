@@ -1148,14 +1148,16 @@ function _Chat() {
     userInput,
   ]);
 
-  const [msgRenderIndex, _setMsgRenderIndex] = useState(
+  // At the top level of the component
+  // this should be fix a stupid react warning that sometimes its fucking incorrect
+  const [msgRenderIndex, _setMsgRenderIndex] = useState<number>(
     Math.max(0, renderMessages.length - CHAT_PAGE_SIZE),
   );
-  function setMsgRenderIndex(newIndex: number) {
+  const setMsgRenderIndex = useCallback((newIndex: number) => {
     newIndex = Math.min(renderMessages.length - CHAT_PAGE_SIZE, newIndex);
     newIndex = Math.max(0, newIndex);
     _setMsgRenderIndex(newIndex);
-  }
+  }, [renderMessages.length, _setMsgRenderIndex]);
 
   const messages = useMemo(() => {
     const endRenderIndex = Math.min(
