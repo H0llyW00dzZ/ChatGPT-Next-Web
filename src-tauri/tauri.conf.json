@@ -90,6 +90,7 @@
       }
     },
     "security": {
+      "dangerousUseHttpScheme": true,
       "csp": null
     },
     "updater": {
