@@ -39,7 +39,7 @@ import RobotIcon from "../icons/robot.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
 import EyeOnIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
-import { escapeRegExp } from "lodash";
+import { debounce, escapeRegExp } from "lodash";
 
 import {
   ChatMessage,
@@ -752,6 +752,19 @@ function usePinApp() {
   };
 }
 
+// Custom hook for debouncing a function
+function useDebouncedEffect(effect: () => void, deps: any[], delay: number) {
+  const callback = useCallback(effect, deps);
+
+  useEffect(() => {
+    const handler = debounce(() => callback(), delay);
+
+    handler();
+
+    return () => handler.cancel();
+  }, [callback, delay]);
+}
+
 function _Chat() {
   type RenderMessage = ChatMessage & { preview?: boolean };
 
@@ -1152,17 +1165,18 @@ function _Chat() {
     return renderMessages.slice(msgRenderIndex, endRenderIndex);
   }, [msgRenderIndex, renderMessages]);
 
-  const onChatBodyScroll = (e: HTMLElement) => {
-    const bottomHeight = e.scrollTop + e.clientHeight;
-    const edgeThreshold = e.clientHeight;
+  const onChatBodyScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget; // Use currentTarget instead of target
+    const bottomHeight = target.scrollTop + target.clientHeight;
+    const edgeThreshold = target.clientHeight;
 
-    const isTouchTopEdge = e.scrollTop <= edgeThreshold;
-    const isTouchBottomEdge = bottomHeight >= e.scrollHeight - edgeThreshold;
-    const isHitBottom =
-      bottomHeight >= e.scrollHeight - (isMobileScreen ? 4 : 10);
+    const isTouchTopEdge = target.scrollTop <= edgeThreshold;
+    const isTouchBottomEdge = bottomHeight >= target.scrollHeight - edgeThreshold;
+    const isHitBottom = bottomHeight >= target.scrollHeight - (isMobileScreen ? 4 : 10);
 
-    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
+    // Calculate page indices directly inside the function
     const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
+    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
 
     if (isTouchTopEdge && !isTouchBottomEdge) {
       setMsgRenderIndex(prevPageMsgIndex);
@@ -1172,7 +1186,25 @@ function _Chat() {
 
     setHitBottom(isHitBottom);
     setAutoScroll(isHitBottom);
-  };
+  }, [setHitBottom, setAutoScroll, isMobileScreen, msgRenderIndex]);
+
+  // Use the custom hook to debounce the onChatBodyScroll function
+  useDebouncedEffect(() => {
+    const scrollContainer = scrollRef.current;
+    const handleScrollEvent = (event: Event) => {
+      onChatBodyScroll(event as unknown as React.UIEvent<HTMLDivElement>);
+    };
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScrollEvent);
+    }
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('scroll', handleScrollEvent);
+      }
+    };
+  }, [onChatBodyScroll], 100);
 
   function scrollToBottom() {
     setMsgRenderIndex(renderMessages.length - CHAT_PAGE_SIZE);
@@ -1366,7 +1398,7 @@ function _Chat() {
       <div
         className={styles["chat-body"]}
         ref={scrollRef}
-        onScroll={(e) => onChatBodyScroll(e.currentTarget)}
+        onScroll={onChatBodyScroll} // Pass the event directly
         onMouseDown={() => inputRef.current?.blur()}
         onTouchStart={() => {
           inputRef.current?.blur();
