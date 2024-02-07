@@ -757,7 +757,7 @@ function useDebouncedEffect(effect: () => void, deps: any[], delay: number) {
   const callback = useCallback(effect, deps);
 
   useEffect(() => {
-    const handler = debounce(() => callback(), delay);
+    const handler = debounce(callback, delay);
 
     handler();
 
