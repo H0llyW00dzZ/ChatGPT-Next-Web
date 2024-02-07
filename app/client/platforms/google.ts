@@ -7,11 +7,6 @@
 import { DEFAULT_API_HOST, DEFAULT_CORS_HOST, GEMINI_BASE_URL, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
@@ -106,10 +101,10 @@ export class GeminiProApi implements LLMApi {
    * @returns {Promise<void>} A promise that resolves when the chat request is complete.
    */
   async chat(options: ChatOptions): Promise<void> {
-    const provider = getProviderFromState();
-    const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
-    const apiClient = this;
-    const messages: Message[] = options.messages.map((v) => ({
+   const provider = getProviderFromState();
+   const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
+    // const apiClient = this;
+    const messages = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
     }));
@@ -173,20 +168,31 @@ export class GeminiProApi implements LLMApi {
       ],
     };
     console.log(`[Request] [${provider}] payload: `, requestPayload);
+    const isApp = !!getClientConfig()?.isApp;
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
-
+    const accessStore = useAccessStore.getState();
     try {
-      const chatPath = this.path(Google.ChatPath);
+      let chatPath = this.path(Google.ChatPath);
+
+      // let baseUrl = accessStore.googleUrl;
+
+      chatPath = isApp
+        ? DEFAULT_API_HOST +
+          "/api/proxy/google/" +
+          Google.ChatPath +
+          `?key=${accessStore.googleApiKey}`
+        : chatPath;
+
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: getHeaders(),
       };
-
+      console.log("[Request] google chatPath: ", chatPath, isApp);
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -229,6 +235,8 @@ export class GeminiProApi implements LLMApi {
 
         // start animaion
         animateResponseText();
+
+        console.log("[Proxy Endpoint] ", streamChatPath);
         fetch(streamChatPath, chatPayload)
           .then((response) => {
             const reader = response?.body?.getReader();
@@ -284,9 +292,7 @@ export class GeminiProApi implements LLMApi {
       } else {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
-
         const resJson = await res.json();
-
         if (resJson?.promptFeedback?.blockReason) {
           // being blocked
           options.onError?.(

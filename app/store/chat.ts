@@ -314,8 +314,8 @@ export const useChatStore = createPersistStore(
 
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
        // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
-        let api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        let api: ClientApi; // stupid don't using var
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
@@ -505,7 +505,7 @@ export const useChatStore = createPersistStore(
         // Changed 'var' to 'let' since 'api' is reassigned conditionally
         // Note: keep type safety by using 'let' instead of 'var', this not a javascript lmao
         let api: ClientApi;
-        if (modelConfig.model === "gemini-pro") {
+        if (modelConfig.model.startsWith("gemini")) {
           api = new ClientApi(ModelProvider.GeminiPro);
         } else {
           api = new ClientApi(ModelProvider.GPT);
