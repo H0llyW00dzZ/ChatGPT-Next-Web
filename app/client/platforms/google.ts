@@ -168,6 +168,7 @@ export class GeminiProApi implements LLMApi {
       ],
     };
 
+    console.log(`[Request] [${provider}] payload: `, requestPayload); // adding back this for better development tracking
     const accessStore = useAccessStore.getState();
     let baseUrl = accessStore.googleUrl;
     const isApp = !!getClientConfig()?.isApp;
