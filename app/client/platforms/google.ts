@@ -101,8 +101,8 @@ export class GeminiProApi implements LLMApi {
    * @returns {Promise<void>} A promise that resolves when the chat request is complete.
    */
   async chat(options: ChatOptions): Promise<void> {
-   const provider = getProviderFromState();
-   const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
+    const provider = getProviderFromState();
+    const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
     // const apiClient = this;
     const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
