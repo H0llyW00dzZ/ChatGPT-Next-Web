@@ -13,12 +13,12 @@ export const getBuildConfig = () => {
         .toString()
         .trim();
       const commitHash: string[] = childProcess
-        .execSync('git log --pretty=format:"%H" -n 10')
+        .execSync('git log --pretty=format:"%H" -n 20')
         .toString()
         .trim()
         .split("\n");
       const commitMessage: string = childProcess
-        .execSync('git log --pretty=format:"%B" -n 10')
+        .execSync('git log --pretty=format:"%B" -n 20')
         .toString()
         .trim();
       const Author: string = childProcess
@@ -26,7 +26,7 @@ export const getBuildConfig = () => {
         .toString()
         .trim();
       const coAuthorLine: string = childProcess
-        .execSync('git log --format="%h %(trailers:key=Co-authored-by)" -n 10')
+        .execSync('git log --format="%h %(trailers:key=Co-authored-by)" -n 20')
         .toString()
         .trim();
       const coAuthorMatch: RegExpMatchArray | null = coAuthorLine.match(
