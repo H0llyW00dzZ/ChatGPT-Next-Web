@@ -13,6 +13,7 @@ import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import PrivacyIcon from "../icons/locked.svg";
 import PinnedIcon from "../icons/pin.svg";
+import TodoIcon from "../icons/edit.svg"
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -211,7 +212,7 @@ export function SideBar(props: { className?: string }) {
           shadow
         />
         <IconButton
-          icon={<PinnedIcon />}
+          icon={<TodoIcon />}
           text={shouldNarrow ? undefined : Locale.TODOList.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => showToast(Locale.WIP)}
