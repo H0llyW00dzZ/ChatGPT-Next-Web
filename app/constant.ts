@@ -335,6 +335,15 @@ export const DEFAULT_MODELS = [
       providerType: "google",
     },
   },
+  {
+    name: "gemini-pro-vision",
+    available: false, // not yet ready
+    provider: {
+      id: "google",
+      providerName: "Google",
+      providerType: "google",
+    },
+  },
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;
