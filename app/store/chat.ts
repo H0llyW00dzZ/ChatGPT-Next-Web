@@ -95,7 +95,7 @@ function countMessages(msgs: ChatMessage[]) {
 function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   // Note: I will not adjust this, particularly for other models to which I do not have access.
   // Retaining it in this state better respects the terms of service, especially regarding data extraction. 
-  // Please exercise intelligence and professionalism don't be stupid as human.
+  // So Please exercise intelligence and professionalism don't be stupid as human.
   const cutoff = KnowledgeCutOffDate[modelConfig.model] ?? KnowledgeCutOffDate.default;
   // Find the model in the DEFAULT_MODELS array that matches the modelConfig.model
   const modelInfo = DEFAULT_MODELS.find(m => m.name === modelConfig.model);
