@@ -167,24 +167,27 @@ export class GeminiProApi implements LLMApi {
         },
       ],
     };
-    console.log(`[Request] [${provider}] payload: `, requestPayload);
+
+    const accessStore = useAccessStore.getState();
+    let baseUrl = accessStore.googleUrl;
     const isApp = !!getClientConfig()?.isApp;
 
-    const shouldStream = !!options.config.stream;
+    let shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
-    const accessStore = useAccessStore.getState();
     try {
       let chatPath = this.path(Google.ChatPath);
 
       // let baseUrl = accessStore.googleUrl;
 
-      chatPath = isApp
-        ? DEFAULT_API_HOST +
-          "/api/proxy/google/" +
-          Google.ChatPath +
-          `?key=${accessStore.googleApiKey}`
-        : chatPath;
+      if (!baseUrl) {
+        baseUrl = isApp
+          ? DEFAULT_API_HOST +
+            "/api/proxy/google/" +
+            Google.ChatPath +
+            `?key=${accessStore.googleApiKey}`
+          : chatPath;
+      }
 
       const chatPayload = {
         method: "POST",
@@ -192,7 +195,7 @@ export class GeminiProApi implements LLMApi {
         signal: controller.signal,
         headers: getHeaders(),
       };
-      console.log("[Request] google chatPath: ", chatPath, isApp);
+
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
@@ -201,10 +204,6 @@ export class GeminiProApi implements LLMApi {
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
-        let streamChatPath = chatPath.replace(
-          "generateContent",
-          "streamGenerateContent",
-        );
         let finished = false;
 
         let existingTexts: string[] = [];
@@ -236,8 +235,10 @@ export class GeminiProApi implements LLMApi {
         // start animaion
         animateResponseText();
 
-        console.log("[Proxy Endpoint] ", streamChatPath);
-        fetch(streamChatPath, chatPayload)
+        fetch(
+          baseUrl.replace("generateContent", "streamGenerateContent"),
+          chatPayload,
+        )
           .then((response) => {
             const reader = response?.body?.getReader();
             const decoder = new TextDecoder();
@@ -290,7 +291,7 @@ export class GeminiProApi implements LLMApi {
             console.error("Error:", error);
           });
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        const res = await fetch(baseUrl, chatPayload);
         clearTimeout(requestTimeoutId);
         const resJson = await res.json();
         if (resJson?.promptFeedback?.blockReason) {
