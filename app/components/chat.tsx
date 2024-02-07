@@ -1283,24 +1283,41 @@ function _Chat() {
 
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
+  // Define the key for storing unfinished input based on the session ID outside of the useEffect.
+  const key = UNFINISHED_INPUT(session.id);
 
+  // Initialize the debounced function outside of the useCallback.
+  const debouncedSave = debounce((input, key) => {
+    if (input && !input.startsWith(ChatCommandPrefix)) {
+      localStorage.setItem(key, input);
+    } else {
+      localStorage.removeItem(key);
+    }
+  }, 500);
+
+  // Define a function that calls the debounced function, wrapped in useCallback.
+  const saveUnfinishedInput = useCallback((input: string) => {
+    debouncedSave(input, key);
+  }, [key]);
+
+  // Call the save function whenever userInput changes.
   // remember unfinished input
   useEffect(() => {
-    // Define the key for storing unfinished input based on the session ID.
-    const key = UNFINISHED_INPUT(session.id);
+    saveUnfinishedInput(userInput);
+  }, [userInput, saveUnfinishedInput]);
 
-    // Attempt to load unfinished input from local storage.
+  // Load unfinished input when the component mounts or session ID changes.
+  useEffect(() => {
     const mayBeUnfinishedInput = localStorage.getItem(key);
     if (mayBeUnfinishedInput && userInput.length === 0) {
       setUserInput(mayBeUnfinishedInput);
-      // Clear the unfinished input from local storage after loading it.
-      localStorage.removeItem(key);
+      // Optionally clear the unfinished input from local storage after loading it.
     }
 
     // Capture the current value of the input reference.
     const currentInputRef = inputRef.current;
 
-    // This function will be called when the component unmounts or dependencies change.
+    // This cleanup function will run when the component unmounts or the session.id changes.
     return () => {
       // Save the current input to local storage only if it is not a command.
       // Use the captured value from the input reference.
