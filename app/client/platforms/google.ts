@@ -104,7 +104,7 @@ export class GeminiProApi implements LLMApi {
    const provider = getProviderFromState();
    const cfgspeed_animation = useAppConfig.getState().speed_animation; // Get the animation speed from the app config
     // const apiClient = this;
-    const messages = options.messages.map((v) => ({
+    const messages: Message[] = options.messages.map((v) => ({
       role: v.role.replace("assistant", "model").replace("system", "user"),
       parts: [{ text: v.content }],
     }));
