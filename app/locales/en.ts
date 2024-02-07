@@ -573,6 +573,9 @@ const en: LocaleType = {
   Changelog: {
     Name: "Change Log",
   },
+  TODOList: {
+    Name: "Todo List",
+  },
   PrivacyPage: {
     Name: "Privacy",
     Confirm: "Agree",

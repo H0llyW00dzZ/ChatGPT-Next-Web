@@ -563,6 +563,9 @@ const cn = {
   Changelog: {
     Name: "Change Log",
   },
+  TODOList: {
+    Name: "待办事项列表",
+  },
   PrivacyPage: {
     Name: "隐私",
     Confirm: "同意",

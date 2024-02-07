@@ -12,7 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import PrivacyIcon from "../icons/locked.svg";
-import ChangelogIcon from "../icons/pin.svg";
+import PinnedIcon from "../icons/pin.svg";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -203,11 +203,18 @@ export function SideBar(props: { className?: string }) {
         />
       </div>
       <div className={styles["sidebar-header-bar"]}>
-      <IconButton
-          icon={<ChangelogIcon />}
+        <IconButton
+          icon={<PinnedIcon />}
           text={shouldNarrow ? undefined : Locale.Changelog.Name}
           className={styles["sidebar-bar-button"]}
           onClick={() => navigate(Path.ChangeLog, { state: { fromHome: true } })}
+          shadow
+        />
+        <IconButton
+          icon={<PinnedIcon />}
+          text={shouldNarrow ? undefined : Locale.TODOList.Name}
+          className={styles["sidebar-bar-button"]}
+          onClick={() => showToast(Locale.WIP)}
           shadow
         />
       </div>
