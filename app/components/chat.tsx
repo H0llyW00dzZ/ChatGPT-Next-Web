@@ -692,7 +692,7 @@ export function EditMessageModal(props: { onClose: () => void }) {
   );
 }
 
-function usePinApp() {
+function usePinApp(sessionId: string) { // Accept sessionId as a parameter
   const [pinApp, setPinApp] = useState(false);
   const isApp = getClientConfig()?.isApp;
   const config = useAppConfig();
@@ -739,16 +739,14 @@ function usePinApp() {
       document.removeEventListener("mousedown", handleMouseClick);
     };
   }, [TauriShortcut, togglePinApp]);
-  // Fix known issue where switching chats a `pinApp` state should be set to `false`, indicating that the app should be unpinned because not stored it into localstorage.
+  // Reset pinApp when the session changes
   useEffect(() => {
-    if (session.id !== undefined) {
-      setPinApp(false);
-    }
-  }, [session.id]);
+    setPinApp(false);
+  }, [sessionId]); // Listen for changes to sessionId
 
   return {
     pinApp: isApp ? pinApp : false,
-    togglePinApp: isApp ? togglePinApp : () => {},
+    togglePinApp: isApp ? togglePinApp : () => { },
   };
 }
 
@@ -783,7 +781,7 @@ function _Chat() {
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
   const navigate = useNavigate();
-  const { pinApp, togglePinApp } = usePinApp();
+  const { pinApp, togglePinApp } = usePinApp(session.id);
   const isApp = getClientConfig()?.isApp;
 
   // prompt hints
