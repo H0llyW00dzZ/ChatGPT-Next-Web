@@ -752,15 +752,17 @@ function usePinApp(sessionId: string) { // Accept sessionId as a parameter
 
 // Custom hook for debouncing a function
 function useDebouncedEffect(effect: () => void, deps: any[], delay: number) {
-  const callback = useCallback(effect, deps);
+  // Include `effect` in the dependency array for `useCallback`
+  const callback = useCallback(effect, [effect, ...deps]);
 
   useEffect(() => {
     const handler = debounce(callback, delay);
 
     handler();
 
+    // Cleanup function to cancel the debounced call if the component unmounts
     return () => handler.cancel();
-  }, [callback, delay]);
+  }, [callback, delay]); // `callback` already includes `effect` in its dependencies, so no need to add it here again.
 }
 
 function _Chat() {
@@ -1184,7 +1186,7 @@ function _Chat() {
 
     setHitBottom(isHitBottom);
     setAutoScroll(isHitBottom);
-  }, [setHitBottom, setAutoScroll, isMobileScreen, msgRenderIndex]);
+  }, [setHitBottom, setAutoScroll, isMobileScreen, msgRenderIndex, setMsgRenderIndex]); // Added setMsgRenderIndex
 
   // Use the custom hook to debounce the onChatBodyScroll function
   useDebouncedEffect(() => {
