@@ -1283,6 +1283,10 @@ function _Chat() {
 
   // edit / insert message modal
   const [isEditingMessage, setIsEditingMessage] = useState(false);
+
+  // TODO: The final improvement needed is to fix the "UNFINISHED_INPUT" overwriting issue that occurs when a user clicks 'start new conversation'. 
+  // After this, I will return to working on the backend with Golang.
+
   // Define the key for storing unfinished input based on the session ID outside of the useEffect.
   const key = UNFINISHED_INPUT(session.id);
 
