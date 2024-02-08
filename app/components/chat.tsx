@@ -99,7 +99,7 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { appWindow } from '@tauri-apps/api/window';
 import { sendDesktopNotification } from "../utils/taurinotification";
-import { debouncedSave } from "../utils/storageHelper";
+import { clearUnfinishedInputForSession, debouncedSave } from "../utils/storageHelper";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1287,6 +1287,32 @@ function _Chat() {
 
   // TODO: The final improvement needed is to fix the "UNFINISHED_INPUT" overwriting issue that occurs when a user clicks 'start new conversation'. 
   // After this, I will return to working on the backend with Golang.
+
+  // useRef is used to persist the previous session ID across renders without triggering a re-render.
+  const previousSessionIdRef = useRef(session.id);
+
+  useEffect(() => {
+    // Retrieve the previous session ID stored in the ref.
+    const previousSessionId = previousSessionIdRef.current;
+
+    // Check if the previous session ID is no longer present in the chat store.
+    // If it's not, it indicates that the session has been deleted and we should clear the unfinished input.
+    if (!chatStore.sessions.some(s => s.id === previousSessionId)) {
+      clearUnfinishedInputForSession(previousSessionId);
+    }
+
+    // Update the ref with the new session ID for the next render.
+    previousSessionIdRef.current = session.id;
+
+    // This cleanup function will be called when the component unmounts or when the dependencies of the effect change.
+    // It ensures that the unfinished input for the current session is cleared if the component unmounts
+    // or if the session is deleted from the chat store.
+    return () => {
+      clearUnfinishedInputForSession(session.id);
+    };
+    // The effect depends on session.id and chatStore.sessions to determine when to run.
+    // It should run when the session ID changes or when the list of sessions in the chat store updates.
+  }, [session.id, chatStore.sessions]);
 
   // Define the key for storing unfinished input based on the session ID outside of the useEffect.
   const key = UNFINISHED_INPUT(session.id);
