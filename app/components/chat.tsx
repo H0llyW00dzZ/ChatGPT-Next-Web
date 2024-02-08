@@ -99,6 +99,7 @@ import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
 import { appWindow } from '@tauri-apps/api/window';
 import { sendDesktopNotification } from "../utils/taurinotification";
+import { debouncedSave } from "../utils/storageHelper";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1289,15 +1290,6 @@ function _Chat() {
 
   // Define the key for storing unfinished input based on the session ID outside of the useEffect.
   const key = UNFINISHED_INPUT(session.id);
-
-  // Initialize the debounced function outside of the useCallback.
-  const debouncedSave = debounce((input, key) => {
-    if (input && !input.startsWith(ChatCommandPrefix)) {
-      localStorage.setItem(key, input);
-    } else {
-      localStorage.removeItem(key);
-    }
-  }, 500);
 
   // Define a function that calls the debounced function, wrapped in useCallback.
   const saveUnfinishedInput = useCallback((input: string) => {
