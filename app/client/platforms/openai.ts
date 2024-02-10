@@ -293,9 +293,6 @@ export class ChatGPTApi implements LLMApi {
 
         controller.signal.onabort = finish;
 
-        const isApp = !!getClientConfig()?.isApp;
-        const apiPath = "api/openai/";
-
         fetchEventSource(chatPath, {
           ...chatPayload,
           async onopen(res) {
@@ -324,10 +321,7 @@ export class ChatGPTApi implements LLMApi {
                   }
                   responseText = `${imageDescription}`;
                 }
-                 else {
-                  // Generic JSON response processing
-                   responseText = await res.clone().json();
-                }
+                return; // this should be fix json response, unlike go so easy
               }
             }
             // Handle non-OK responses or unexpected content types
@@ -373,9 +367,9 @@ export class ChatGPTApi implements LLMApi {
                 remainText += delta;
               }
 
-              if (textmoderation 
-                  && textmoderation.length > 0 
-                  && provider === ServiceProvider.Azure) {
+              if (textmoderation
+                && textmoderation.length > 0
+                && provider === ServiceProvider.Azure) {
                 const contentFilterResults = textmoderation?.[0]?.content_filter_results;
                 console.log(`[${provider}] [Text Moderation] flagged categories result:`, contentFilterResults);
               }
