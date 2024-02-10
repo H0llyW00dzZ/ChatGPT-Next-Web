@@ -305,105 +305,32 @@ export class ChatGPTApi implements LLMApi {
 
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
-            } else if (contentType?.startsWith("application/json") 
-              && magicPayload.isDalle) { // only dall-e
+            } else if (contentType?.startsWith("application/json")) {
               const jsonResponse = await res.clone().json();
-              const imageUrl = jsonResponse.data?.[0]?.url;
-              const prompt = requestPayloads.image.prompt;
-              const revised_prompt = jsonResponse.data?.[0]?.revised_prompt;
-              const index = requestPayloads.image.n - 1;
-              const size = requestPayloads.image.size;
-              const InstrucModel = defaultModel.endsWith("-vision");
+              // Generic JSON response handling
+              if (jsonResponse.data) {
+                if (magicPayload.isDalle) {
+                  // Specific handling for DALL·E responses
+                  const imageUrl = jsonResponse.data?.[0]?.url;
+                  const prompt = requestPayloads.image.prompt;
+                  const revised_prompt = jsonResponse.data?.[0]?.revised_prompt;
+                  const index = requestPayloads.image.n - 1;
+                  const size = requestPayloads.image.size;
 
-              if (defaultModel.includes("dall-e-3")) {
-                const imageDescription = `| ![${revised_prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🎩 🪄 Revised Prompt (${index + 1}): ${revised_prompt} |\n| 🤖 AI Models: ${defaultModel} |`;
 
-                responseText = `${imageDescription}`;
-              } else {
-                const imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${imageUrl}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
-
-                responseText = `${imageDescription}`;
-              }
-
-              if (InstrucModel) {
-                const instructx = await fetch(
-                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath, // Pass the path parameter
-                  {
-                    method: "POST",
-                    body: JSON.stringify({
-                      messages: [
-                        ...messages,
-                      ],
-                      model: "gpt-4-vision-preview",
-                      temperature: modelConfig.temperature,
-                      presence_penalty: modelConfig.presence_penalty,
-                      frequency_penalty: modelConfig.frequency_penalty,
-                      top_p: modelConfig.top_p,
-                      // have to add this max_tokens for dall-e instruct
-                      max_tokens: modelConfig.max_tokens,
-                    }),
-                    headers: getHeaders(),
+                  let imageDescription = `#### ${prompt} (${index + 1})\n\n\n | ![${imageUrl}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
+                  if (defaultModel.includes("dall-e-3")) {
+                    imageDescription = `| ![${revised_prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🎩 🪄 Revised Prompt (${index + 1}): ${revised_prompt} |\n| 🤖 AI Models: ${defaultModel} |`;
                   }
-                );
-                clearTimeout(requestTimeoutId);
-                const instructxx = await instructx.json();
-
-                const instructionDelta = instructxx.choices?.[0]?.message?.content;
-                const instructionPayload = {
-                  messages: [
-                    ...messages,
-                    {
-                      role: "system",
-                      content: instructionDelta,
-                    },
-                  ],
-                  model: "gpt-4-vision-preview",
-                  temperature: modelConfig.temperature,
-                  presence_penalty: modelConfig.presence_penalty,
-                  frequency_penalty: modelConfig.frequency_penalty,
-                  top_p: modelConfig.top_p,
-                  max_tokens: modelConfig.max_tokens,
-                };
-
-                const instructionResponse = await fetch(
-                  (isApp ? DEFAULT_API_HOST : apiPath) + OpenaiPath.ChatPath,
-                  {
-                    method: "POST",
-                    body: JSON.stringify(instructionPayload),
-                    headers: getHeaders(),
-                  }
-                );
-
-                const instructionJson = await instructionResponse.json();
-                const instructionMessage = instructionJson.choices?.[0]?.message?.content; // Access the appropriate property containing the message
-                const imageDescription = `| ![${prompt}](${imageUrl}) |\n|---|\n| Size: ${size} |\n| [Download Here](${imageUrl}) |\n| 🤖 AI Models: ${defaultModel} |`;
-
-                responseText = `${imageDescription}\n\n${instructionMessage}`;
-              }
-
-              if (
-                !res.ok ||
-                !res.headers
-                  .get("content-type")
-                  ?.startsWith(EventStreamContentType) ||
-                res.status !== 200
-              ) {
-                let anyinfo = await res.clone().text();
-                try {
-                  const infJson = await res.clone().json();
-                  anyinfo = prettyObject(infJson);
-                } catch { }
-                if (res.status === 401) {
-                  responseText = "\n\n" + Locale.Error.Unauthorized;
+                  responseText = `${imageDescription}`;
                 }
-                if (res.status !== 200) {
-                  if (anyinfo) {
-                    responseText += "\n\n" + anyinfo;
-                  }
+                 else {
+                  // Generic JSON response processing
+                   responseText = await res.clone().json();
                 }
-                return;
               }
             }
+            // Handle non-OK responses or unexpected content types
             if (
               !res.ok ||
               !res.headers
@@ -411,13 +338,13 @@ export class ChatGPTApi implements LLMApi {
                 ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
-              const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
               try {
                 const resJson = await res.clone().json();
                 extraInfo = prettyObject(resJson);
-              } catch {}
+              } catch { }
 
+              const responseTexts = [responseText];
               if (res.status === 401) {
                 responseTexts.push(Locale.Error.Unauthorized);
               }
