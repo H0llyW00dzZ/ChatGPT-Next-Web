@@ -1193,7 +1193,14 @@ function _Chat() {
     setHitBottom(isHitBottom);
     let isAutoScrollEnabled: boolean = config.autoScrollMessage;
     setAutoScroll(isAutoScrollEnabled);
-  }, [setHitBottom, setAutoScroll, isMobileScreen, msgRenderIndex, setMsgRenderIndex]); // Added setMsgRenderIndex
+  }, [
+    setHitBottom, 
+    setAutoScroll, 
+    isMobileScreen, 
+    msgRenderIndex, 
+    setMsgRenderIndex, // Added setMsgRenderIndex
+    config.autoScrollMessage // Include this dependency as indicated by the stupid complexity react warning
+  ]);
 
   // Use the custom hook to debounce the onChatBodyScroll function
   useDebouncedEffect(() => {
