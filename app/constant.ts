@@ -154,24 +154,6 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "dall-e-2-beta-instruct-vision",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
-    name: "dall-e-3-beta-instruct-vision",
-    available: true,
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-    },
-  },
-  {
     name: "gpt-4",
     available: true,
     provider: {
