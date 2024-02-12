@@ -1176,23 +1176,36 @@ function _Chat() {
     const bottomHeight = target.scrollTop + target.clientHeight;
     const edgeThreshold = target.clientHeight;
 
+    // Determine if the user is at the top or bottom edge of the chat.
     const isTouchTopEdge = target.scrollTop <= edgeThreshold;
     const isTouchBottomEdge = bottomHeight >= target.scrollHeight - edgeThreshold;
-    const isHitBottom = bottomHeight >= target.scrollHeight - (isMobileScreen ? 4 : 10);
 
-    // Calculate page indices directly inside the function
-    const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
-    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
-
-    if (isTouchTopEdge && !isTouchBottomEdge) {
-      setMsgRenderIndex(prevPageMsgIndex);
-    } else if (isTouchBottomEdge) {
-      setMsgRenderIndex(nextPageMsgIndex);
+    // If the user is manually scrolling, disable auto-scroll.
+    if (isTouchTopEdge || isTouchBottomEdge) {
+      setAutoScroll(false);
+    } else {
+      // Only enable auto-scroll if the `config.autoScrollMessage` is true
+      // and the user has not manually scrolled to the top or bottom edge.
+      if (config.autoScrollMessage) {
+        setAutoScroll(true);
+      }
     }
 
+    // Update the message render index only if auto-scroll is enabled.
+    if (config.autoScrollMessage) {
+      const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
+      const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
+
+      if (isTouchTopEdge && !isTouchBottomEdge) {
+        setMsgRenderIndex(prevPageMsgIndex);
+      } else if (isTouchBottomEdge) {
+        setMsgRenderIndex(nextPageMsgIndex);
+      }
+    }
+
+    // Determine if the user has scrolled to the bottom of the chat.
+    const isHitBottom = bottomHeight >= target.scrollHeight - (isMobileScreen ? 4 : 10);
     setHitBottom(isHitBottom);
-    let isAutoScrollEnabled: boolean = config.autoScrollMessage;
-    setAutoScroll(isAutoScrollEnabled);
   }, [
     setHitBottom, 
     setAutoScroll, 
