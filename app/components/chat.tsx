@@ -572,8 +572,8 @@ export function ChatActions(props: {
         onClick={props.toggleContextPrompts}
         text={
           props.showContextPrompts
-            ? Locale.Mask.Config.HideContext.UnHide
-            : Locale.Mask.Config.HideContext.Hide
+            ? Locale.Mask.Config.ShowFullChatHistory.UnHide
+            : Locale.Mask.Config.ShowFullChatHistory.Hide
         }
         icon={
           props.showContextPrompts ? (
