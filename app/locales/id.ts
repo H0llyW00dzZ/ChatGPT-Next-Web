@@ -529,6 +529,12 @@ const id: PartialLocaleType = {
         UnHide: "Tampilkan Prompt konteks dalam obrolan",
         Hide: "Sembunyikan Prompt konteks dalam obrolan",
       },
+      ShowFullChatHistory: {
+        Title: "Tampilkan Seluruh Riwayat Obrolan",
+        SubTitle: "Tampilkan riwayat obrolan lengkap",
+        UnHide: "Perlihatkan seluruh riwayat obrolan",
+        Hide: "Sembunyikan seluruh riwayat obrolan (Hanya tampilkan 15 pesan terakhir)",
+      },
       Share: {
         Title: "Bagikan Masks Ini",
         SubTitle: "Buat tautan untuk masks ini",

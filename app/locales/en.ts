@@ -620,6 +620,12 @@ const en: LocaleType = {
         UnHide: "Show Context prompts in chat",
         Hide: "Hide Context prompts in chat",
       },
+      ShowFullChatHistory: {
+        Title: "Display All Chat History",
+        SubTitle: "Show the complete chat history",
+        UnHide: "Reveal the entire chat history",
+        Hide: "Hide all chat history (Show only the last 15 messages)",
+      },
       Share: {
         Title: "Share This Mask",
         SubTitle: "Generate a link to this mask",

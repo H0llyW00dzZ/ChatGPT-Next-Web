@@ -611,6 +611,12 @@ const cn = {
         UnHide: "在聊天中显示默认对话框",
         Hide: "在聊天中隐藏默认对话框",        
       },
+      ShowFullChatHistory: {
+        Title: "显示所有聊天记录",
+        SubTitle: "显示完整的聊天记录",
+        UnHide: "显示整个聊天记录",
+        Hide: "隐藏所有聊天记录（仅显示最后15条消息）",
+      },
       Share: {
         Title: "分享此面具",
         SubTitle: "生成此面具的直达链接",
