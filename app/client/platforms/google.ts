@@ -177,13 +177,15 @@ export class GeminiProApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      let chatPath = this.path(Google.ChatPath);
+      // Note: With this refactoring, it's now possible to use `v1`, `v1beta` in the settings.
+      // However, this is just temporary and might need to be changed in the future.
+      let chatPath = this.path(accessStore.googleApiVersion + Google.ChatPath);
 
       // let baseUrl = accessStore.googleUrl;
 
       if (!baseUrl) {
         baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath
+          ? DEFAULT_API_HOST + "/api/proxy/google/" + accessStore.googleApiVersion + Google.ChatPath
           : chatPath;
       }
 
