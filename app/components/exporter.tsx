@@ -12,7 +12,12 @@ import {
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
-import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  getMessageImages,
+  useMobileScreen,
+} from "../utils";
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -34,6 +39,7 @@ import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME, ModelProvider, REPO_URL } from "../constant";
 import { getClientConfig } from "../config/client";
 import { ClientApi } from "../client/api";
+import { getMessageTextContent } from "../utils";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -316,7 +322,7 @@ export function RenderExport(props: {
           id={`${m.role}:${i}`}
           className={EXPORT_MESSAGE_CLASS_NAME}
         >
-          <Markdown content={m.content} defaultShow />
+          <Markdown content={getMessageTextContent(m)} defaultShow />
         </div>
       ))}
     </div>
@@ -662,10 +668,37 @@ export function ImagePreviewer(props: {
 
               <div className={styles["body"]}>
                 <Markdown
-                  content={m.content}
+                  content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
                   defaultShow
                 />
+                {getMessageImages(m).length == 1 && (
+                  <img
+                    key={i}
+                    src={getMessageImages(m)[0]}
+                    alt="message"
+                    className={styles["message-image"]}
+                  />
+                )}
+                {getMessageImages(m).length > 1 && (
+                  <div
+                    className={styles["message-images"]}
+                    style={
+                      {
+                        "--image-count": getMessageImages(m).length,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {getMessageImages(m).map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt="message"
+                        className={styles["message-image-multi"]}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -691,16 +724,11 @@ export function MarkdownPreviewer(props: {
       : "") +
     props.messages
       .map((m) => {
-        switch (m.role) {
-          case "user":
-            return `## ${"🤓"} ${Locale.Export.MessageFromYou}:\n${m.content}`;
-          case "assistant":
-            return `## ${"🤖"} ${Locale.Export.MessageFromChatGPT.NoRole} (${Locale.Export.MessageFromChatGPT.RoleAssistant}):\n${m.content.trim()}`;
-          case "system":
-            return `## ${"🤖"} ${"⚙️"} ${Locale.Export.MessageFromChatGPT.NoRole} (${Locale.Export.MessageFromChatGPT.RoleSystem}):\n${m.content.trim()}`;
-          default:
-            return `## ${Locale.Export.MessageFromChatGPT.NoRole}:\n${m.content.trim()}`;
-        }
+        return m.role === "user"
+          ? `## ${Locale.Export.MessageFromYou}:\n${getMessageTextContent(m)}`
+          : `## ${Locale.Export.MessageFromChatGPT}:\n${getMessageTextContent(
+              m,
+            ).trim()}`;
       })
       .join("\n\n");
 
