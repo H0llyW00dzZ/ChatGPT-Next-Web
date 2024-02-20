@@ -187,6 +187,7 @@ export class GeminiProApi implements LLMApi {
         topP: modelConfig.top_p,
         // "topK": modelConfig.top_k,
       },
+      // TODO: Improve safety settings to make them configurable, similar to the rich terminal interface chat feature in GoGenAI, which is written in Go.
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
