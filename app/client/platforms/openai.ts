@@ -101,6 +101,43 @@ export class ChatGPTApi implements LLMApi {
    */
   async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
+    /**
+     * The text moderation configuration.
+     * @remarks
+     * This variable stores the text moderation settings obtained from the app configuration.
+     * @author H0llyW00dzZ
+     */
+    const textmoderation = useAppConfig.getState().textmoderation;
+    const checkprovider = getProviderFromState();
+    const userMessageS = options.messages.filter((msg) => msg.role === "user");
+    const lastUserMessageContent = userMessageS[userMessageS.length - 1]?.content;
+    let textToModerate = '';
+
+    if (typeof lastUserMessageContent === 'string') {
+      textToModerate = lastUserMessageContent;
+    } else if (Array.isArray(lastUserMessageContent)) {
+      // If it's an array of MultimodalContent, concatenate all text elements into a single string
+      textToModerate = lastUserMessageContent
+        .filter(content => content.type === 'text' && typeof content.text === 'string')
+        .map(content => content.text)
+        .join(' ');
+    }
+
+    // Now textToModerate is guaranteed to be a string
+    const moderationPath = this.path(OpenaiPath.ModerationPath);
+
+    // Check if text moderation is enabled and required
+    if (textmoderation !== false &&
+        options.whitelist !== true &&
+        checkprovider !== ServiceProvider.Azure &&
+        textToModerate) { // Ensure textToModerate is not empty
+      // Call the moderateText method and handle the result
+      const moderationResult = await moderateText(moderationPath, textToModerate, OpenaiPath.TextModerationModels.latest);
+      if (moderationResult) {
+        options.onFinish(moderationResult); // Finish early if moderationResult is not null
+        return;
+      }
+    }
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
