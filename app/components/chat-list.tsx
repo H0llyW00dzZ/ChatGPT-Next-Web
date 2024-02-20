@@ -136,10 +136,22 @@ export function ChatList(props: { narrow?: boolean; search: string }) {
     let foundKeyword = false;
 
     item.messages.forEach((message) => {
+      // Check if content is a string before calling includes
       // console.log(chatListSearch, message.content, message.content.includes(chatListSearch))
-      if (message.content.includes(props.search)) {
+      if (typeof message.content === 'string' && message.content.includes(props.search)) {
         foundKeyword = true;
         return;
+      }
+
+      // If content is an array of MultimodalContent, you might need to handle it differently
+      if (Array.isArray(message.content)) {
+        // Handle the case where content is an array of MultimodalContent
+        message.content.forEach((multimodalContent) => {
+          if (multimodalContent.type === 'text' && multimodalContent.text && multimodalContent.text.includes(props.search)) {
+            foundKeyword = true;
+            return;
+          }
+        });
       }
     });
 
