@@ -147,7 +147,9 @@ export function ChatList(props: { narrow?: boolean; search: string }) {
       if (Array.isArray(message.content)) {
         // Handle the case where content is an array of MultimodalContent
         message.content.forEach((multimodalContent) => {
-          if (multimodalContent.type === 'text' && multimodalContent.text && multimodalContent.text.includes(props.search)) {
+          if (multimodalContent.type === 'text' && 
+              multimodalContent.text && 
+              multimodalContent.text.includes(props.search)) {
             foundKeyword = true;
             return;
           }
