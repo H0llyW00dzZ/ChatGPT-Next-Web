@@ -52,7 +52,7 @@ interface Message {
   parts: MessagePart[];
 }
 
-// easy maintain, unlike stupid hard coded
+// easy maintain, unlike stupid "any any any"
 interface InlineData {
   mime_type: string;
   data: string;
