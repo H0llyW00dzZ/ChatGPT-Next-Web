@@ -523,7 +523,7 @@ export const useChatStore = createPersistStore(
           session.memoryPrompt = "";
         });
       },
-
+      // TODO: Improve the summary for gemini-pro-vision. It should be completed by tomorrow, depending on my availability.
       summarizeSession() {
         const config = useAppConfig.getState();
         const session = get().currentSession();
