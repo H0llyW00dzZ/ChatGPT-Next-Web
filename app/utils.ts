@@ -11,8 +11,9 @@ export function trimTopic(topic: string) {
   // This will remove the specified punctuation from the end of the string
   // and also trim quotes from both the start and end if they exist.
   return topic
-    .replace(/^["“”]+|["“”]+$/g, "")
-    .replace(/[，。！？”“"、,.!?]*$/, "");
+    // fix for gemini
+    .replace(/^["“”*]+|["“”*]+$/g, "")
+    .replace(/[，。！？”“"、,.!?*]*$/, "");
 }
 
 const isApp = !!getClientConfig()?.isApp;
