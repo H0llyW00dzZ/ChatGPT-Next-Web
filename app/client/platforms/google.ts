@@ -40,7 +40,8 @@ interface GoogleResponse {
  * Represents a part of a message, typically containing text.
  */
 interface MessagePart {
-  text: string;
+  text?: string;
+  inline_data?: InlineData;
 }
 
 /**
@@ -49,6 +50,12 @@ interface MessagePart {
 interface Message {
   role: string;
   parts: MessagePart[];
+}
+
+// easy maintain, unlike stupid hard coded
+interface InlineData {
+  mime_type: string;
+  data: string;
 }
 
 /**
@@ -111,8 +118,10 @@ export class GeminiProApi implements LLMApi {
     // const apiClient = this;
     const visionModel = isVisionModel(options.config.model);
     let multimodal = false;
-    const messages = options.messages.map((v) => {
-      let parts: any[] = [{ text: getMessageTextContent(v) }];
+
+    // Construct messages with the correct types
+    const messages: Message[] = options.messages.map((v) => {
+      let parts: MessagePart[] = [{ text: getMessageTextContent(v) }];
       if (visionModel) {
         const images = getMessageImages(v);
         if (images.length > 0) {
