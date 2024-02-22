@@ -453,24 +453,47 @@ function useScrollToBottom() {
   // for auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const config = useAppConfig();
-  let isAutoScrollEnabled: boolean = config.autoScrollMessage;
+  const userHasScrolledUp = useRef(false);
+
+  function onScroll() {
+    if (!scrollRef.current) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+
+    userHasScrolledUp.current = !isAtBottom;
+  }
+
   function scrollDomToBottom() {
     const dom = scrollRef.current;
-    if (dom) {
-      requestAnimationFrame(() => { // this stupid frame might conflict with smooth behavior
-        setAutoScroll(isAutoScrollEnabled);
-        // Improve Use smooth scrolling behavior
-        dom.scrollTo({ top: dom.scrollHeight, behavior: 'smooth' });
-      });
+    if (dom && !userHasScrolledUp.current) {
+      dom.scrollTop = dom.scrollHeight;
     }
   }
+
+  const scrollToBottomSmooth = () => {
+    const scrollContainer = scrollRef.current;
+    if (scrollContainer) {
+      const scrollHeight = scrollContainer.scrollHeight;
+      const height = scrollContainer.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      scrollContainer.scrollTo({ top: maxScrollTop, behavior: 'smooth' });
+    }
+  };
 
   // auto scroll
   useEffect(() => {
     if (autoScroll) {
       scrollDomToBottom();
     }
+    const dom = scrollRef.current;
+    dom?.addEventListener("scroll", onScroll);
+
+    scrollDomToBottom();
+
+    return () => {
+      dom?.removeEventListener("scroll", onScroll);
+    };
   });
 
   return {
@@ -478,6 +501,7 @@ function useScrollToBottom() {
     autoScroll,
     setAutoScroll,
     scrollDomToBottom,
+    scrollToBottomSmooth,
   };
 }
 
@@ -1220,40 +1244,26 @@ function _Chat() {
     // Determine if the user is at the top or bottom edge of the chat.
     const isTouchTopEdge = target.scrollTop <= edgeThreshold;
     const isTouchBottomEdge = bottomHeight >= target.scrollHeight - edgeThreshold;
-
-    // If the user is manually scrolling, disable auto-scroll.
-    if (isTouchTopEdge || isTouchBottomEdge) {
-      setAutoScroll(false);
-    } else {
-      // Only enable auto-scroll if the `config.autoScrollMessage` is true
-      // and the user has not manually scrolled to the top or bottom edge.
-      if (config.autoScrollMessage) {
-        setAutoScroll(true);
-      }
-    }
-
-    // Update the message render index only if auto-scroll is enabled.
-    if (config.autoScrollMessage) {
-      const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
-      const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
-
-      if (isTouchTopEdge && !isTouchBottomEdge) {
-        setMsgRenderIndex(prevPageMsgIndex);
-      } else if (isTouchBottomEdge) {
-        setMsgRenderIndex(nextPageMsgIndex);
-      }
-    }
-
-    // Determine if the user has scrolled to the bottom of the chat.
     const isHitBottom = bottomHeight >= target.scrollHeight - (isMobileScreen ? 4 : 10);
+
+    
+    const nextPageMsgIndex = msgRenderIndex + CHAT_PAGE_SIZE;
+    const prevPageMsgIndex = msgRenderIndex - CHAT_PAGE_SIZE;
+
+    if (isTouchTopEdge && !isTouchBottomEdge) {
+      setMsgRenderIndex(prevPageMsgIndex);
+    } else if (isTouchBottomEdge) {
+      setMsgRenderIndex(nextPageMsgIndex);
+    }
+
     setHitBottom(isHitBottom);
+    setAutoScroll(isHitBottom);
   }, [
-    setHitBottom, 
-    setAutoScroll, 
-    isMobileScreen, 
-    msgRenderIndex, 
+    setHitBottom,
+    setAutoScroll,
+    isMobileScreen,
+    msgRenderIndex,
     setMsgRenderIndex, // Added setMsgRenderIndex
-    config.autoScrollMessage // Include this dependency as indicated by the stupid complexity react warning
   ]);
 
   // Use the custom hook to debounce the onChatBodyScroll function
@@ -1468,6 +1478,17 @@ function _Chat() {
     }
     setAttachImages(images);
   }
+
+  // this now better
+  const scrollToBottomSmooth = () => {
+    const scrollContainer = scrollRef.current;
+    if (scrollContainer) {
+      const scrollHeight = scrollContainer.scrollHeight;
+      const height = scrollContainer.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      scrollContainer.scrollTo({ top: maxScrollTop, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className={styles.chat} key={session.id}>
@@ -1756,7 +1777,7 @@ function _Chat() {
           setAttachImages={setAttachImages}
           setUploading={setUploading}
           showPromptModal={() => setShowPromptModal(true)}
-          scrollToBottom={scrollToBottom}
+          scrollToBottom={scrollToBottomSmooth}
           hitBottom={hitBottom}
           uploading={uploading}
           showPromptHints={() => {
