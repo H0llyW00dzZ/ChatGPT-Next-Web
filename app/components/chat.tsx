@@ -107,6 +107,8 @@ import { appWindow } from '@tauri-apps/api/window';
 import { sendDesktopNotification } from "../utils/taurinotification";
 import { clearUnfinishedInputForSession, debouncedSave } from "../utils/storageHelper";
 import { MultimodalContent } from "../client/api";
+import Image from 'next/image';
+
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -1725,10 +1727,11 @@ function _Chat() {
                       defaultShow={i >= messages.length - 6}
                     />
                     {getMessageImages(message).length == 1 && (
-                      <img
+                      <Image
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
                         alt=""
+                        layout="responsive"
                       />
                     )}
                     {getMessageImages(message).length > 1 && (
@@ -1742,13 +1745,14 @@ function _Chat() {
                       >
                         {getMessageImages(message).map((image, index) => {
                           return (
-                            <img
+                            <Image
                               className={
                                 styles["chat-message-item-image-multi"]
                               }
                               key={index}
                               src={image}
                               alt=""
+                              layout="responsive"
                             />
                           );
                         })}
