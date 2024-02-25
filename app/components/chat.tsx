@@ -1552,11 +1552,6 @@ function _Chat() {
 
   return (
     <div className={styles.chat} key={session.id}>
-      <ImageBox
-        showImageBox={showImageBox}
-        data={imageBoxData}
-        closeImageBox={() => setShowImageBox(false)}
-      ></ImageBox>
       <div className="window-header" data-tauri-drag-region>
         {isMobileScreen && (
           <div className="window-actions">
@@ -1633,7 +1628,11 @@ function _Chat() {
           setShowModal={setShowPromptModal}
         />
       </div>
-
+      <ImageBox
+        showImageBox={showImageBox}
+        data={imageBoxData}
+        closeImageBox={() => setShowImageBox(false)}
+      ></ImageBox>
       <div
         className={styles["chat-body"]}
         ref={scrollRef}
