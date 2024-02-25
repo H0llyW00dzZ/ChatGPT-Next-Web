@@ -518,6 +518,7 @@ export function ChatActions(props: {
   showContextPrompts: boolean;
   toggleContextPrompts: () => void;
   uploading: boolean;
+  attachImages: string[];
 }) {
   const config = useAppConfig();
   const navigate = useNavigate();
@@ -547,25 +548,37 @@ export function ChatActions(props: {
   const [showModelSelector, setShowModelSelector] = useState(false);
   const [showUploadImage, setShowUploadImage] = useState(false);
 
+  // this fix memory leak as well, idk why front-end it's so fucking difficult to maintain cause of stupid complex
   useEffect(() => {
     const show = isVisionModel(currentModel);
-    setShowUploadImage(show);
+    if (showUploadImage !== show) {
+      setShowUploadImage(show);
+    }
+
     if (!show) {
-      props.setAttachImages([]);
-      props.setUploading(false);
+      // Check if there's really a need to update these states to prevent unnecessary re-renders
+      if (props.uploading) {
+        props.setUploading(false);
+      }
+      if (props.attachImages.length !== 0) {
+        props.setAttachImages([]);
+      }
     }
 
     // if current model is not available
     // switch to first available model
-    const isUnavaliableModel = !models.some((m) => m.name === currentModel);
-    if (isUnavaliableModel && models.length > 0) {
+    const isUnavailableModel = !models.some((m) => m.name === currentModel);
+    if (isUnavailableModel && models.length > 0) {
       const nextModel = models[0].name as ModelType;
-      chatStore.updateCurrentSession(
-        (session) => (session.mask.modelConfig.model = nextModel),
-      );
-      showToast(nextModel);
+      // Only update if the next model is different from the current model
+      if (currentModel !== nextModel) {
+        chatStore.updateCurrentSession(
+          (session) => (session.mask.modelConfig.model = nextModel),
+        );
+        showToast(nextModel);
+      }
     }
-  }, [props, chatStore, currentModel, models]);
+  }, [props, chatStore, currentModel, models, showUploadImage]);
 
   return (
     <div className={styles["chat-input-actions"]}>
@@ -1258,14 +1271,19 @@ function _Chat() {
       setMsgRenderIndex(nextPageMsgIndex);
     }
 
-    setHitBottom(isHitBottom);
-    setAutoScroll(isHitBottom);
+    // Only update state if necessary to prevent infinite loop
+    // this fix memory leaks
+    if (hitBottom !== isHitBottom) {
+      setHitBottom(isHitBottom);
+      setAutoScroll(isHitBottom);
+    }
   }, [
     setHitBottom,
     setAutoScroll,
     isMobileScreen,
     msgRenderIndex,
     setMsgRenderIndex, // Added setMsgRenderIndex
+    hitBottom, // Include hitBottom in the dependency array
   ]);
 
   // Use the custom hook to debounce the onChatBodyScroll function
@@ -1727,11 +1745,11 @@ function _Chat() {
                       defaultShow={i >= messages.length - 6}
                     />
                     {getMessageImages(message).length == 1 && (
-                      <Image
+                      // this fix when uploading
+                      <img
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
                         alt=""
-                        layout="responsive"
                       />
                     )}
                     {getMessageImages(message).length > 1 && (
@@ -1797,6 +1815,7 @@ function _Chat() {
           }}
           showContextPrompts={false}
           toggleContextPrompts={() => showToast(Locale.WIP)}
+          attachImages={attachImages}
         />
         <label
           className={`${styles["chat-input-panel-inner"]} ${
