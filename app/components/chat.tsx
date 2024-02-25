@@ -549,6 +549,7 @@ export function ChatActions(props: {
   const [showUploadImage, setShowUploadImage] = useState(false);
 
   // this fix memory leak as well, idk why front-end it's so fucking difficult to maintain cause of stupid complex
+  // for front-end developer you literally fucking retarded, write a complex code
   useEffect(() => {
     const show = isVisionModel(currentModel);
     if (showUploadImage !== show) {
