@@ -1747,6 +1747,8 @@ function _Chat() {
                     />
                     {getMessageImages(message).length == 1 && (
                       // this fix when uploading
+                      // Note: ignore a fucking stupid "1750:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element"
+                      // In scenario how it work, this already handle in other side for example, when you use gemini-pro-vision
                       <img
                         className={styles["chat-message-item-image"]}
                         src={getMessageImages(message)[0]}
