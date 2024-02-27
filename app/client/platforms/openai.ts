@@ -128,16 +128,38 @@ export class ChatGPTApi implements LLMApi {
 
     // Check if text moderation is enabled and required
     if (textmoderation !== false &&
-        options.whitelist !== true &&
-        checkprovider !== ServiceProvider.Azure &&
-        textToModerate) { // Ensure textToModerate is not empty
-      // Call the moderateText method and handle the result
-      const moderationResult = await moderateText(moderationPath, textToModerate, OpenaiPath.TextModerationModels.latest);
-      if (moderationResult) {
-        options.onFinish(moderationResult); // Finish early if moderationResult is not null
+      options.whitelist !== true &&
+      checkprovider !== ServiceProvider.Azure &&
+      textToModerate) { // Ensure textToModerate is not empty
+      try {
+        // Call the moderateText method and handle the result
+        const moderationResult = await moderateText(moderationPath, textToModerate, OpenaiPath.TextModerationModels.latest);
+        if (moderationResult) {
+          options.onFinish(moderationResult); // Finish early if moderationResult is not null
+          return;
+        }
+      } catch (error) {
+        // Handle errors from moderateText
+        let errorMessage = 'An unknown error occurred during text moderation.';
+        if (error instanceof Error) {
+          errorMessage = error.message;
+          try {
+            // Attempt to parse the error message as JSON
+            const errorObj = JSON.parse(errorMessage.substring(errorMessage.indexOf('{')));
+            // Pretty-print the JSON error message
+            errorMessage = prettyObject(errorObj);
+          } catch {
+            // If parsing or formatting fails, use the original error message
+          }
+        }
+        // Format the error message for user-friendly display
+        const formattedError = `We encountered an issue while reviewing your message:\n${errorMessage}`;
+        // Use the onFinish callback or similar to display the error in the chat interface
+        options.onFinish(formattedError);
         return;
       }
     }
+
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: visionModel ? v.content : getMessageTextContent(v),
