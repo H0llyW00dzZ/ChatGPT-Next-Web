@@ -41,7 +41,7 @@ import RobotIcon from "../icons/robot.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
 import EyeOnIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
-import { debounce, escapeRegExp } from "lodash";
+import { escapeRegExp } from "lodash";
 import CloseIcon from "../icons/close.svg";
 
 import {
@@ -104,9 +104,9 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getClientConfig } from "../config/client";
 import { useAllModels } from "../utils/hooks";
-import { appWindow } from '@tauri-apps/api/window';
-import { sendDesktopNotification } from "../utils/taurinotification";
 import { clearUnfinishedInputForSession, debouncedSave } from "../utils/storageHelper";
+import { usePinApp } from "./usePinApp";
+import { useDebouncedEffect } from "./useDebouncedEffect";
 import { MultimodalContent } from "../client/api";
 import Image from 'next/image';
 
@@ -762,79 +762,6 @@ export function EditMessageModal(props: { onClose: () => void }) {
       </Modal>
     </div>
   );
-}
-
-function usePinApp(sessionId: string) { // Accept sessionId as a parameter
-  const [pinApp, setPinApp] = useState(false);
-  const isApp = getClientConfig()?.isApp;
-  const config = useAppConfig();
-  const TauriShortcut = config.desktopShortcut;
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
-
-  const togglePinApp = useCallback(async () => {
-    if (!isApp) {
-      return;
-    }
-
-    if (pinApp) {
-      await appWindow.setAlwaysOnTop(false);
-      sendDesktopNotification(Locale.Chat.Actions.PinAppContent.UnPinned);
-      showToast(Locale.Chat.Actions.PinAppContent.UnPinned);
-    } else {
-      await appWindow.setAlwaysOnTop(true);
-      sendDesktopNotification(Locale.Chat.Actions.PinAppContent.Pinned);
-      showToast(Locale.Chat.Actions.PinAppContent.Pinned);
-    }
-    setPinApp((prevPinApp) => !prevPinApp);
-  }, [isApp, pinApp]);
-
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === TauriShortcut) {
-        togglePinApp();
-      }
-    };
-    // Usage : Mouse+5,Mouse+4,Mouse+1(Middle Click)
-    // You need to copy-paste (e.g., Mouse+5 paste in settings) instead of typing manually in settings
-    const handleMouseClick = (event: MouseEvent) => {
-      if (event.button === 1 || event.button === 4 || event.button === 5) {
-        togglePinApp();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyPress);
-    document.addEventListener("mousedown", handleMouseClick);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-      document.removeEventListener("mousedown", handleMouseClick);
-    };
-  }, [TauriShortcut, togglePinApp]);
-  // Reset pinApp when the session changes
-  useEffect(() => {
-    setPinApp(false);
-  }, [sessionId]); // Listen for changes to sessionId
-
-  return {
-    pinApp: isApp ? pinApp : false,
-    togglePinApp: isApp ? togglePinApp : () => { },
-  };
-}
-
-// Custom hook for debouncing a function
-function useDebouncedEffect(effect: () => void, deps: any[], delay: number) {
-  // Include `effect` in the dependency array for `useCallback`
-  const callback = useCallback(effect, [effect, ...deps]);
-
-  useEffect(() => {
-    const handler = debounce(callback, delay);
-
-    handler();
-
-    // Cleanup function to cancel the debounced call if the component unmounts
-    return () => handler.cancel();
-  }, [callback, delay]); // `callback` already includes `effect` in its dependencies, so no need to add it here again.
 }
 
 export function DeleteImageButton(props: { deleteImage: () => void }) {
