@@ -161,7 +161,6 @@ export class GeminiProApi implements LLMApi {
     const { max_tokens } = getNewStuff(
       options.config.model,
       chatConfig.max_tokens,
-      chatConfig.system_fingerprint,
       chatConfig.useMaxTokens,
     );
 
