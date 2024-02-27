@@ -14,7 +14,6 @@ import {
  * 
  * @param model - The model name.
  * @param max_tokens - The maximum number of tokens.
- * @param system_fingerprint - The system fingerprint.
  * @param useMaxTokens - Indicates whether to use the maximum number of tokens.
  * @returns An object containing the configuration for new features:
  *   - max_tokens: The maximum number of tokens.
@@ -27,12 +26,10 @@ import {
 export function getNewStuff(
     model: string,
     max_tokens?: number,
-    system_fingerprint?: string,
     useMaxTokens: boolean = true,
 ): {
     max_tokens?: number;
     maxOutputTokens?: number; // This is the same as maxTokens but for Google AI
-    system_fingerprint?: string;
     isNewModel: boolean;
     payloadType: 'chat' | 'image';
     isDalle: boolean;
@@ -52,7 +49,6 @@ export function getNewStuff(
         return {
             max_tokens: tokens,
             maxOutputTokens: tokens, // Assign the same value to maxOutputTokens
-            system_fingerprint: system_fingerprint ?? modelConfig.system_fingerprint,
             isNewModel: true,
             payloadType,
             isDalle,

@@ -187,10 +187,9 @@ export class ChatGPTApi implements LLMApi {
      * @example : A Best Picture of Andromeda Galaxy
      */
     const actualModel = getModelForInstructVersion(modelConfig.model);
-    const { max_tokens, system_fingerprint } = getNewStuff(
+    const { max_tokens } = getNewStuff(
       modelConfig.model,
       modelConfig.max_tokens,
-      modelConfig.system_fingerprint,
       modelConfig.useMaxTokens,
     );
 
