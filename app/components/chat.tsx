@@ -1412,9 +1412,9 @@ function _Chat() {
   }, [session.id]);
 
   const handlePaste = useCallback(
-    const currentModel = chatStore.currentSession().mask.modelConfig.model;
-    if(!isVisionModel(currentModel)){return;}
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const currentModel = chatStore.currentSession().mask.modelConfig.model;
+      if(!isVisionModel(currentModel)){return;}
       const items = (event.clipboardData || window.clipboardData).items;
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
