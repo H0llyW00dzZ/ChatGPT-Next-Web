@@ -41,25 +41,25 @@ export async function sendModerationRequest(
     moderationPayload: ModerationPayload
 ): Promise<ModerationResponse> {
     try {
-        const moderationResponse = await fetch(moderationPath, {
+        const response = await fetch(moderationPath, {
             method: "POST",
             body: JSON.stringify(moderationPayload),
             headers: getHeaders(),
         });
 
-        if (!moderationResponse.ok) {
+        if (!response.ok) {
             // This a better way, interface error hahaaha
-            const errorBody = await moderationResponse.json(); // Attempt to read the response body
+            const errorBody = await response.json(); // Attempt to read the response body
             // Use JSON.stringify to convert the error object to a string
-            throw new Error(`[${moderationResponse.status}] Failed to get moderation response: ${JSON.stringify(errorBody)}`);
+            throw new Error(`[${response.status}] Failed to get moderation response: ${JSON.stringify(errorBody)}`);
         }
 
-        const contentType = moderationResponse.headers.get("Content-Type");
+        const contentType = response.headers.get("Content-Type");
         if (!contentType || !contentType.includes("application/json")) {
             throw new Error("Unexpected content type received from moderation response");
         }
 
-        const moderationJson = await moderationResponse.json();
+        const moderationJson = await response.json();
         const provider = getProviderFromState();
 
         if (moderationJson.results && moderationJson.results.length > 0) {
@@ -72,43 +72,33 @@ export async function sendModerationRequest(
                 // This condition assumes that the initial request was successful but did not identify any content violations.
                 // Should the fallback request encounter an error, it triggers an exception, halting further processing.
                 // This adjustment specifically addresses the issue of redundant logging when an error occurs during the initial request.
-                const fallbackModerationResponse = await fetch(moderationPath, {
+                const fallbackResponse = await fetch(moderationPath, {
                     method: "POST",
                     body: JSON.stringify(moderationPayload),
                     headers: getHeaders(),
                 });
 
-                if (!fallbackModerationResponse.ok) {
+                if (!fallbackResponse.ok) {
                     // Immediately handle the error without attempting to parse further
-                    const errorBody = await fallbackModerationResponse.json();
+                    const errorBody = await fallbackResponse.json();
                     console.error(`Fallback moderation request failed: ${JSON.stringify(errorBody)}`);
-                    throw new Error(`[${fallbackModerationResponse.status}] Failed to get fallback moderation response: ${JSON.stringify(errorBody)}`);
+                    throw new Error(`[${fallbackResponse.status}] Failed to get fallback moderation response: ${JSON.stringify(errorBody)}`);
                 }
 
-                const fallbackModerationJson = await fallbackModerationResponse.json();
-
-                if (fallbackModerationJson.results && fallbackModerationJson.results.length > 0) {
-                    moderationResult = fallbackModerationJson.results[0]; // Access the first element of the array
+                const fallbackJson = await fallbackResponse.json();
+                if (fallbackJson.results && fallbackJson.results.length > 0) {
+                    moderationResult = fallbackJson.results[0]; // Access the first element of the array
                 }
             }
 
-            console.log(`[${provider}] [Text Moderation] flagged:`, moderationResult.flagged); // Log the flagged result
-
-            if (moderationResult.flagged) {
-                const flaggedCategories = Object.entries(moderationResult.categories)
-                    .filter(([_, flagged]) => flagged)
-                    .map(([category]) => category);
-
-                console.log(`[${provider}] [Text Moderation] flagged categories:`, flaggedCategories); // Log the flagged categories
-            }
-
+            logModerationResult(provider, moderationResult); // Log the flagged result
             return moderationResult as ModerationResponse;
         } else {
             console.error(`[${provider}] [Text Moderation] Moderation response is empty`);
             throw new Error(`[${provider}] [Text Moderation] Moderation response is empty`);
         }
     } catch (e) {
-        console.error("[Request] failed to make a moderation request", e);
+        console.error("[Request] Failed to make a moderation request", e);
         throw e; // Rethrow the error after logging
     }
 }
@@ -151,17 +141,37 @@ export async function moderateText(
                 .map(([category]) => category);
 
             if (flaggedCategories.length > 0) {
-                const translatedReasons = flaggedCategories.map((category) => {
-                    const translation = (Locale.Error.Content_Policy.Reason as any)[category];
-                    return translation || category;
-                });
-                const translatedReasonText = translatedReasons.join(", ");
-                return `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n${Locale.Error.Content_Policy.SubTitle}\n`;
+                return formatModerationMessage(flaggedCategories);  // Log the flagged categories
             }
         }
     } catch (e) {
         throw e; // Rethrow the error to be handled by the caller
     }
-
+    // Note: This a nill in go hahaha
     return null; // No moderation needed
+}
+
+/**
+ * Helper function to log the result of text moderation.
+ */
+function logModerationResult(provider: string, moderationResult: ModerationResponse) {
+    console.log(`[${provider}] [Text Moderation] flagged:`, moderationResult.flagged);
+    if (moderationResult.flagged) {
+        const flaggedCategories = Object.entries(moderationResult.categories)
+            .filter(([_, flagged]) => flagged)
+            .map(([category]) => category);
+        console.log(`[${provider}] [Text Moderation] flagged categories:`, flaggedCategories);
+    }
+}
+
+/**
+ * Formats the moderation message based on flagged categories.
+ */
+function formatModerationMessage(flaggedCategories: string[]): string {
+    const translatedReasons = flaggedCategories.map(category => {
+        const translation = Locale.Error.Content_Policy.Reason[category as keyof typeof Locale.Error.Content_Policy.Reason] || category;
+        return translation;
+    });
+    const translatedReasonText = translatedReasons.join(", ");
+    return `${Locale.Error.Content_Policy.Title}\n${Locale.Error.Content_Policy.Reason.Title}: ${translatedReasonText}\n${Locale.Error.Content_Policy.SubTitle}\n`;
 }
