@@ -68,11 +68,22 @@ export async function sendModerationRequest(
             if (!moderationResult.flagged) {
                 const stable = OpenaiPath.TextModerationModels.stable; // Fall back to "stable" if "latest" is still false
                 moderationPayload.model = stable;
+                // Initiate a fallback request only if the initial moderation did not flag the content as problematic.
+                // This condition assumes that the initial request was successful but did not identify any content violations.
+                // Should the fallback request encounter an error, it triggers an exception, halting further processing.
+                // This adjustment specifically addresses the issue of redundant logging when an error occurs during the initial request.
                 const fallbackModerationResponse = await fetch(moderationPath, {
                     method: "POST",
                     body: JSON.stringify(moderationPayload),
                     headers: getHeaders(),
                 });
+
+                if (!fallbackModerationResponse.ok) {
+                    // Immediately handle the error without attempting to parse further
+                    const errorBody = await fallbackModerationResponse.json();
+                    console.error(`Fallback moderation request failed: ${JSON.stringify(errorBody)}`);
+                    throw new Error(`[${fallbackModerationResponse.status}] Failed to get fallback moderation response: ${JSON.stringify(errorBody)}`);
+                }
 
                 const fallbackModerationJson = await fallbackModerationResponse.json();
 
@@ -149,7 +160,6 @@ export async function moderateText(
             }
         }
     } catch (e) {
-        console.error("[Request] failed to make a moderation request", e);
         throw e; // Rethrow the error to be handled by the caller
     }
 
