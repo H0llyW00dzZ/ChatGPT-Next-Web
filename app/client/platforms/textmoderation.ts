@@ -147,7 +147,7 @@ export async function moderateText(
     } catch (e) {
         throw e; // Rethrow the error to be handled by the caller
     }
-    // Note: This a nill in go hahaha
+    // Note: This a nil in go hahaha
     return null; // No moderation needed
 }
 
