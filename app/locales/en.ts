@@ -31,6 +31,7 @@ const en: LocaleType = {
         violence: "Violence",
       },
     },
+    TextModerationErr: "We encountered an issue while reviewing your message:",
   },
   Auth: {
     Title: "Need Access Code",

@@ -25,6 +25,7 @@ const id: PartialLocaleType = {
         violence: "Kekerasan",
       },
     },
+    TextModerationErr: "Kami menemui masalah saat meninjau pesan Anda:",
   },
   Auth: {
     Title: "Diperlukan Kode Akses",

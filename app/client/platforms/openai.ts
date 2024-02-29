@@ -153,7 +153,7 @@ export class ChatGPTApi implements LLMApi {
           }
         }
         // Format the error message for user-friendly display
-        const formattedError = `We encountered an issue while reviewing your message:\n${errorMessage}`;
+        const formattedError = Locale.Error.TextModerationErr + `\n${errorMessage}`;
         // Use the onFinish callback or similar to display the error in the chat interface
         options.onFinish(formattedError);
         return;

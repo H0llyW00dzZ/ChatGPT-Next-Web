@@ -29,6 +29,7 @@ const cn = {
         violence: "暴力",
       },
     },
+    TextModerationErr: "审核您的消息时遇到问题：",
   },
   Auth: {
     Title: "需要密码",
