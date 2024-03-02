@@ -310,6 +310,7 @@ export const DEFAULT_MODELS = [
       providerType: "openai",
     },
   },
+  // Note: It's better to use the original model name rather than an alias, as using an alias could potentially lead to confusion.
   {
     name: "gemini-1.0-pro",
     available: true,
@@ -329,7 +330,7 @@ export const DEFAULT_MODELS = [
     },
   },
   {
-    name: "gemini-pro-vision",
+    name: "gemini-1.0-pro-vision-latest",
     available: true,
     provider: {
       id: "google",
