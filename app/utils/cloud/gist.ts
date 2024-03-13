@@ -1,7 +1,6 @@
 import { STORAGE_KEY, REPO_URL } from "@/app/constant";
 import { chunks } from "../format";
 import { SyncStore } from "@/app/store/sync";
-import { corsFetch } from "../cors";
 
 export type GistConfig = SyncStore["githubGist"] & { gistId: string };
 export type GistClient = ReturnType<typeof createGistClient>;
@@ -37,7 +36,7 @@ export function createGistClient(store: SyncStore) {
         };
       }
 
-      return corsFetch("https://api.github.com/gists", {
+      return await fetch("https://api.github.com/gists", {
         method: "POST",
         headers: this.headers(),
         body: JSON.stringify({
@@ -68,7 +67,7 @@ export function createGistClient(store: SyncStore) {
     },
 
     async check(): Promise<string> {
-      const res = await corsFetch(this.path(gistId), {
+      const res = await fetch(this.path(gistId), {
         method: "GET",
         headers: this.headers(),
       });
@@ -85,7 +84,7 @@ export function createGistClient(store: SyncStore) {
     },
 
     async get() {
-      const res = await corsFetch(this.path(gistId), {
+      const res = await fetch(this.path(gistId), {
         method: "GET",
         headers: this.headers(),
       });
@@ -110,7 +109,7 @@ export function createGistClient(store: SyncStore) {
       const newContent = JSON.stringify(data, null, 2);
       const description = `[Sync] [200 OK] [GithubGist] Last Sync: ${currentDate} Site: ${REPO_URL}`;
 
-      return corsFetch(this.path(gistId), {
+      return fetch(this.path(gistId), {
         method: existingContent ? "PATCH" : "POST",
         headers: this.headers(),
         body: JSON.stringify({
@@ -131,11 +130,11 @@ export function createGistClient(store: SyncStore) {
           );
           return newContent;
         })
-        .catch((error) => {
+        .catch((e) => {
           console.error(
             "[Gist] Set A Data oF File Name",
             `${fileBackup}`,
-            error,
+            Error,
           );
           return "";
         });
