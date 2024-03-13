@@ -238,7 +238,8 @@ export const useSyncStore = createPersistStore(
   }),
   {
     name: StoreKey.Sync,
-    version: 1.2, // golang syncing 
+    version: 1.3, // golang syncing 
+
     migrate(persistedState, version) {
       const newState = persistedState as typeof DEFAULT_SYNC_STATE;
       if (version < 1.1) {
@@ -247,6 +248,16 @@ export const useSyncStore = createPersistStore(
       if (version < 1.2) {
         newState.gosync.username = STORAGE_KEY;
       }
+
+      if (version < 1.3) {
+        if (
+          (persistedState as typeof DEFAULT_SYNC_STATE).proxyUrl ===
+          "/api/cors/"
+        ) {
+          newState.proxyUrl = "";
+        }
+      }
+
       return newState as any;
     },
   },
