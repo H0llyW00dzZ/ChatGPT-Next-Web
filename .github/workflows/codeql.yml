@@ -143,7 +143,7 @@ jobs:
         run: |
           curl -sSL "https://github.com/${{ github.repository_owner }}.gpg" -o keyfile
           gpg --import keyfile
-          gpg --encrypt --recipient "$(gpg --list-keys --keyid-format LONG | grep '^pub' | awk '{print $2}' | awk -F'/' '{print $2}')" --trust-model always "${{ runner.workspace }}/results/javascript.sarif"
+          gpg --encrypt --recipient 05C7FFFC0845C930 --trust-model always "${{ runner.workspace }}/results/javascript.sarif"
 
       - name: Upload Analysis Result As Artifact
         uses: actions/upload-artifact@v3
